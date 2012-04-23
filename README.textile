@@ -1,6 +1,6 @@
 h1. SVPullToRefresh
 
-SVPullToRefresh allow you to easily add pull-to-refresh functionality to any @UIScrollView@ subclass. Instead of depending on delegates and/or subclassing @UIViewController@, SVPullToRefresh extends @UIScrollView@ with:
+SVPullToRefresh allows you to easily add pull-to-refresh functionality to any @UIScrollView@ subclass with only 1 line of code. Instead of depending on delegates and/or subclassing @UIViewController@, SVPullToRefresh extends @UIScrollView@ with:
 
 * a @- (void)addPullToRefreshWithActionHandler:(void (^)(void))actionHandler@ method
 * a @pullToRefreshView@ property
@@ -32,6 +32,12 @@ The SVPullToRefresh view can be customized with the following properties:
 @property (nonatomic, strong) UIColor *arrowColor;
 @property (nonatomic, strong) UIColor *textColor;
 @property (nonatomic, readwrite) UIActivityIndicatorViewStyle activityIndicatorViewStyle;
+</pre>
+
+You can access these properties your scroll view's @pullToRefreshView@ property. For instance, you would set the @arrowColor@ property using:
+
+<pre>
+tableView.pullToRefreshView.arrowColor = [UIColor whiteColor];
 </pre>
 
 h2. Under the hood
