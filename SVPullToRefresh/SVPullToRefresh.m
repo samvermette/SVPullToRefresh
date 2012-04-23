@@ -125,6 +125,10 @@ typedef NSUInteger SVPullToRefreshState;
     self.arrow.image = self.arrowImage;
 }
 
+- (void)setTextColor:(UIColor *)newTextColor {
+    self.titleLabel.textColor = newTextColor;
+}
+
 - (void)setActivityIndicatorViewStyle:(UIActivityIndicatorViewStyle)viewStyle {
     self.activityIndicatorView.activityIndicatorViewStyle = viewStyle;
 }
