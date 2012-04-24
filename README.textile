@@ -1,9 +1,6 @@
 h1. SVPullToRefresh
 
-SVPullToRefresh allows you to easily add pull-to-refresh functionality to any @UIScrollView@ subclass with only 1 line of code. Instead of depending on delegates and/or subclassing @UIViewController@, SVPullToRefresh extends @UIScrollView@ with:
-
-* a @- (void)addPullToRefreshWithActionHandler:(void (^)(void))actionHandler@ method
-* a @pullToRefreshView@ property
+SVPullToRefresh allows you to easily add pull-to-refresh functionality to any @UIScrollView@ subclass with only 1 line of code. Instead of depending on delegates and/or subclassing @UIViewController@, SVPullToRefresh extends @UIScrollView@ with a @addPullToRefreshWithActionHandler:@ method as well as a @pullToRefreshView@ property.
 
 h2. Installation
 
@@ -34,7 +31,7 @@ The SVPullToRefresh view can be customized with the following properties:
 @property (nonatomic, readwrite) UIActivityIndicatorViewStyle activityIndicatorViewStyle;
 </pre>
 
-You can access these properties your scroll view's @pullToRefreshView@ property. For instance, you would set the @arrowColor@ property using:
+You can access these properties through your scroll view's @pullToRefreshView@ property. For instance, you would set the @arrowColor@ property using:
 
 <pre>
 tableView.pullToRefreshView.arrowColor = [UIColor whiteColor];
@@ -46,4 +43,6 @@ SVPullToRefresh extends @UIScrollView@ by adding a new public method as well as 
 
 h2. Credits
 
-SVPullToRefresh is brought to you by "Sam Vermette":http://samvermette.com and "contributors to the project":https://github.com/samvermette/SVPullToRefresh/contributors. If you have feature suggestions or bug reports, feel free to help out by sending pull requests or by "creating new issues":https://github.com/samvermette/SVPullToRefresh/issues/new. If you're using SVPullToRefresh in your project, attribution would be nice. Big thanks to "@seb_morel":http://twitter.com/seb_morel for his "Demistifying the Objective-C runtime":http://cocoaheadsmtl.s3.amazonaws.com/demistifying-runtime.pdf which permitted the high abstraction of this class.
+SVPullToRefresh is brought to you by "Sam Vermette":http://samvermette.com and "contributors to the project":https://github.com/samvermette/SVPullToRefresh/contributors. If you have feature suggestions or bug reports, feel free to help out by sending pull requests or by "creating new issues":https://github.com/samvermette/SVPullToRefresh/issues/new. If you're using SVPullToRefresh in your project, attribution would be nice. 
+
+Big thanks to "@seb_morel":http://twitter.com/seb_morel for his "Demistifying the Objective-C runtime":http://cocoaheadsmtl.s3.amazonaws.com/demistifying-runtime.pdf which permitted the high abstraction of this class.
