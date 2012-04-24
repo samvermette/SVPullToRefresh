@@ -19,10 +19,13 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
     [self.tableView addPullToRefreshWithActionHandler:^{
         NSLog(@"refresh dataSource");
         [tableView.pullToRefreshView performSelector:@selector(stopAnimating) withObject:nil afterDelay:2];
     }];
+    
+    // that's it!
 }
 
 #pragma mark -
@@ -37,16 +40,12 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
     static NSString *identifier = @"Cell";
-    
     UITableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:identifier];
     
     if (cell == nil)
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
-    
-	// Configure the cell.
-    
+
     return cell;
 }
 
