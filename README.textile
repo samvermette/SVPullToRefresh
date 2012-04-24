@@ -47,4 +47,6 @@ h2. Credits
 
 SVPullToRefresh is brought to you by "Sam Vermette":http://samvermette.com and "contributors to the project":https://github.com/samvermette/SVPullToRefresh/contributors. If you have feature suggestions or bug reports, feel free to help out by sending pull requests or by "creating new issues":https://github.com/samvermette/SVPullToRefresh/issues/new. If you're using SVPullToRefresh in your project, attribution would be nice. 
 
-Big thanks to "@seb_morel":http://twitter.com/seb_morel for his "Demistifying the Objective-C runtime":http://cocoaheadsmtl.s3.amazonaws.com/demistifying-runtime.pdf which permitted the high abstraction of this class.
+Big thanks to "@seb_morel":http://twitter.com/seb_morel for his "Demistifying the Objective-C runtime":http://cocoaheadsmtl.s3.amazonaws.com/demistifying-runtime.pdf talk, which permitted the level of abstraction found in SVPullToRefresh.
+
+Hat tip to "Loren Brichter":http://twitter.com/lorenb for inventing such a great UI mechanism.
