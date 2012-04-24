@@ -2,6 +2,8 @@ h1. SVPullToRefresh
 
 SVPullToRefresh allows you to easily add pull-to-refresh functionality to any @UIScrollView@ subclass with only 1 line of code. Instead of depending on delegates and/or subclassing @UIViewController@, SVPullToRefresh extends @UIScrollView@ with a @addPullToRefreshWithActionHandler:@ method as well as a @pullToRefreshView@ property.
 
+**Only add pull-to-refresh functionality to your app if it makes sense!** Pull to refresh is only appropriate if the pull down gesture is also the one that is used to browse your scroll view. In most cases, pull-to-refresh only makes sense for chronologically-sorted lists of items.
+
 h2. Installation
 
 * Drag the @SVPullToRefresh/SVPullToRefresh@ folder into your project. 
