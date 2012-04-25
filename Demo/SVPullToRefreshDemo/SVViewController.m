@@ -20,9 +20,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    __block SVPullToRefresh *ptr = tableView.pullToRefreshView;
     [self.tableView addPullToRefreshWithActionHandler:^{
         NSLog(@"refresh dataSource");
-        [tableView.pullToRefreshView performSelector:@selector(stopAnimating) withObject:nil afterDelay:2];
+        [ptr performSelector:@selector(stopAnimating) withObject:nil afterDelay:5];
     }];
     
     // that's it!
