@@ -20,7 +20,7 @@ enum {
 typedef NSUInteger SVPullToRefreshState;
 
 
-@interface SVPullToRefresh ()
+@interface SVPullToRefresh () 
 
 - (id)initWithScrollView:(UIScrollView*)scrollView;
 - (void)rotateArrow:(float)degrees hide:(BOOL)hide;
@@ -34,12 +34,16 @@ typedef NSUInteger SVPullToRefreshState;
 @property (nonatomic, strong, readonly) UIImage *arrowImage;
 @property (nonatomic, strong) UIActivityIndicatorView *activityIndicatorView;
 @property (nonatomic, strong) UILabel *titleLabel;
+@property (nonatomic, strong) UILabel *lastUpdatedLabel;
+@property (nonatomic, strong) NSDate *lastUpdatedDate;
 
 @property (nonatomic, strong) UIScrollView *scrollView;
 @property (nonatomic, readwrite) UIEdgeInsets originalScrollViewContentInset;
 
 @end
 
+
+static NSDateFormatter *formatter = nil;
 
 @implementation SVPullToRefresh
 
@@ -48,29 +52,44 @@ typedef NSUInteger SVPullToRefreshState;
 
 @synthesize state;
 @synthesize scrollView = _scrollView;
-@synthesize arrow, arrowImage, activityIndicatorView, titleLabel, originalScrollViewContentInset;
+@synthesize arrow, arrowImage, activityIndicatorView, titleLabel, lastUpdatedLabel, originalScrollViewContentInset, lastUpdatedDate;
 
 - (id)initWithScrollView:(UIScrollView *)scrollView {
     self = [super initWithFrame:CGRectZero];
     self.scrollView = scrollView;
     [_scrollView addSubview:self];
     
-    self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(ceil(self.superview.bounds.size.width*0.21+44), 20, 150, 20)];
+    self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(ceil(self.superview.bounds.size.width*0.21+44), 12, 150, 20)];
     titleLabel.text = NSLocalizedString(@"Pull to refresh...",);
     titleLabel.font = [UIFont boldSystemFontOfSize:14];
     titleLabel.backgroundColor = [UIColor clearColor];
     [self addSubview:titleLabel];
+	
+	self.lastUpdatedLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.titleLabel.frame.origin.x, self.titleLabel.frame.origin.y + self.titleLabel.frame.size.height - 5, 180, 20)];
+    lastUpdatedLabel.text = NSLocalizedString(@"Last Updated: Never",);
+    lastUpdatedLabel.font = [UIFont boldSystemFontOfSize:12];
+    lastUpdatedLabel.backgroundColor = [UIColor clearColor];
+    [self addSubview:lastUpdatedLabel];
     
     // default styling values
     self.arrowColor = [UIColor grayColor];
     self.activityIndicatorViewStyle = UIActivityIndicatorViewStyleGray;
     self.titleLabel.textColor = [UIColor darkGrayColor];
+	self.lastUpdatedLabel.textColor = [UIColor darkGrayColor];
     
     [self addSubview:self.arrow];
     
     [scrollView addObserver:self forKeyPath:@"contentOffset" options:NSKeyValueObservingOptionNew context:nil];
     self.originalScrollViewContentInset = scrollView.contentInset;
     
+	self.lastUpdatedDate = nil;
+	if (!formatter) {
+		formatter = [[NSDateFormatter alloc] init];
+		[formatter setDateStyle:NSDateFormatterShortStyle];
+		[formatter setTimeStyle:NSDateFormatterShortStyle];
+		formatter.locale = [NSLocale currentLocale];
+	}
+	
     self.state = SVPullToRefreshStateHidden;    
     self.frame = CGRectMake(0, -60, scrollView.bounds.size.width, 60);
 
@@ -127,6 +146,7 @@ typedef NSUInteger SVPullToRefreshState;
 
 - (void)setTextColor:(UIColor *)newTextColor {
     self.titleLabel.textColor = newTextColor;
+	self.lastUpdatedLabel.textColor = newTextColor;
 }
 
 - (void)setActivityIndicatorViewStyle:(UIActivityIndicatorViewStyle)viewStyle {
@@ -171,6 +191,7 @@ typedef NSUInteger SVPullToRefreshState;
     
     switch (newState) {
         case SVPullToRefreshStateHidden:
+			lastUpdatedLabel.text = [NSString stringWithFormat:NSLocalizedString(@"Last Updated: %@",), lastUpdatedDate ? [formatter stringFromDate:lastUpdatedDate] : NSLocalizedString(@"Never",)];
             titleLabel.text = NSLocalizedString(@"Pull to refresh...",);
             [self.activityIndicatorView stopAnimating];
             [self setScrollViewContentInset:self.originalScrollViewContentInset];
@@ -196,6 +217,8 @@ typedef NSUInteger SVPullToRefreshState;
             [self rotateArrow:0 hide:YES];
             if(actionHandler)
                 actionHandler();
+			
+			self.lastUpdatedDate = [NSDate date];
             break;
     }
 }
