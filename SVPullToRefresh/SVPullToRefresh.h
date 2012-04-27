@@ -25,6 +25,7 @@
 @interface UIScrollView (SVPullToRefresh)
 
 - (void)addPullToRefreshWithActionHandler:(void (^)(void))actionHandler;
+- (void)addPullToRefreshWithTarget:(id)target action:(SEL)selector;
 
 @property (nonatomic, strong) SVPullToRefresh *pullToRefreshView;
 

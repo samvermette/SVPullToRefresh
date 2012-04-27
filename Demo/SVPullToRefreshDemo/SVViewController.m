@@ -20,12 +20,16 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    [self.tableView addPullToRefreshWithActionHandler:^{
-        NSLog(@"refresh dataSource");
-        [tableView.pullToRefreshView performSelector:@selector(stopAnimating) withObject:nil afterDelay:2];
-    }];
-    
+    [self.tableView addPullToRefreshWithTarget:self action:@selector(loadData)];    
     // that's it!
+}
+
+- (void)loadData {
+    [self performSelector:@selector(doneLoading) withObject:nil afterDelay:5];
+}
+
+- (void)doneLoading {
+    [tableView.pullToRefreshView stopAnimating];
 }
 
 #pragma mark -

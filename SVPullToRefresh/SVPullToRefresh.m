@@ -9,6 +9,7 @@
 
 #import <QuartzCore/QuartzCore.h>
 #import "SVPullToRefresh.h"
+#import <objc/message.h>
 
 enum {
     SVPullToRefreshStateHidden = 1,
@@ -28,6 +29,8 @@ typedef NSUInteger SVPullToRefreshState;
 - (void)scrollViewDidScroll:(CGPoint)contentOffset;
 
 @property (nonatomic, copy) void (^actionHandler)(void);
+@property (nonatomic, weak) id target;
+@property (nonatomic, assign) SEL selector;
 @property (nonatomic, readwrite) SVPullToRefreshState state;
 
 @property (nonatomic, strong) UIImageView *arrow;
@@ -35,7 +38,7 @@ typedef NSUInteger SVPullToRefreshState;
 @property (nonatomic, strong) UIActivityIndicatorView *activityIndicatorView;
 @property (nonatomic, strong) UILabel *titleLabel;
 
-@property (nonatomic, strong) UIScrollView *scrollView;
+@property (nonatomic, weak) UIScrollView *scrollView;
 @property (nonatomic, readwrite) UIEdgeInsets originalScrollViewContentInset;
 
 @end
@@ -45,6 +48,7 @@ typedef NSUInteger SVPullToRefreshState;
 
 // public properties
 @synthesize actionHandler, arrowColor, textColor, activityIndicatorViewStyle;
+@synthesize target, selector;
 
 @synthesize state;
 @synthesize scrollView = _scrollView;
@@ -194,6 +198,7 @@ typedef NSUInteger SVPullToRefreshState;
             [self.activityIndicatorView startAnimating];
             [self setScrollViewContentInset:UIEdgeInsetsMake(self.frame.origin.y*-1+self.originalScrollViewContentInset.top, 0, 0, 0)];
             [self rotateArrow:0 hide:YES];
+            objc_msgSend(self.target, self.selector, nil);
             if(actionHandler)
                 actionHandler();
             break;
@@ -225,11 +230,18 @@ static char UIScrollViewPullToRefreshView;
     self.pullToRefreshView = pullToRefreshView;
 }
 
+- (void)addPullToRefreshWithTarget:(id)target action:(SEL)selector {
+    SVPullToRefresh *pullToRefreshView = [[SVPullToRefresh alloc] initWithScrollView:self];
+    pullToRefreshView.target = target;
+    pullToRefreshView.selector = selector;
+    self.pullToRefreshView = pullToRefreshView;
+}
+
 - (void)setPullToRefreshView:(SVPullToRefresh *)pullToRefreshView {
     [self willChangeValueForKey:@"pullToRefreshView"];
     objc_setAssociatedObject(self, &UIScrollViewPullToRefreshView,
                              pullToRefreshView,
-                             OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+                             OBJC_ASSOCIATION_ASSIGN);
     [self didChangeValueForKey:@"pullToRefreshView"];
 }
 
