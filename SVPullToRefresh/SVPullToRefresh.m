@@ -208,7 +208,7 @@ typedef NSUInteger SVPullToRefreshState;
             titleLabel.text = NSLocalizedString(@"Pull to refresh...",);
             [self.activityIndicatorView stopAnimating];
             [self setScrollViewContentInset:self.originalScrollViewContentInset];
-            [self rotateArrow:0 hide:YES];
+            [self rotateArrow:0 hide:NO];
             break;
             
         case SVPullToRefreshStateVisible:
