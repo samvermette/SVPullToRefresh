@@ -25,7 +25,7 @@ Adding pull-to-refresh to a table view can be done with one single line of code:
 
 h2. Customization
 
-The SVPullToRefresh view can be customized with the following properties:
+The SVPullToRefresh view can be customized using the following properties:
 
 <pre>
 @property (nonatomic, strong) UIColor *arrowColor;
@@ -38,6 +38,16 @@ You can access these properties through your scroll view's @pullToRefreshView@ p
 <pre>
 tableView.pullToRefreshView.arrowColor = [UIColor whiteColor];
 </pre>
+
+h3. Showing a "Last Updated" label
+
+If you find it relevant that the user knows the date of the last update, you can set the @lastUpdatedDate@ property of @pullToRefreshView@:
+
+<pre>
+tableView.lastUpdatedDate = nil; // will display "Last Updated: Never"
+tableView.lastUpdatedDate = [NSDate date]; // will display "Last Updated: 4/30/12 11:53 AM"
+</pre>
+
 
 h2. Under the hood
 
