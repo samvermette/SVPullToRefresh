@@ -2,7 +2,7 @@ h1. SVPullToRefresh
 
 SVPullToRefresh allows you to easily add pull-to-refresh functionality to any @UIScrollView@ subclass with only 1 line of code. Instead of depending on delegates and/or subclassing @UIViewController@, SVPullToRefresh extends @UIScrollView@ with a @addPullToRefreshWithActionHandler:@ method as well as a @pullToRefreshView@ property.
 
-**Only add pull-to-refresh functionality to your app if it makes sense!** Pull to refresh is only appropriate if the pull down gesture is also the one that is used to browse your scroll view. In most cases, pull-to-refresh only makes sense for chronologically-sorted lists of items.
+**Only add pull-to-refresh functionality to your app if it makes sense!** Pull to refresh is only appropriate if the data is sorted chronologically, so that scrolling past the top of the table view (where the newest data lies) should trigger the loading and display of even newer data.
 
 h2. Installation
 
@@ -33,7 +33,9 @@ The SVPullToRefresh view can be customized using the following properties:
 @property (nonatomic, readwrite) UIActivityIndicatorViewStyle activityIndicatorViewStyle;
 </pre>
 
-You can access these properties through your scroll view's @pullToRefreshView@ property. For instance, you would set the @arrowColor@ property using:
+You can access these properties through your scroll view's @pullToRefreshView@ property. 
+
+For instance, you would set the @arrowColor@ property using:
 
 <pre>
 tableView.pullToRefreshView.arrowColor = [UIColor whiteColor];
@@ -41,11 +43,11 @@ tableView.pullToRefreshView.arrowColor = [UIColor whiteColor];
 
 h3. Showing a "Last Updated" label
 
-If you find it relevant that the user knows the date of the last update, you can set the @lastUpdatedDate@ property of @pullToRefreshView@:
+If you think it's in the user's interest to display the date of the last refresh, you can set the @lastUpdatedDate@ property of @pullToRefreshView@:
 
 <pre>
-tableView.lastUpdatedDate = nil; // will display "Last Updated: Never"
-tableView.lastUpdatedDate = [NSDate date]; // will display "Last Updated: 4/30/12 11:53 AM"
+tableView.pullToRefreshView.lastUpdatedDate = nil; // will display "Last Updated: Never"
+tableView.pullToRefreshView.lastUpdatedDate = [NSDate date]; // will display "Last Updated: 4/30/12 11:53 AM"
 </pre>
 
 
