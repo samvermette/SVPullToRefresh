@@ -10,6 +10,9 @@
 #import <UIKit/UIKit.h>
 
 @interface SVPullToRefresh : UIView
+{
+    BOOL loading;
+}
 
 @property (nonatomic, strong) UIColor *arrowColor;
 @property (nonatomic, strong) UIColor *textColor;
@@ -25,7 +28,7 @@
 
 @interface UIScrollView (SVPullToRefresh)
 
-- (void)addPullToRefreshWithActionHandler:(void (^)(void))actionHandler;
+- (void)addPullToRefreshWithActionHandler:(void (^)(void))actionHandler showAtInitialLoading:(BOOL)showAtInitialLoading;
 
 @property (nonatomic, strong) SVPullToRefresh *pullToRefreshView;
 
