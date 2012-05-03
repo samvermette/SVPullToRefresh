@@ -23,7 +23,7 @@
     [self.tableView addPullToRefreshWithActionHandler:^{
         NSLog(@"refresh dataSource");
         [tableView.pullToRefreshView performSelector:@selector(stopAnimating) withObject:nil afterDelay:2];
-    }];
+    } showAtInitialLoading:YES]; // shows the pulltorefreshview and calls the actionhandler when first called
     
     // that's it!
 }
