@@ -59,16 +59,17 @@ typedef NSUInteger SVPullToRefreshState;
     self.scrollView = scrollView;
     [_scrollView addSubview:self];
     
+    // default styling values
+    self.arrowColor = [UIColor grayColor];
+    self.activityIndicatorViewStyle = UIActivityIndicatorViewStyleGray;
+    self.textColor = [UIColor darkGrayColor];
+    
     self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(ceil(self.superview.bounds.size.width*0.10+44), 20, 150, 20)];
     titleLabel.text = NSLocalizedString(@"Pull to refresh...",);
     titleLabel.font = [UIFont boldSystemFontOfSize:14];
     titleLabel.backgroundColor = [UIColor clearColor];
+    titleLabel.textColor = textColor;
     [self addSubview:titleLabel];
-    
-    // default styling values
-    self.arrowColor = [UIColor grayColor];
-    self.activityIndicatorViewStyle = UIActivityIndicatorViewStyleGray;
-    self.titleLabel.textColor = [UIColor darkGrayColor];
     
     [self addSubview:self.arrow];
     
@@ -127,7 +128,7 @@ typedef NSUInteger SVPullToRefreshState;
         dateLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.titleLabel.frame.origin.x, 28, 180, 20)];
         dateLabel.font = [UIFont systemFontOfSize:12];
         dateLabel.backgroundColor = [UIColor clearColor];
-        dateLabel.textColor = [UIColor darkGrayColor];
+        dateLabel.textColor = textColor;
         [self addSubview:dateLabel];
         
         CGRect titleFrame = titleLabel.frame;
@@ -155,8 +156,9 @@ typedef NSUInteger SVPullToRefreshState;
 }
 
 - (void)setTextColor:(UIColor *)newTextColor {
-    self.titleLabel.textColor = newTextColor;
-	self.dateLabel.textColor = newTextColor;
+    textColor = newTextColor;
+    titleLabel.textColor = newTextColor;
+	dateLabel.textColor = newTextColor;
 }
 
 - (void)setActivityIndicatorViewStyle:(UIActivityIndicatorViewStyle)viewStyle {
