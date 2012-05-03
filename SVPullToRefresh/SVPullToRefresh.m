@@ -23,7 +23,7 @@ typedef NSUInteger SVPullToRefreshState;
 
 @interface SVPullToRefresh () 
 
-- (id)initWithScrollView:(UIScrollView*)scrollView actionHandler:(void (^)(void))aH showAtInitialLoading:(BOOL)showAtInitialLoading;
+- (id)initWithScrollView:(UIScrollView*)scrollView;
 - (void)rotateArrow:(float)degrees hide:(BOOL)hide;
 - (void)setScrollViewContentInset:(UIEdgeInsets)contentInset;
 - (void)scrollViewDidScroll:(CGPoint)contentOffset;
