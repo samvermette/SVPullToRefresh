@@ -54,6 +54,10 @@ typedef NSUInteger SVPullToRefreshState;
 @synthesize scrollView = _scrollView;
 @synthesize arrow, arrowImage, activityIndicatorView, titleLabel, dateLabel, dateFormatter, originalScrollViewContentInset;
 
+- (void)dealloc {
+    [self.scrollView removeObserver:self forKeyPath:@"contentOffset"];
+}
+
 - (id)initWithScrollView:(UIScrollView *)scrollView {
     self = [super initWithFrame:CGRectZero];
     self.scrollView = scrollView;
@@ -64,7 +68,7 @@ typedef NSUInteger SVPullToRefreshState;
     self.activityIndicatorViewStyle = UIActivityIndicatorViewStyleGray;
     self.textColor = [UIColor darkGrayColor];
     
-    self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(ceil(self.superview.bounds.size.width*0.10+44), 20, 150, 20)];
+    self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 20, 150, 20)];
     titleLabel.text = NSLocalizedString(@"Pull to refresh...",);
     titleLabel.font = [UIFont boldSystemFontOfSize:14];
     titleLabel.backgroundColor = [UIColor clearColor];
@@ -74,6 +78,8 @@ typedef NSUInteger SVPullToRefreshState;
     [self addSubview:self.arrow];
     
     [scrollView addObserver:self forKeyPath:@"contentOffset" options:NSKeyValueObservingOptionNew context:nil];
+    [scrollView addObserver:self forKeyPath:@"frame" options:NSKeyValueObservingOptionNew context:nil];
+    
     self.originalScrollViewContentInset = scrollView.contentInset;
 	
     self.state = SVPullToRefreshStateHidden;    
@@ -82,13 +88,31 @@ typedef NSUInteger SVPullToRefreshState;
     return self;
 }
 
+- (void)layoutSubviews {
+    CGFloat remainingWidth = self.superview.bounds.size.width-200;
+    float position = 0.50;
+    
+    CGRect titleFrame = titleLabel.frame;
+    titleFrame.origin.x = ceil(remainingWidth*position+44);
+    titleLabel.frame = titleFrame;
+    
+    CGRect dateFrame = dateLabel.frame;
+    dateFrame.origin.x = titleFrame.origin.x;
+    dateLabel.frame = dateFrame;
+    
+    CGRect arrowFrame = arrow.frame;
+    arrowFrame.origin.x = ceil(remainingWidth*position);
+    arrow.frame = arrowFrame;
+    
+    self.activityIndicatorView.center = self.arrow.center;
+}
 
 #pragma mark - Getters
 
 - (UIImageView *)arrow {
     if(!arrow) {
         arrow = [[UIImageView alloc] initWithImage:self.arrowImage];
-        arrow.frame = CGRectMake(ceil(self.superview.bounds.size.width*0.10), 6, 22, 48);
+        arrow.frame = CGRectMake(0, 6, 22, 48);
         arrow.backgroundColor = [UIColor clearColor];
     }
     return arrow;
@@ -118,14 +142,13 @@ typedef NSUInteger SVPullToRefreshState;
         activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
         activityIndicatorView.hidesWhenStopped = YES;
         [self addSubview:activityIndicatorView];
-        self.activityIndicatorView.center = self.arrow.center;
     }
     return activityIndicatorView;
 }
 
 - (UILabel *)dateLabel {
     if(!dateLabel) {
-        dateLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.titleLabel.frame.origin.x, 28, 180, 20)];
+        dateLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 28, 180, 20)];
         dateLabel.font = [UIFont systemFontOfSize:12];
         dateLabel.backgroundColor = [UIColor clearColor];
         dateLabel.textColor = textColor;
@@ -186,6 +209,8 @@ typedef NSUInteger SVPullToRefreshState;
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     if([keyPath isEqualToString:@"contentOffset"] && self.state != SVPullToRefreshStateLoading)
         [self scrollViewDidScroll:[[change valueForKey:NSKeyValueChangeNewKey] CGPointValue]];
+    else if([keyPath isEqualToString:@"frame"])
+        [self layoutSubviews];
 }
 
 - (void)scrollViewDidScroll:(CGPoint)contentOffset {    
