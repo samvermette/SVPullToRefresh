@@ -70,7 +70,7 @@ typedef NSUInteger SVPullToRefreshState;
     titleLabel.backgroundColor = [UIColor clearColor];
     titleLabel.textColor = textColor;
     [self addSubview:titleLabel];
-    
+        
     [self addSubview:self.arrow];
     
     [scrollView addObserver:self forKeyPath:@"contentOffset" options:NSKeyValueObservingOptionNew context:nil];
@@ -168,7 +168,12 @@ typedef NSUInteger SVPullToRefreshState;
 - (void)setScrollViewContentInset:(UIEdgeInsets)contentInset {
     [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionAllowUserInteraction|UIViewAnimationOptionBeginFromCurrentState animations:^{
         self.scrollView.contentInset = contentInset;
-    } completion:NULL];
+    } completion:^(BOOL finished) {
+        if(self.state == SVPullToRefreshStateHidden && contentInset.top == self.originalScrollViewContentInset.top)
+            [UIView animateWithDuration:0.2 delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
+                arrow.alpha = 0;
+            } completion:NULL];
+    }];
 }
 
 - (void)setLastUpdatedDate:(NSDate *)newLastUpdatedDate {
@@ -217,6 +222,7 @@ typedef NSUInteger SVPullToRefreshState;
             
         case SVPullToRefreshStateVisible:
             titleLabel.text = NSLocalizedString(@"Pull to refresh...",);
+            arrow.alpha = 1;
             [self.activityIndicatorView stopAnimating];
             [self setScrollViewContentInset:self.originalScrollViewContentInset];
             [self rotateArrow:0 hide:NO];
