@@ -14,6 +14,7 @@ enum {
     SVPullToRefreshStateHidden = 1,
 	SVPullToRefreshStateVisible,
     SVPullToRefreshStateTriggered,
+    SVPullToRefreshStateInitialLoading,
     SVPullToRefreshStateLoading
 };
 
@@ -54,7 +55,7 @@ typedef NSUInteger SVPullToRefreshState;
 @synthesize scrollView = _scrollView;
 @synthesize arrow, arrowImage, activityIndicatorView, titleLabel, dateLabel, dateFormatter, originalScrollViewContentInset;
 
-- (id)initWithScrollView:(UIScrollView *)scrollView {
+- (id)initWithScrollView:(UIScrollView *)scrollView{
     self = [super initWithFrame:CGRectZero];
     self.scrollView = scrollView;
     [_scrollView addSubview:self];
@@ -75,10 +76,9 @@ typedef NSUInteger SVPullToRefreshState;
     
     [scrollView addObserver:self forKeyPath:@"contentOffset" options:NSKeyValueObservingOptionNew context:nil];
     self.originalScrollViewContentInset = scrollView.contentInset;
-	
-    self.state = SVPullToRefreshStateHidden;    
+    
     self.frame = CGRectMake(0, -60, scrollView.bounds.size.width, 60);
-
+        
     return self;
 }
 
@@ -180,10 +180,18 @@ typedef NSUInteger SVPullToRefreshState;
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     if([keyPath isEqualToString:@"contentOffset"])
-        [self scrollViewDidScroll:[[change valueForKey:NSKeyValueChangeNewKey] CGPointValue]];
-    else
+    {
+        if(!loading)
+        {
+            [self scrollViewDidScroll:[[change valueForKey:NSKeyValueChangeNewKey] CGPointValue]];
+        }
+    }
+    else 
+    {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context]; // in case scroll view has another observer or property observed
+    }
 }
+
 
 - (void)scrollViewDidScroll:(CGPoint)contentOffset {    
     CGFloat scrollOffsetThreshold = self.frame.origin.y-self.originalScrollViewContentInset.top;
@@ -203,6 +211,7 @@ typedef NSUInteger SVPullToRefreshState;
 }
 
 - (void)stopAnimating {
+    loading = NO;
     self.state = SVPullToRefreshStateHidden;
 }
 
@@ -230,9 +239,20 @@ typedef NSUInteger SVPullToRefreshState;
             break;
             
         case SVPullToRefreshStateLoading:
+            loading = YES;
             titleLabel.text = NSLocalizedString(@"Loading...",);
             [self.activityIndicatorView startAnimating];
             [self setScrollViewContentInset:UIEdgeInsetsMake(self.frame.origin.y*-1+self.originalScrollViewContentInset.top, 0, 0, 0)];
+            [self rotateArrow:0 hide:YES];
+            if(actionHandler)
+                actionHandler();
+            break;
+            
+        case SVPullToRefreshStateInitialLoading:
+            loading = YES;
+            titleLabel.text = NSLocalizedString(@"Loading...",);
+            [self.activityIndicatorView startAnimating];
+            [self.scrollView setContentInset:UIEdgeInsetsMake(self.frame.origin.y*-1+self.originalScrollViewContentInset.top, 0, 0, 0)];
             [self rotateArrow:0 hide:YES];
             if(actionHandler)
                 actionHandler();
@@ -259,10 +279,14 @@ static char UIScrollViewPullToRefreshView;
 
 @dynamic pullToRefreshView;
 
-- (void)addPullToRefreshWithActionHandler:(void (^)(void))actionHandler {
+- (void)addPullToRefreshWithActionHandler:(void (^)(void))actionHandler showAtInitialLoading:(BOOL)showAtInitialLoading{
     SVPullToRefresh *pullToRefreshView = [[SVPullToRefresh alloc] initWithScrollView:self];
-    pullToRefreshView.actionHandler = actionHandler;
     self.pullToRefreshView = pullToRefreshView;
+    self.pullToRefreshView.actionHandler = actionHandler;
+    if(showAtInitialLoading)
+        self.pullToRefreshView.state = SVPullToRefreshStateInitialLoading;
+    else
+        self.pullToRefreshView.state = SVPullToRefreshStateHidden;
 }
 
 - (void)setPullToRefreshView:(SVPullToRefresh *)pullToRefreshView {
