@@ -181,8 +181,6 @@ typedef NSUInteger SVPullToRefreshState;
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     if([keyPath isEqualToString:@"contentOffset"])
         [self scrollViewDidScroll:[[change valueForKey:NSKeyValueChangeNewKey] CGPointValue]];
-    else
-        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context]; // in case scroll view has another observer or property observed
 }
 
 - (void)scrollViewDidScroll:(CGPoint)contentOffset {    
