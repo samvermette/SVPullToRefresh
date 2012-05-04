@@ -23,6 +23,12 @@ Adding pull-to-refresh to a table view can be done with one single line of code:
 }];
 </pre>
 
+If you'd like to programmatically trigger the refresh (for instance in viewDidLoad), you can do so with:
+
+<pre>
+[tableView.pullToRefreshView triggerRefresh];
+</pre>
+
 h2. Customization
 
 The SVPullToRefresh view can be customized using the following properties:

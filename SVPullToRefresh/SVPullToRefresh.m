@@ -198,6 +198,10 @@ typedef NSUInteger SVPullToRefreshState;
         self.state = SVPullToRefreshStateHidden;
 }
 
+- (void)triggerRefresh {
+    self.state = SVPullToRefreshStateLoading;
+}
+
 - (void)stopAnimating {
     self.state = SVPullToRefreshStateHidden;
 }

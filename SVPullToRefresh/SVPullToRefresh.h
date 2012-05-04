@@ -16,6 +16,7 @@
 @property (nonatomic, readwrite) UIActivityIndicatorViewStyle activityIndicatorViewStyle;
 @property (nonatomic, strong) NSDate *lastUpdatedDate;
 
+- (void)triggerRefresh;
 - (void)stopAnimating;
 
 @end
