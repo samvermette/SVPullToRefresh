@@ -179,7 +179,7 @@ typedef NSUInteger SVPullToRefreshState;
 #pragma mark -
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if([keyPath isEqualToString:@"contentOffset"])
+    if([keyPath isEqualToString:@"contentOffset"] && self.state != SVPullToRefreshStateLoading)
         [self scrollViewDidScroll:[[change valueForKey:NSKeyValueChangeNewKey] CGPointValue]];
 }
 
