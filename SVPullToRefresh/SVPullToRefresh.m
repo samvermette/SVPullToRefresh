@@ -14,11 +14,14 @@ enum {
     SVPullToRefreshStateHidden = 1,
 	SVPullToRefreshStateVisible,
     SVPullToRefreshStateTriggered,
-    SVPullToRefreshStateLoading
+    SVPullToRefreshStateLoading,
+    SVPullToRefreshStateHiddenBottom,
+    SVPullToRefreshStateVisibleBottom,
+    SVPullToRefreshStateTriggeredBottom,
+    SVPullToRefreshStateLoadingBottom
 };
 
 typedef NSUInteger SVPullToRefreshState;
-
 
 @interface SVPullToRefresh () 
 
@@ -28,12 +31,16 @@ typedef NSUInteger SVPullToRefreshState;
 - (void)scrollViewDidScroll:(CGPoint)contentOffset;
 
 @property (nonatomic, copy) void (^actionHandler)(void);
+@property (nonatomic, copy) void (^loadActionHandler)(void);
 @property (nonatomic, readwrite) SVPullToRefreshState state;
 
 @property (nonatomic, strong) UIImageView *arrow;
 @property (nonatomic, strong, readonly) UIImage *arrowImage;
 @property (nonatomic, strong) UIActivityIndicatorView *activityIndicatorView;
+@property (nonatomic, strong) UIActivityIndicatorView *bottomActivityIndicatorView;
 @property (nonatomic, strong) UILabel *titleLabel;
+@property (nonatomic, strong) UILabel *bottomLabel;
+@property (nonatomic, strong) UIImageView *bottomArrow;
 
 @property (nonatomic, strong, readonly) UILabel *dateLabel;
 @property (nonatomic, strong, readonly) NSDateFormatter *dateFormatter;
@@ -48,13 +55,21 @@ typedef NSUInteger SVPullToRefreshState;
 @implementation SVPullToRefresh
 
 // public properties
-@synthesize actionHandler, arrowColor, textColor, activityIndicatorViewStyle, lastUpdatedDate;
+@synthesize actionHandler, loadActionHandler, arrowColor, textColor, activityIndicatorViewStyle, lastUpdatedDate;
+@synthesize bottomActivityIndicatorView, bottomLabel;
 
 @synthesize state;
 @synthesize scrollView = _scrollView;
-@synthesize arrow, arrowImage, activityIndicatorView, titleLabel, dateLabel, dateFormatter, originalScrollViewContentInset;
+@synthesize arrow, arrowImage, bottomArrow, activityIndicatorView, titleLabel, dateLabel, dateFormatter, originalScrollViewContentInset;
+@synthesize sectionDisplayLimit;
+@synthesize rowDisplayLimit;
+@synthesize portionsLoaded;
 
 - (id)initWithScrollView:(UIScrollView *)scrollView {
+   return [self initWithScrollView:scrollView andPerpetualLoad:NO];
+}
+
+- (id)initWithScrollView:(UIScrollView *)scrollView andPerpetualLoad:(BOOL)shouldPerpetuallyLoad {
     self = [super initWithFrame:CGRectZero];
     self.scrollView = scrollView;
     [_scrollView addSubview:self];
@@ -72,12 +87,26 @@ typedef NSUInteger SVPullToRefreshState;
     
     [self addSubview:self.arrow];
     
+    // Add the bottom label and activity indicator
+    self.bottomLabel = [[UILabel alloc] initWithFrame:CGRectMake(ceil(self.superview.bounds.size.width*0.10+44), 
+                                                                 scrollView.contentSize.height + 20,
+                                                                 150,
+                                                                 20)];
+    bottomLabel.text = @"Pull to load...";
+    [self addSubview:bottomLabel];
+    
+    self.bottomActivityIndicatorView.activityIndicatorViewStyle = UIActivityIndicatorViewStyleGray;
+    
+    
     [scrollView addObserver:self forKeyPath:@"contentOffset" options:NSKeyValueObservingOptionNew context:nil];
+    [scrollView addObserver:self forKeyPath:@"contentSize" options:NSKeyValueObservingOptionNew context:nil];
     self.originalScrollViewContentInset = scrollView.contentInset;
 	
     self.state = SVPullToRefreshStateHidden;    
-    self.frame = CGRectMake(0, -60, scrollView.bounds.size.width, 60);
-
+    self.frame = CGRectMake(0, -60, scrollView.bounds.size.width, scrollView.contentSize.height + 60);
+    
+    portionsLoaded = 1;
+    
     return self;
 }
 
@@ -120,6 +149,16 @@ typedef NSUInteger SVPullToRefreshState;
         self.activityIndicatorView.center = self.arrow.center;
     }
     return activityIndicatorView;
+}
+
+- (UIActivityIndicatorView *)bottomActivityIndicatorView {
+    if (!bottomActivityIndicatorView) {
+        bottomActivityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+        bottomActivityIndicatorView.hidesWhenStopped = YES;
+        [self addSubview:bottomActivityIndicatorView];
+        self.bottomActivityIndicatorView.center = self.bottomLabel.center;
+    }
+    return bottomActivityIndicatorView;
 }
 
 - (UILabel *)dateLabel {
@@ -179,25 +218,71 @@ typedef NSUInteger SVPullToRefreshState;
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     if([keyPath isEqualToString:@"contentOffset"])
         [self scrollViewDidScroll:[[change valueForKey:NSKeyValueChangeNewKey] CGPointValue]];
+    else if ([keyPath isEqualToString:@"contentSize"]) {
+        [self updateLabelToBottomOfContentSize:[[change valueForKey:NSKeyValueChangeNewKey] CGSizeValue]];
+    }
     else
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context]; // in case scroll view has another observer or property observed
 }
 
 - (void)scrollViewDidScroll:(CGPoint)contentOffset {    
     CGFloat scrollOffsetThreshold = self.frame.origin.y-self.originalScrollViewContentInset.top;
+    CGFloat scrollOffsetThresholdBottom = contentOffset.y + self.scrollView.frame.size.height;
     
-    if(!self.scrollView.isDragging && self.state == SVPullToRefreshStateTriggered)
-        self.state = SVPullToRefreshStateLoading;
-    else if(contentOffset.y > scrollOffsetThreshold && contentOffset.y < -self.originalScrollViewContentInset.top && self.scrollView.isDragging && self.state != SVPullToRefreshStateLoading)
-        self.state = SVPullToRefreshStateVisible;
-    else if(contentOffset.y < scrollOffsetThreshold && self.scrollView.isDragging && self.state == SVPullToRefreshStateVisible)
-        self.state = SVPullToRefreshStateTriggered;
-    else if(contentOffset.y >= -self.originalScrollViewContentInset.top && self.state != SVPullToRefreshStateHidden)
-        self.state = SVPullToRefreshStateHidden;
+    if (contentOffset.y < 25) { // arbitrary value to distinguish top from bottom triggers
+        if(!self.scrollView.isDragging && self.state == SVPullToRefreshStateTriggered)
+            self.state = SVPullToRefreshStateLoading;
+        else if(contentOffset.y > scrollOffsetThreshold && contentOffset.y < -self.originalScrollViewContentInset.top && self.scrollView.isDragging && self.state != SVPullToRefreshStateLoading)
+            self.state = SVPullToRefreshStateVisible;
+        else if(contentOffset.y < scrollOffsetThreshold && self.scrollView.isDragging && self.state == SVPullToRefreshStateVisible)
+            self.state = SVPullToRefreshStateTriggered;
+        else if(contentOffset.y >= -self.originalScrollViewContentInset.top && self.state != SVPullToRefreshStateHidden)
+            self.state = SVPullToRefreshStateHidden;
+    }
+    else {
+        if (!self.scrollView.isDragging && self.state == SVPullToRefreshStateTriggeredBottom) {
+            self.state = SVPullToRefreshStateLoadingBottom;
+        }
+        else if(scrollOffsetThresholdBottom > self.scrollView.contentSize.height && scrollOffsetThresholdBottom < (bottomLabel.frame.origin.y + bottomLabel.frame.size.height)  && self.state != SVPullToRefreshStateLoadingBottom && self.scrollView.isDragging) {
+            self.state = SVPullToRefreshStateVisibleBottom;
+        }
+        else if(scrollOffsetThresholdBottom > self.scrollView.contentSize.height + 60 && self.scrollView.isDragging && self.state == SVPullToRefreshStateVisibleBottom) {
+                self.state = SVPullToRefreshStateTriggeredBottom;   
+        }
+        else if(self.state != SVPullToRefreshStateHiddenBottom && scrollOffsetThresholdBottom < self.scrollView.contentSize.height) {
+            self.state = SVPullToRefreshStateHiddenBottom;
+        }
+    }
+
+}
+
+- (void)updateLabelToBottomOfContentSize:(CGSize)contentSize {
+//    self.bottomLabel.frame = CGRectMake(bottomLabel.frame.origin.x,
+//                                        contentSize.height + 80,
+//                                        bottomLabel.frame.size.width,
+//                                        bottomLabel.frame.size.height);
+//    
+//    // take the bottom spinner with it
+//    CGPoint labelCenter = self.bottomLabel.center;
+//    self.bottomActivityIndicatorView.center = CGPointMake(labelCenter.x + 15, labelCenter.y);
+//    self.scrollView.contentSize = CGSizeMake(contentSize.width, contentSize.height + 60);
+    if (self.scrollView.contentSize.height > 0) {
+        self.scrollView.contentSize = CGSizeMake(contentSize.width, contentSize.height + 60);
+        UILabel *test = [[UILabel alloc] initWithFrame:CGRectMake(0,
+                                                                  self.scrollView.contentSize.height - 30, 320, 30)];
+        test.text = @"We're gonna load more...";
+        [self.scrollView addSubview:test];
+    }
+    
 }
 
 - (void)stopAnimating {
-    self.state = SVPullToRefreshStateHidden;
+    if (self.state == SVPullToRefreshStateLoading) {
+        self.state = SVPullToRefreshStateHidden;
+    }
+    else if (self.state == SVPullToRefreshStateLoadingBottom) {
+        self.state = SVPullToRefreshStateHiddenBottom;
+    }
 }
 
 - (void)setState:(SVPullToRefreshState)newState {
@@ -231,6 +316,33 @@ typedef NSUInteger SVPullToRefreshState;
             if(actionHandler)
                 actionHandler();
             break;
+        case SVPullToRefreshStateHiddenBottom:
+            bottomLabel.text = NSLocalizedString(@"Drag to load...",);
+            [self.bottomActivityIndicatorView stopAnimating];
+            [self setScrollViewContentInset:self.originalScrollViewContentInset];
+            [self rotateArrow:1 hide:NO];
+            break;
+            
+        case SVPullToRefreshStateVisibleBottom:
+            bottomLabel.text = NSLocalizedString(@"Drag to load...",);
+            [self.bottomActivityIndicatorView stopAnimating];
+            [self setScrollViewContentInset:self.originalScrollViewContentInset];
+            [self rotateArrow:1 hide:NO];
+            break;
+            
+        case SVPullToRefreshStateTriggeredBottom:
+            bottomLabel.text = NSLocalizedString(@"Release to load...",);
+            [self rotateArrow:M_PI hide:NO];
+            break;
+            
+        case SVPullToRefreshStateLoadingBottom:
+            bottomLabel.text = NSLocalizedString(@"Loading...",);
+            [self.bottomActivityIndicatorView startAnimating];
+            [self setScrollViewContentInset:UIEdgeInsetsMake(0, 0, 60, 0)];
+            [self rotateArrow:1 hide:YES];
+            if(loadActionHandler)
+                loadActionHandler();
+            break;    
     }
 }
 
@@ -239,6 +351,19 @@ typedef NSUInteger SVPullToRefreshState;
         self.arrow.layer.transform = CATransform3DMakeRotation(degrees, 0, 0, 1);
         self.arrow.layer.opacity = !hide;
     } completion:NULL];
+}
+
+- (void)loadNextPortion {
+    portionsLoaded++;
+    if ([[self superview] isMemberOfClass:[UIScrollView class]]) {
+        CGSize contentSize = self.scrollView.contentSize;
+        contentSize = CGSizeMake(contentSize.width, contentSize.height * 2);
+        self.scrollView.contentSize = contentSize;
+    }
+    else if ([[self superview] isMemberOfClass:[UITableView class]]) {
+        UITableView *tableView = (UITableView *)[self superview];
+        [tableView reloadData];
+    }
 }
 
 @end
@@ -256,6 +381,14 @@ static char UIScrollViewPullToRefreshView;
 - (void)addPullToRefreshWithActionHandler:(void (^)(void))actionHandler {
     SVPullToRefresh *pullToRefreshView = [[SVPullToRefresh alloc] initWithScrollView:self];
     pullToRefreshView.actionHandler = actionHandler;
+    self.pullToRefreshView = pullToRefreshView;
+}
+
+- (void)addPullToRefreshWithActionHandler:(void (^)(void))actionHandler andPerpetualLoadHandler:(void (^)(void))loadActionHandler {
+    SVPullToRefresh *pullToRefreshView = [[SVPullToRefresh alloc] initWithScrollView:self];
+    pullToRefreshView.actionHandler = actionHandler;
+    pullToRefreshView.loadActionHandler = loadActionHandler;
+    
     self.pullToRefreshView = pullToRefreshView;
 }
 

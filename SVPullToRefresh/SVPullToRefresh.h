@@ -15,6 +15,9 @@
 @property (nonatomic, strong) UIColor *textColor;
 @property (nonatomic, readwrite) UIActivityIndicatorViewStyle activityIndicatorViewStyle;
 @property (nonatomic, strong) NSDate *lastUpdatedDate;
+@property (nonatomic, readwrite) NSInteger sectionDisplayLimit;
+@property (nonatomic, readwrite) NSInteger rowDisplayLimit;
+@property (nonatomic, readonly) NSInteger portionsLoaded;
 
 - (void)stopAnimating;
 
@@ -26,6 +29,7 @@
 @interface UIScrollView (SVPullToRefresh)
 
 - (void)addPullToRefreshWithActionHandler:(void (^)(void))actionHandler;
+- (void)addPullToRefreshWithActionHandler:(void (^)(void))actionHandler andPerpetualLoadHandler:(void (^)(void))loadActionHandler;
 
 @property (nonatomic, strong) SVPullToRefresh *pullToRefreshView;
 

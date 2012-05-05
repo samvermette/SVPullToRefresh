@@ -12,10 +12,4 @@
 
 @property (nonatomic, strong) IBOutlet UITableView *tableView;
 
-@property (nonatomic) NSInteger sectionDisplayLimit;
-@property (nonatomic) NSInteger sectionLimitsLoaded;
-@property (nonatomic) NSInteger rowDisplayLimit;
-@property (nonatomic) NSInteger rowLimitsLoaded;
-@property (nonatomic, strong) UIActivityIndicatorView *spinner;
-
 @end

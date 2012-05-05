@@ -15,42 +15,27 @@
 
 @implementation SVViewController
 
-@synthesize tableView = _tableView;
-@synthesize sectionDisplayLimit = _sectionDisplayLimit;
-@synthesize rowDisplayLimit = _rowDisplayLimit;
-@synthesize sectionLimitsLoaded = _sectionLimitsLoaded;
-@synthesize rowLimitsLoaded = _rowLimitsLoaded;
-@synthesize spinner = _spinner;
+@synthesize tableView;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+
     [self.tableView addPullToRefreshWithActionHandler:^{
         NSLog(@"refresh dataSource");
-        [_tableView.pullToRefreshView performSelector:@selector(stopAnimating) withObject:nil afterDelay:2];
+        [tableView.pullToRefreshView performSelector:@selector(stopAnimating) withObject:nil afterDelay:2];
+    } andPerpetualLoadHandler:^{
+        NSLog(@"adding content");
+        [tableView.pullToRefreshView performSelector:@selector(stopAnimating) withObject:nil afterDelay:2];
+        [tableView.pullToRefreshView performSelector:@selector(loadNextPortion) withObject:nil afterDelay:2];
     }];
-    
-    self.sectionDisplayLimit = 6;
-    self.sectionLimitsLoaded = 1;
-}
-
-- (void)loadNextPortion {
-    if (self.sectionDisplayLimit > 1) {
-        self.sectionLimitsLoaded++;
-    }
-    else {
-        self.rowLimitsLoaded++;
-    }
-    [_tableView reloadData];
-    
-    [self.spinner stopAnimating];
+    self.tableView.pullToRefreshView.sectionDisplayLimit = 5;
 }
 
 #pragma mark -
 #pragma mark UITableViewDataSource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return _sectionDisplayLimit * _sectionLimitsLoaded;
+    return self.tableView.pullToRefreshView.sectionDisplayLimit * self.tableView.pullToRefreshView.portionsLoaded;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -64,20 +49,6 @@
     if (cell == nil)
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
     
-    if (indexPath.section == (_sectionDisplayLimit * _sectionLimitsLoaded) - 1 && indexPath.row == 3 && [[tableView indexPathsForVisibleRows] containsObject:indexPath]) {
-        if (!self.spinner) {
-            self.spinner = [[UIActivityIndicatorView alloc] 
-                            initWithFrame:CGRectMake((cell.contentView.frame.size.width / 2) - 10, 
-                                                     cell.contentView.frame.size.height - 10, 
-                                                     20, 
-                                                     20)];
-            self.spinner.activityIndicatorViewStyle = UIActivityIndicatorViewStyleGray;
-            self.spinner.hidesWhenStopped = YES;
-        }
-        [cell.contentView addSubview:self.spinner];
-        [self.spinner startAnimating];
-        [self performSelector:@selector(loadNextPortion) withObject:nil afterDelay:2.0];
-    }
     return cell;
 }
 
@@ -85,13 +56,5 @@
 	return [NSString stringWithFormat:@"Section %i", section];
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == (_sectionDisplayLimit * _sectionLimitsLoaded) - 1) {
-        if (indexPath.row == 3) {
-            return 45;
-        }
-    }
-    return 25;
-}
 
 @end
