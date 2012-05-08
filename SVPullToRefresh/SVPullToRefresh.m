@@ -48,7 +48,7 @@ typedef NSUInteger SVPullToRefreshState;
 @implementation SVPullToRefresh
 
 // public properties
-@synthesize actionHandler, arrowColor, textColor, activityIndicatorViewStyle, lastUpdatedDate;
+@synthesize actionHandler, arrowColor, textColor, activityIndicatorViewStyle, lastUpdatedDate, hidePullToRefresh;
 
 @synthesize state;
 @synthesize scrollView = _scrollView;
@@ -235,6 +235,16 @@ typedef NSUInteger SVPullToRefreshState;
 }
 
 - (void)setState:(SVPullToRefreshState)newState {
+	
+    if (hidePullToRefresh) {
+        
+        titleLabel.text = NSLocalizedString(@"",);
+        [self.activityIndicatorView stopAnimating];
+        [self setScrollViewContentInset:self.originalScrollViewContentInset];
+        [self rotateArrow:0 hide:YES];
+        return;
+    }
+    
     state = newState;
     
     switch (newState) {
