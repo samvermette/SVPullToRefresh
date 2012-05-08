@@ -48,7 +48,31 @@
     if (cell == nil)
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
 
+    if (indexPath.row == 0) {
+        cell.textLabel.text = @"Toggle Pull To Refresh Off";
+    }
+
     return cell;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    if (indexPath.row == 0) {
+        
+        UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
+
+        if (self.tableView.pullToRefreshView.hidePullToRefresh) {
+            
+            self.tableView.pullToRefreshView.hidePullToRefresh = FALSE;
+            cell.textLabel.text = @"Toggle Pull To Refresh Off";
+        } else {
+            
+            self.tableView.pullToRefreshView.hidePullToRefresh = TRUE;
+            cell.textLabel.text = @"Toggle Pull To Refresh On";
+        }
+    }
+    
+    [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 @end
