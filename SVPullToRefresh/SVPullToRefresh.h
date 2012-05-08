@@ -15,6 +15,7 @@
 @property (nonatomic, strong) UIColor *textColor;
 @property (nonatomic, readwrite) UIActivityIndicatorViewStyle activityIndicatorViewStyle;
 @property (nonatomic, strong) NSDate *lastUpdatedDate;
+@property (nonatomic, assign) BOOL hidePullToRefresh;
 
 - (void)triggerRefresh;
 - (void)stopAnimating;
