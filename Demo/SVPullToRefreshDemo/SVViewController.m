@@ -23,7 +23,7 @@
     [self.tableView addPullToRefreshWithActionHandler:^{
         NSLog(@"refresh dataSource");
         [tableView.pullToRefreshView performSelector:@selector(stopAnimating) withObject:nil afterDelay:2];
-    } andPerpetualLoadHandler:^{
+    } andDragToLoadHandler:^{
         NSLog(@"adding content");
         [tableView.pullToRefreshView performSelector:@selector(stopAnimating) withObject:nil afterDelay:2];
         [tableView.pullToRefreshView performSelector:@selector(loadNextPortion) withObject:nil afterDelay:2];

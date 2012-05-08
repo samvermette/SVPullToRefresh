@@ -32,10 +32,12 @@ typedef NSUInteger SVPullToRefreshState;
 
 @property (nonatomic, copy) void (^actionHandler)(void);
 @property (nonatomic, copy) void (^loadActionHandler)(void);
+@property (nonatomic, copy) void (^infiniteScrollActionHandler)(void);
 @property (nonatomic, readwrite) SVPullToRefreshState state;
 
 @property (nonatomic, strong) UIImageView *arrow;
 @property (nonatomic, strong, readonly) UIImage *arrowImage;
+@property (nonatomic, strong, readonly) UIImage *bottomArrowImage;
 @property (nonatomic, strong) UIActivityIndicatorView *activityIndicatorView;
 @property (nonatomic, strong) UIActivityIndicatorView *bottomActivityIndicatorView;
 @property (nonatomic, strong) UILabel *titleLabel;
@@ -55,12 +57,12 @@ typedef NSUInteger SVPullToRefreshState;
 @implementation SVPullToRefresh
 
 // public properties
-@synthesize actionHandler, loadActionHandler, arrowColor, textColor, activityIndicatorViewStyle, lastUpdatedDate;
+@synthesize actionHandler, loadActionHandler, infiniteScrollActionHandler, arrowColor, bottomArrowColor, textColor, activityIndicatorViewStyle, lastUpdatedDate;
 @synthesize bottomActivityIndicatorView, bottomLabel;
 
 @synthesize state;
 @synthesize scrollView = _scrollView;
-@synthesize arrow, arrowImage, bottomArrow, activityIndicatorView, titleLabel, dateLabel, dateFormatter, originalScrollViewContentInset;
+@synthesize arrow, arrowImage, bottomArrow, bottomArrowImage, activityIndicatorView, titleLabel, dateLabel, dateFormatter, originalScrollViewContentInset;
 @synthesize sectionDisplayLimit;
 @synthesize rowDisplayLimit;
 @synthesize portionsLoaded;
@@ -82,6 +84,7 @@ typedef NSUInteger SVPullToRefreshState;
     
     // default styling values
     self.arrowColor = [UIColor grayColor];
+    self.bottomArrowColor = [UIColor grayColor];
     self.activityIndicatorViewStyle = UIActivityIndicatorViewStyleGray;
     self.titleLabel.textColor = [UIColor darkGrayColor];
     
@@ -122,6 +125,15 @@ typedef NSUInteger SVPullToRefreshState;
     return arrow;
 }
 
+- (UIImageView *)bottomArrow {
+    if (!bottomArrow) {
+        bottomArrow = [[UIImageView alloc] initWithImage:self.bottomArrowImage];
+        bottomArrow.frame = CGRectMake(ceil(self.superview.bounds.size.width), bottomLabel.frame.origin.y, 22, 48);
+        bottomArrow.backgroundColor = [UIColor clearColor];
+    }
+    return bottomArrow;
+}
+
 - (UIImage *)arrowImage {
     CGRect rect = CGRectMake(0, 0, 22, 48);
     UIGraphicsBeginImageContextWithOptions(rect.size, NO, 0);
@@ -134,6 +146,25 @@ typedef NSUInteger SVPullToRefreshState;
     CGContextTranslateCTM(context, 0, rect.size.height);
     CGContextScaleCTM(context, 1.0, -1.0);
     CGContextClipToMask(context, rect, [[UIImage imageNamed:@"SVPullToRefresh.bundle/arrow"] CGImage]);
+    CGContextFillRect(context, rect);
+    
+    UIImage *output = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return output;
+}
+
+- (UIImage *)bottomArrowImage {
+    CGRect rect = CGRectMake(0, 0, 22, 48);
+    UIGraphicsBeginImageContextWithOptions(rect.size, NO, 0);
+    
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    [[UIColor clearColor] set];
+    CGContextFillRect(context, rect);
+    
+    [self.bottomArrowColor set];
+    CGContextTranslateCTM(context, 0, rect.size.height);
+    CGContextScaleCTM(context, 1.0, -1.0);
+    CGContextClipToMask(context, rect, [[UIImage imageNamed:@"SVPullToRefresh.bundle/bottomArrow"] CGImage]);
     CGContextFillRect(context, rect);
     
     UIImage *output = UIGraphicsGetImageFromCurrentImageContext();
@@ -193,6 +224,11 @@ typedef NSUInteger SVPullToRefreshState;
     self.arrow.image = self.arrowImage;
 }
 
+- (void)setBottomArrowColor:(UIColor *)newArrowColor {
+    bottomArrowColor = newArrowColor;
+    self.bottomArrow.image = self.bottomArrowImage;
+}
+
 - (void)setTextColor:(UIColor *)newTextColor {
     self.titleLabel.textColor = newTextColor;
 	self.dateLabel.textColor = newTextColor;
@@ -239,7 +275,7 @@ typedef NSUInteger SVPullToRefreshState;
         else if(contentOffset.y >= -self.originalScrollViewContentInset.top && self.state != SVPullToRefreshStateHidden)
             self.state = SVPullToRefreshStateHidden;
     }
-    else {
+    else if (loadActionHandler) {
         if (!self.scrollView.isDragging && self.state == SVPullToRefreshStateTriggeredBottom) {
             self.state = SVPullToRefreshStateLoadingBottom;
         }
@@ -253,26 +289,25 @@ typedef NSUInteger SVPullToRefreshState;
             self.state = SVPullToRefreshStateHiddenBottom;
         }
     }
+    else if (infiniteScrollActionHandler) {
+        
+    }
 
 }
 
 - (void)updateLabelToBottomOfContentSize:(CGSize)contentSize {
-//    self.bottomLabel.frame = CGRectMake(bottomLabel.frame.origin.x,
-//                                        contentSize.height + 80,
-//                                        bottomLabel.frame.size.width,
-//                                        bottomLabel.frame.size.height);
-//    
-//    // take the bottom spinner with it
-//    CGPoint labelCenter = self.bottomLabel.center;
-//    self.bottomActivityIndicatorView.center = CGPointMake(labelCenter.x + 15, labelCenter.y);
-//    self.scrollView.contentSize = CGSizeMake(contentSize.width, contentSize.height + 60);
-    if (self.scrollView.contentSize.height > 0) {
-        self.scrollView.contentSize = CGSizeMake(contentSize.width, contentSize.height + 60);
-        UILabel *test = [[UILabel alloc] initWithFrame:CGRectMake(0,
-                                                                  self.scrollView.contentSize.height - 30, 320, 30)];
-        test.text = @"We're gonna load more...";
-        [self.scrollView addSubview:test];
-    }
+    self.bottomLabel.frame = CGRectMake(bottomLabel.frame.origin.x,
+                                        contentSize.height + 80,
+                                        bottomLabel.frame.size.width,
+                                        bottomLabel.frame.size.height);
+    
+    // take the bottom spinner with it
+    CGPoint labelCenter = self.bottomLabel.center;
+    self.bottomActivityIndicatorView.center = CGPointMake(labelCenter.x + 15, labelCenter.y);
+    
+    // And the arrow
+    self.bottomArrow.center = CGPointMake(labelCenter.x - 15, labelCenter.y);
+    //self.scrollView.contentSize = CGSizeMake(contentSize.width, contentSize.height + 60);
     
 }
 
@@ -300,7 +335,8 @@ typedef NSUInteger SVPullToRefreshState;
             titleLabel.text = NSLocalizedString(@"Pull to refresh...",);
             [self.activityIndicatorView stopAnimating];
             [self setScrollViewContentInset:self.originalScrollViewContentInset];
-            [self rotateArrow:0 hide:NO];
+            //[self rotateArrow:0 hide:NO];
+            
             break;
             
         case SVPullToRefreshStateTriggered:
@@ -346,6 +382,13 @@ typedef NSUInteger SVPullToRefreshState;
     }
 }
 
+- (void)roateArrow:(UIImageView *)arrowImageView byDegrees:(float)degrees hide:(BOOL)hide {
+    [UIView animateWithDuration:0.2 delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
+        arrowImageView.layer.transform = CATransform3DMakeRotation(degrees, 0, 0, 1);
+        arrowImageView.layer.opacity = !hide;
+    } completion:NULL];
+}
+
 - (void)rotateArrow:(float)degrees hide:(BOOL)hide {
     [UIView animateWithDuration:0.2 delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
         self.arrow.layer.transform = CATransform3DMakeRotation(degrees, 0, 0, 1);
@@ -384,10 +427,18 @@ static char UIScrollViewPullToRefreshView;
     self.pullToRefreshView = pullToRefreshView;
 }
 
-- (void)addPullToRefreshWithActionHandler:(void (^)(void))actionHandler andPerpetualLoadHandler:(void (^)(void))loadActionHandler {
+- (void)addPullToRefreshWithActionHandler:(void (^)(void))actionHandler andDragToLoadHandler:(void (^)(void))loadActionHandler {
     SVPullToRefresh *pullToRefreshView = [[SVPullToRefresh alloc] initWithScrollView:self];
     pullToRefreshView.actionHandler = actionHandler;
     pullToRefreshView.loadActionHandler = loadActionHandler;
+    
+    self.pullToRefreshView = pullToRefreshView;
+}
+
+- (void)addPullToRefreshWithActionHandler:(void (^)(void))actionHandler infiniteScrollActionHandler:(void(^)(void))infiniteScrollActionHandler {
+    SVPullToRefresh *pullToRefreshView = [[SVPullToRefresh alloc] initWithScrollView:self];
+    pullToRefreshView.actionHandler = actionHandler;
+    pullToRefreshView.infiniteScrollActionHandler = infiniteScrollActionHandler;
     
     self.pullToRefreshView = pullToRefreshView;
 }

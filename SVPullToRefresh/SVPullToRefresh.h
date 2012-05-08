@@ -12,6 +12,7 @@
 @interface SVPullToRefresh : UIView
 
 @property (nonatomic, strong) UIColor *arrowColor;
+@property (nonatomic, strong) UIColor *bottomArrowColor;
 @property (nonatomic, strong) UIColor *textColor;
 @property (nonatomic, readwrite) UIActivityIndicatorViewStyle activityIndicatorViewStyle;
 @property (nonatomic, strong) NSDate *lastUpdatedDate;
@@ -29,7 +30,8 @@
 @interface UIScrollView (SVPullToRefresh)
 
 - (void)addPullToRefreshWithActionHandler:(void (^)(void))actionHandler;
-- (void)addPullToRefreshWithActionHandler:(void (^)(void))actionHandler andPerpetualLoadHandler:(void (^)(void))loadActionHandler;
+- (void)addPullToRefreshWithActionHandler:(void (^)(void))actionHandler andDragToLoadHandler:(void (^)(void))loadActionHandler;
+- (void)addPullToRefreshWithActionHandler:(void (^)(void))actionHandler infiniteScrollActionHandler:(void(^)(void))infiniteScrollActionHandler;
 
 @property (nonatomic, strong) SVPullToRefresh *pullToRefreshView;
 
