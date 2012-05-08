@@ -264,6 +264,7 @@ typedef NSUInteger SVPullToRefreshState;
 - (void)scrollViewDidScroll:(CGPoint)contentOffset {    
     CGFloat scrollOffsetThreshold = self.frame.origin.y-self.originalScrollViewContentInset.top;
     CGFloat scrollOffsetThresholdBottom = contentOffset.y + self.scrollView.frame.size.height;
+    CGFloat loadTrigger = (self.scrollView.contentSize.height - self.scrollView.frame.size.height) * 0.8;
     
     if (contentOffset.y < 25) { // arbitrary value to distinguish top from bottom triggers
         if(!self.scrollView.isDragging && self.state == SVPullToRefreshStateTriggered)
@@ -290,7 +291,10 @@ typedef NSUInteger SVPullToRefreshState;
         }
     }
     else if (infiniteScrollActionHandler) {
-        
+        NSLog(@"LT: %f, CS: %f, H: %f", loadTrigger, self.scrollView.contentSize.height, self.scrollView.frame.size.height);
+        if (contentOffset.y > loadTrigger && self.state != SVPullToRefreshStateLoadingBottom) {
+            self.state = SVPullToRefreshStateLoadingBottom;
+        }
     }
 
 }
@@ -378,6 +382,8 @@ typedef NSUInteger SVPullToRefreshState;
             [self rotateArrow:1 hide:YES];
             if(loadActionHandler)
                 loadActionHandler();
+            else if (infiniteScrollActionHandler)
+                infiniteScrollActionHandler();
             break;    
     }
 }

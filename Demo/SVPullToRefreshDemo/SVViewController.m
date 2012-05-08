@@ -20,15 +20,22 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
+//    [self.tableView addPullToRefreshWithActionHandler:^{
+//        NSLog(@"refresh dataSource");
+//        [tableView.pullToRefreshView performSelector:@selector(stopAnimating) withObject:nil afterDelay:2];
+//    } andDragToLoadHandler:^{
+//        NSLog(@"adding content");
+//        [tableView.pullToRefreshView performSelector:@selector(stopAnimating) withObject:nil afterDelay:2];
+//        [tableView.pullToRefreshView performSelector:@selector(loadNextPortion) withObject:nil afterDelay:2];
+//    }];
     [self.tableView addPullToRefreshWithActionHandler:^{
-        NSLog(@"refresh dataSource");
         [tableView.pullToRefreshView performSelector:@selector(stopAnimating) withObject:nil afterDelay:2];
-    } andDragToLoadHandler:^{
-        NSLog(@"adding content");
+    } infiniteScrollActionHandler:^{
         [tableView.pullToRefreshView performSelector:@selector(stopAnimating) withObject:nil afterDelay:2];
         [tableView.pullToRefreshView performSelector:@selector(loadNextPortion) withObject:nil afterDelay:2];
     }];
-    self.tableView.pullToRefreshView.sectionDisplayLimit = 5;
+    
+     self.tableView.pullToRefreshView.sectionDisplayLimit = 5;
 }
 
 #pragma mark -
