@@ -291,7 +291,6 @@ typedef NSUInteger SVPullToRefreshState;
         }
     }
     else if (infiniteScrollActionHandler) {
-        NSLog(@"LT: %f, CS: %f, H: %f", loadTrigger, self.scrollView.contentSize.height, self.scrollView.frame.size.height);
         if (contentOffset.y > loadTrigger && self.state != SVPullToRefreshStateLoadingBottom) {
             self.state = SVPullToRefreshStateLoadingBottom;
         }
