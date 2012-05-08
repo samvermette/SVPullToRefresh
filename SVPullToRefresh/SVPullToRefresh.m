@@ -236,13 +236,13 @@ typedef NSUInteger SVPullToRefreshState;
 
 - (void)setState:(SVPullToRefreshState)newState {
 	
-    if (hidePullToRefresh) {
-        
+    if (hidePullToRefresh && !self.activityIndicatorView.isAnimating) {
+
         titleLabel.text = NSLocalizedString(@"",);
         [self.activityIndicatorView stopAnimating];
         [self setScrollViewContentInset:self.originalScrollViewContentInset];
         [self rotateArrow:0 hide:YES];
-        return;
+        return;   
     }
     
     state = newState;
