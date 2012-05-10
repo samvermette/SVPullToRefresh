@@ -38,7 +38,7 @@ typedef NSUInteger SVPullToRefreshState;
 @property (nonatomic, strong, readonly) UILabel *dateLabel;
 @property (nonatomic, strong, readonly) NSDateFormatter *dateFormatter;
 
-@property (nonatomic, weak) UIScrollView *scrollView;
+@property (nonatomic, unsafe_unretained) UIScrollView *scrollView;
 @property (nonatomic, readwrite) UIEdgeInsets originalScrollViewContentInset;
 
 @end
