@@ -46,6 +46,9 @@ typedef NSUInteger SVPullToRefreshState;
 
 
 @implementation SVPullToRefresh
+{
+    BOOL    _isObservingScrollView;
+}
 
 // public properties
 @synthesize actionHandler, arrowColor, textColor, activityIndicatorViewStyle, lastUpdatedDate;
@@ -55,7 +58,7 @@ typedef NSUInteger SVPullToRefreshState;
 @synthesize arrow, arrowImage, activityIndicatorView, titleLabel, dateLabel, dateFormatter, originalScrollViewContentInset;
 
 - (void)dealloc {
-    [self.scrollView removeObserver:self forKeyPath:@"contentOffset"];
+    [self stopObservingScrollView];
 }
 
 - (id)initWithScrollView:(UIScrollView *)scrollView {
@@ -77,8 +80,7 @@ typedef NSUInteger SVPullToRefreshState;
         
     [self addSubview:self.arrow];
     
-    [scrollView addObserver:self forKeyPath:@"contentOffset" options:NSKeyValueObservingOptionNew context:nil];
-    [scrollView addObserver:self forKeyPath:@"frame" options:NSKeyValueObservingOptionNew context:nil];
+    [self startObservingScrollView];
     
     self.originalScrollViewContentInset = scrollView.contentInset;
 	
@@ -86,6 +88,26 @@ typedef NSUInteger SVPullToRefreshState;
     self.frame = CGRectMake(0, -60, scrollView.bounds.size.width, 60);
 
     return self;
+}
+
+- (void)startObservingScrollView
+{
+    if ( _isObservingScrollView )
+        return;
+    
+    _isObservingScrollView = YES;
+    [self.scrollView addObserver:self forKeyPath:@"contentOffset" options:NSKeyValueObservingOptionNew context:nil];
+    [self.scrollView addObserver:self forKeyPath:@"frame" options:NSKeyValueObservingOptionNew context:nil];
+}
+
+- (void)stopObservingScrollView
+{
+    if ( !_isObservingScrollView )
+        return;
+    
+    [self.scrollView removeObserver:self forKeyPath:@"contentOffset"];
+    [self.scrollView removeObserver:self forKeyPath:@"frame"];
+    _isObservingScrollView = NO;
 }
 
 - (void)layoutSubviews {
@@ -296,9 +318,17 @@ static char UIScrollViewPullToRefreshView;
 
 - (void)setPullToRefreshView:(SVPullToRefresh *)pullToRefreshView {
     [self willChangeValueForKey:@"pullToRefreshView"];
+
+    // cleanup KVO properties
+    SVPullToRefresh *currentView = [self pullToRefreshView];
+    if ( currentView != pullToRefreshView )
+        [currentView stopObservingScrollView];
+    
+    // set pull to refresh view
     objc_setAssociatedObject(self, &UIScrollViewPullToRefreshView,
                              pullToRefreshView,
                              OBJC_ASSOCIATION_ASSIGN);
+    
     [self didChangeValueForKey:@"pullToRefreshView"];
 }
 
