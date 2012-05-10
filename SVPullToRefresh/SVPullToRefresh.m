@@ -56,6 +56,7 @@ typedef NSUInteger SVPullToRefreshState;
 
 - (void)dealloc {
     [self.scrollView removeObserver:self forKeyPath:@"contentOffset"];
+    [self.scrollView removeObserver:self forKeyPath:@"frame"];
 }
 
 - (id)initWithScrollView:(UIScrollView *)scrollView {
