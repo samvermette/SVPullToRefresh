@@ -49,6 +49,7 @@ typedef NSUInteger SVPullToRefreshState;
 
 @property (nonatomic, strong) UIScrollView *scrollView;
 @property (nonatomic, readwrite) UIEdgeInsets originalScrollViewContentInset;
+@property (nonatomic, readwrite) CGFloat originalScrollViewContentSizeHeight;
 
 @end
 
@@ -62,7 +63,7 @@ typedef NSUInteger SVPullToRefreshState;
 
 @synthesize state;
 @synthesize scrollView = _scrollView;
-@synthesize arrow, arrowImage, bottomArrow, bottomArrowImage, activityIndicatorView, titleLabel, dateLabel, dateFormatter, originalScrollViewContentInset;
+@synthesize arrow, arrowImage, bottomArrow, bottomArrowImage, activityIndicatorView, titleLabel, dateLabel, dateFormatter, originalScrollViewContentInset, originalScrollViewContentSizeHeight;
 @synthesize sectionDisplayLimit;
 @synthesize rowDisplayLimit;
 @synthesize portionsLoaded;
@@ -187,7 +188,7 @@ typedef NSUInteger SVPullToRefreshState;
         bottomActivityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
         bottomActivityIndicatorView.hidesWhenStopped = YES;
         [self addSubview:bottomActivityIndicatorView];
-        self.bottomActivityIndicatorView.center = self.bottomLabel.center;
+        self.bottomActivityIndicatorView.center =  CGPointMake(bottomLabel.center.x + 15, bottomLabel.center.y);
     }
     return bottomActivityIndicatorView;
 }
@@ -299,6 +300,11 @@ typedef NSUInteger SVPullToRefreshState;
 }
 
 - (void)updateLabelToBottomOfContentSize:(CGSize)contentSize {
+    // The first time this happens, we have the actual content size of the scrollView,
+    // so we should set the originalContentSizeHeight here
+    if (originalScrollViewContentSizeHeight == 0) {
+        originalScrollViewContentSizeHeight = contentSize.height;
+    }
     self.bottomLabel.frame = CGRectMake(bottomLabel.frame.origin.x,
                                         contentSize.height + 80,
                                         bottomLabel.frame.size.width,
@@ -310,7 +316,6 @@ typedef NSUInteger SVPullToRefreshState;
     
     // And the arrow
     self.bottomArrow.center = CGPointMake(labelCenter.x - 15, labelCenter.y);
-    //self.scrollView.contentSize = CGSizeMake(contentSize.width, contentSize.height + 60);
     
 }
 
@@ -405,7 +410,7 @@ typedef NSUInteger SVPullToRefreshState;
     portionsLoaded++;
     if ([[self superview] isMemberOfClass:[UIScrollView class]]) {
         CGSize contentSize = self.scrollView.contentSize;
-        contentSize = CGSizeMake(contentSize.width, contentSize.height * 2);
+        contentSize = CGSizeMake(contentSize.width, contentSize.height + originalScrollViewContentSizeHeight);
         self.scrollView.contentSize = contentSize;
     }
     else if ([[self superview] isMemberOfClass:[UITableView class]]) {
