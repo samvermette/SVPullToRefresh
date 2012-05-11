@@ -41,6 +41,8 @@ typedef NSUInteger SVPullToRefreshState;
 @property (nonatomic, unsafe_unretained) UIScrollView *scrollView;
 @property (nonatomic, readwrite) UIEdgeInsets originalScrollViewContentInset;
 
+@property (nonatomic, assign) BOOL showsPullToRefresh;
+
 @end
 
 
@@ -52,7 +54,7 @@ typedef NSUInteger SVPullToRefreshState;
 
 @synthesize state;
 @synthesize scrollView = _scrollView;
-@synthesize arrow, arrowImage, activityIndicatorView, titleLabel, dateLabel, dateFormatter, originalScrollViewContentInset;
+@synthesize arrow, arrowImage, activityIndicatorView, titleLabel, dateLabel, dateFormatter, originalScrollViewContentInset, showsPullToRefresh;
 
 - (void)dealloc {
     [self.scrollView removeObserver:self forKeyPath:@"contentOffset"];
@@ -236,6 +238,16 @@ typedef NSUInteger SVPullToRefreshState;
 }
 
 - (void)setState:(SVPullToRefreshState)newState {
+	
+    if (!self.showsPullToRefresh && !self.activityIndicatorView.isAnimating) {
+
+        titleLabel.text = NSLocalizedString(@"",);
+        [self.activityIndicatorView stopAnimating];
+        [self setScrollViewContentInset:self.originalScrollViewContentInset];
+        [self rotateArrow:0 hide:YES];
+        return;   
+    }
+    
     state = newState;
     
     switch (newState) {
@@ -293,6 +305,7 @@ static char UIScrollViewPullToRefreshView;
     SVPullToRefresh *pullToRefreshView = [[SVPullToRefresh alloc] initWithScrollView:self];
     pullToRefreshView.actionHandler = actionHandler;
     self.pullToRefreshView = pullToRefreshView;
+    self.showsPullToRefresh = TRUE;
 }
 
 - (void)setPullToRefreshView:(SVPullToRefresh *)pullToRefreshView {
@@ -305,6 +318,14 @@ static char UIScrollViewPullToRefreshView;
 
 - (SVPullToRefresh *)pullToRefreshView {
     return objc_getAssociatedObject(self, &UIScrollViewPullToRefreshView);
+}
+
+-(void)setShowsPullToRefresh:(BOOL)showsPullToRefresh{
+    self.pullToRefreshView.showsPullToRefresh = showsPullToRefresh;   
+}
+
+- (BOOL)showsPullToRefresh {
+    return self.pullToRefreshView.showsPullToRefresh;
 }
 
 @end

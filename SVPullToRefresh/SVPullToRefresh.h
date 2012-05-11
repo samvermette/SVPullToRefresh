@@ -29,5 +29,6 @@
 - (void)addPullToRefreshWithActionHandler:(void (^)(void))actionHandler;
 
 @property (nonatomic, strong) SVPullToRefresh *pullToRefreshView;
+@property (nonatomic, assign) BOOL showsPullToRefresh;
 
 @end
