@@ -305,6 +305,7 @@ static char UIScrollViewPullToRefreshView;
     SVPullToRefresh *pullToRefreshView = [[SVPullToRefresh alloc] initWithScrollView:self];
     pullToRefreshView.actionHandler = actionHandler;
     self.pullToRefreshView = pullToRefreshView;
+    self.showsPullToRefresh = TRUE;
 }
 
 - (void)setPullToRefreshView:(SVPullToRefresh *)pullToRefreshView {
