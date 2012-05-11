@@ -50,7 +50,7 @@ typedef NSUInteger SVPullToRefreshState;
 @implementation SVPullToRefresh
 
 // public properties
-@synthesize actionHandler, arrowColor, textColor, activityIndicatorViewStyle, lastUpdatedDate, showsPullToRefresh;
+@synthesize actionHandler, arrowColor, textColor, activityIndicatorViewStyle, lastUpdatedDate;
 
 @synthesize state;
 @synthesize scrollView = _scrollView;
