@@ -86,7 +86,6 @@ typedef NSUInteger SVPullToRefreshState;
 	
     self.state = SVPullToRefreshStateHidden;    
     self.frame = CGRectMake(0, -60, scrollView.bounds.size.width, 60);
-    self.showsPullToRefresh = TRUE;
 
     return self;
 }
