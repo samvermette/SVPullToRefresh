@@ -61,13 +61,13 @@
         
         UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
 
-        if (self.tableView.pullToRefreshView.showsPullToRefresh) {
+        if (self.tableView.showsPullToRefresh) {
             
-            self.tableView.pullToRefreshView.showsPullToRefresh = FALSE;
+            self.tableView.showsPullToRefresh = FALSE;
             cell.textLabel.text = @"Toggle Pull To Refresh On";
         } else {
             
-            self.tableView.pullToRefreshView.showsPullToRefresh = TRUE;
+            self.tableView.showsPullToRefresh = TRUE;
             cell.textLabel.text = @"Toggle Pull To Refresh Off";
         }
     }
