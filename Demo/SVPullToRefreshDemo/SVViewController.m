@@ -31,7 +31,7 @@
 	NSDateFormatter *outaTime = [[NSDateFormatter alloc] init];
 	outaTime.dateStyle = NSDateFormatterLongStyle;
 	outaTime.timeStyle = NSDateFormatterNoStyle;
-	tableView.pullToRefreshView.lastUpdatedDateFormatter = outaTime;
+	tableView.pullToRefreshView.dateFormatter = outaTime;
     
     // trigger the refresh manually at the end of viewDidLoad
     [tableView.pullToRefreshView triggerRefresh];
