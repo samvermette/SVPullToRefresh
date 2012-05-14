@@ -48,7 +48,7 @@ typedef NSUInteger SVPullToRefreshState;
 @implementation SVPullToRefresh
 
 // public properties
-@synthesize actionHandler, arrowColor, textColor, activityIndicatorViewStyle, lastUpdatedDate;
+@synthesize actionHandler, arrowColor, textColor, activityIndicatorViewStyle, lastUpdatedDate, lastUpdatedDateFormatter;
 
 @synthesize state;
 @synthesize scrollView = _scrollView;
@@ -202,6 +202,11 @@ typedef NSUInteger SVPullToRefreshState;
 
 - (void)setLastUpdatedDate:(NSDate *)newLastUpdatedDate {
     self.dateLabel.text = [NSString stringWithFormat:NSLocalizedString(@"Last Updated: %@",), newLastUpdatedDate?[self.dateFormatter stringFromDate:newLastUpdatedDate]:NSLocalizedString(@"Never",)];
+}
+
+- (void)setLastUpdatedDateFormatter:(NSDateFormatter *)newLastUpdatedDateFormatter {
+	dateFormatter = newLastUpdatedDateFormatter;
+    self.dateLabel.text = [NSString stringWithFormat:NSLocalizedString(@"Last Updated: %@",), self.lastUpdatedDate?[newLastUpdatedDateFormatter stringFromDate:self.lastUpdatedDate]:NSLocalizedString(@"Never",)];
 }
 
 
