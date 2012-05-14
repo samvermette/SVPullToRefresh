@@ -36,7 +36,6 @@ typedef NSUInteger SVPullToRefreshState;
 @property (nonatomic, strong) UILabel *titleLabel;
 
 @property (nonatomic, strong, readonly) UILabel *dateLabel;
-@property (nonatomic, strong, readonly) NSDateFormatter *dateFormatter;
 
 @property (nonatomic, unsafe_unretained) UIScrollView *scrollView;
 @property (nonatomic, readwrite) UIEdgeInsets originalScrollViewContentInset;
@@ -48,11 +47,11 @@ typedef NSUInteger SVPullToRefreshState;
 @implementation SVPullToRefresh
 
 // public properties
-@synthesize actionHandler, arrowColor, textColor, activityIndicatorViewStyle, lastUpdatedDate;
+@synthesize actionHandler, arrowColor, textColor, activityIndicatorViewStyle, lastUpdatedDate, dateFormatter;
 
 @synthesize state;
 @synthesize scrollView = _scrollView;
-@synthesize arrow, arrowImage, activityIndicatorView, titleLabel, dateLabel, dateFormatter, originalScrollViewContentInset;
+@synthesize arrow, arrowImage, activityIndicatorView, titleLabel, dateLabel, originalScrollViewContentInset;
 
 - (void)dealloc {
     [self.scrollView removeObserver:self forKeyPath:@"contentOffset"];
@@ -202,6 +201,11 @@ typedef NSUInteger SVPullToRefreshState;
 
 - (void)setLastUpdatedDate:(NSDate *)newLastUpdatedDate {
     self.dateLabel.text = [NSString stringWithFormat:NSLocalizedString(@"Last Updated: %@",), newLastUpdatedDate?[self.dateFormatter stringFromDate:newLastUpdatedDate]:NSLocalizedString(@"Never",)];
+}
+
+- (void)setDateFormatter:(NSDateFormatter *)newDateFormatter {
+	dateFormatter = newDateFormatter;
+    self.dateLabel.text = [NSString stringWithFormat:NSLocalizedString(@"Last Updated: %@",), self.lastUpdatedDate?[newDateFormatter stringFromDate:self.lastUpdatedDate]:NSLocalizedString(@"Never",)];
 }
 
 
