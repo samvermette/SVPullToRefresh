@@ -14,8 +14,7 @@
 @end
 
 @implementation SVViewController
-
-@synthesize tableView;
+@synthesize tableView = _tableView;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -23,18 +22,18 @@
     // setup the pull-to-refresh view
     [self.tableView addPullToRefreshWithActionHandler:^{
         NSLog(@"refresh dataSource");
-		tableView.pullToRefreshView.lastUpdatedDate = [NSDate date];
-        [tableView.pullToRefreshView performSelector:@selector(stopAnimating) withObject:nil afterDelay:2];
+		self.tableView.pullToRefreshView.lastUpdatedDate = [NSDate date];
+        [self.tableView.pullToRefreshView performSelector:@selector(stopAnimating) withObject:nil afterDelay:2];
     }];
 	
 	// configure a custom date formatter
 	NSDateFormatter *outaTime = [[NSDateFormatter alloc] init];
 	outaTime.dateStyle = NSDateFormatterLongStyle;
 	outaTime.timeStyle = NSDateFormatterNoStyle;
-	tableView.pullToRefreshView.dateFormatter = outaTime;
+	self.tableView.pullToRefreshView.dateFormatter = outaTime;
     
     // trigger the refresh manually at the end of viewDidLoad
-    [tableView.pullToRefreshView triggerRefresh];
+    [self.tableView.pullToRefreshView triggerRefresh];
 }
 
 #pragma mark -
@@ -51,11 +50,18 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *identifier = @"Cell";
     UITableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:identifier];
-    
-    if (cell == nil)
+    if (cell == nil) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
+	}
+	cell.textLabel.text = [NSString stringWithFormat:@"Cell %d", indexPath.row];
 
     return cell;
+}
+
+#pragma mark -
+#pragma mark UITableViewDelegate
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+	[tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 @end
