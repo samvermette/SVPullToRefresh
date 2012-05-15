@@ -14,7 +14,7 @@
 @end
 
 @implementation SVViewController
-@synthesize tableView = _tableView;
+@synthesize tableView = tableView;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -53,18 +53,10 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *identifier = @"Cell";
     UITableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:identifier];
-    if (cell == nil) {
+    
+    if (cell == nil)
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
-	}
-	cell.textLabel.text = [NSString stringWithFormat:@"Cell %d", indexPath.row];
-
+    
     return cell;
 }
-
-#pragma mark -
-#pragma mark UITableViewDelegate
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-	[tableView deselectRowAtIndexPath:indexPath animated:YES];
-}
-
 @end
