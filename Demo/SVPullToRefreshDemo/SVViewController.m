@@ -22,18 +22,21 @@
     // setup the pull-to-refresh view
     [self.tableView addPullToRefreshWithActionHandler:^{
         NSLog(@"refresh dataSource");
-		self.tableView.pullToRefreshView.lastUpdatedDate = [NSDate date];
-        [self.tableView.pullToRefreshView performSelector:@selector(stopAnimating) withObject:nil afterDelay:2];
+        [tableView.pullToRefreshView performSelector:@selector(stopAnimating) withObject:nil afterDelay:2];
     }];
-	
-	// configure a custom date formatter
-	NSDateFormatter *outaTime = [[NSDateFormatter alloc] init];
-	outaTime.dateStyle = NSDateFormatterLongStyle;
-	outaTime.timeStyle = NSDateFormatterNoStyle;
-	self.tableView.pullToRefreshView.dateFormatter = outaTime;
     
     // trigger the refresh manually at the end of viewDidLoad
-    [self.tableView.pullToRefreshView triggerRefresh];
+    [tableView.pullToRefreshView triggerRefresh];
+    
+    
+    // you can also display the "last updated" date
+    // tableView.pullToRefreshView.lastUpdatedDate = [NSDate date];
+    
+    // you can configure how that date is displayed
+    // NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    // dateFormatter.dateStyle = NSDateFormatterLongStyle;
+    // dateFormatter.timeStyle = NSDateFormatterNoStyle;
+    // tableView.pullToRefreshView.dateFormatter = dateFormatter;
 }
 
 #pragma mark -

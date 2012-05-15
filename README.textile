@@ -56,6 +56,15 @@ tableView.pullToRefreshView.lastUpdatedDate = nil; // will display "Last Updated
 tableView.pullToRefreshView.lastUpdatedDate = [NSDate date]; // will display "Last Updated: 4/30/12 11:53 AM"
 </pre>
 
+You can also configure how the date is displayed by setting the @dateFormatter@ property:
+
+<pre>
+NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+dateFormatter.dateStyle = NSDateFormatterLongStyle;
+dateFormatter.timeStyle = NSDateFormatterNoStyle;
+tableView.pullToRefreshView.dateFormatter = dateFormatter;
+</pre>
+
 
 h2. Under the hood
 
