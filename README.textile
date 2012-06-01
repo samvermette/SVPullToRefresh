@@ -1,3 +1,5 @@
+__*Important note if your project doesn't use ARC*: you must add the @-fobjc-arc@ compiler flag to @SVPullToRefresh.m@ in Target Settings > Build Phases > Compile Sources.__
+
 h1. SVPullToRefresh
 
 SVPullToRefresh allows you to easily add pull-to-refresh functionality to any @UIScrollView@ subclass with only 1 line of code. Instead of depending on delegates and/or subclassing @UIViewController@, SVPullToRefresh extends @UIScrollView@ with a @addPullToRefreshWithActionHandler:@ method as well as a @pullToRefreshView@ property.
