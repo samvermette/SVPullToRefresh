@@ -27,7 +27,8 @@ typedef NSUInteger SVPullToRefreshState;
 - (void)setScrollViewContentInset:(UIEdgeInsets)contentInset;
 - (void)scrollViewDidScroll:(CGPoint)contentOffset;
 
-@property (nonatomic, copy) void (^actionHandler)(void);
+@property (nonatomic, copy) void (^pullToRefreshActionHandler)(void);
+@property (nonatomic, copy) void (^infiniteScrollingActionHandler)(void);
 @property (nonatomic, readwrite) SVPullToRefreshState state;
 
 @property (nonatomic, strong) UIImageView *arrow;
@@ -41,6 +42,7 @@ typedef NSUInteger SVPullToRefreshState;
 @property (nonatomic, readwrite) UIEdgeInsets originalScrollViewContentInset;
 
 @property (nonatomic, assign) BOOL showsPullToRefresh;
+@property (nonatomic, assign) BOOL showsInfiniteScrolling;
 
 @end
 
@@ -49,11 +51,11 @@ typedef NSUInteger SVPullToRefreshState;
 @implementation SVPullToRefresh
 
 // public properties
-@synthesize actionHandler, arrowColor, textColor, activityIndicatorViewStyle, lastUpdatedDate, dateFormatter;
+@synthesize pullToRefreshActionHandler, infiniteScrollingActionHandler, arrowColor, textColor, activityIndicatorViewStyle, lastUpdatedDate, dateFormatter;
 
 @synthesize state;
 @synthesize scrollView = _scrollView;
-@synthesize arrow, arrowImage, activityIndicatorView, titleLabel, dateLabel, originalScrollViewContentInset, showsPullToRefresh;
+@synthesize arrow, arrowImage, activityIndicatorView, titleLabel, dateLabel, originalScrollViewContentInset, showsPullToRefresh, showsInfiniteScrolling;
 
 - (void)dealloc {
     [self.scrollView removeObserver:self forKeyPath:@"contentOffset"];
@@ -63,29 +65,11 @@ typedef NSUInteger SVPullToRefreshState;
 - (id)initWithScrollView:(UIScrollView *)scrollView {
     self = [super initWithFrame:CGRectZero];
     self.scrollView = scrollView;
-    [_scrollView addSubview:self];
     
-    // default styling values
-    self.arrowColor = [UIColor grayColor];
-    self.activityIndicatorViewStyle = UIActivityIndicatorViewStyleGray;
-    self.textColor = [UIColor darkGrayColor];
-    
-    self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 20, 150, 20)];
-    titleLabel.text = NSLocalizedString(@"Pull to refresh...",);
-    titleLabel.font = [UIFont boldSystemFontOfSize:14];
-    titleLabel.backgroundColor = [UIColor clearColor];
-    titleLabel.textColor = textColor;
-    [self addSubview:titleLabel];
-        
-    [self addSubview:self.arrow];
-    
+    self.originalScrollViewContentInset = self.scrollView.contentInset;
+
     [scrollView addObserver:self forKeyPath:@"contentOffset" options:NSKeyValueObservingOptionNew context:nil];
     [scrollView addObserver:self forKeyPath:@"frame" options:NSKeyValueObservingOptionNew context:nil];
-    
-    self.originalScrollViewContentInset = scrollView.contentInset;
-	
-    self.state = SVPullToRefreshStateHidden;    
-    self.frame = CGRectMake(0, -60, scrollView.bounds.size.width, 60);
 
     return self;
 }
@@ -105,14 +89,18 @@ typedef NSUInteger SVPullToRefreshState;
     CGRect arrowFrame = arrow.frame;
     arrowFrame.origin.x = ceil(remainingWidth*position);
     arrow.frame = arrowFrame;
-    
-    self.activityIndicatorView.center = self.arrow.center;
+        
+    if(infiniteScrollingActionHandler) {
+        self.activityIndicatorView.center = self.center;
+    } else
+        self.activityIndicatorView.center = self.arrow.center;
+
 }
 
 #pragma mark - Getters
 
 - (UIImageView *)arrow {
-    if(!arrow) {
+    if(!arrow && pullToRefreshActionHandler) {
         arrow = [[UIImageView alloc] initWithImage:self.arrowImage];
         arrow.frame = CGRectMake(0, 6, 22, 48);
         arrow.backgroundColor = [UIColor clearColor];
@@ -149,7 +137,7 @@ typedef NSUInteger SVPullToRefreshState;
 }
 
 - (UILabel *)dateLabel {
-    if(!dateLabel) {
+    if(!dateLabel && pullToRefreshActionHandler) {
         dateLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 28, 180, 20)];
         dateLabel.font = [UIFont systemFontOfSize:12];
         dateLabel.backgroundColor = [UIColor clearColor];
@@ -173,7 +161,42 @@ typedef NSUInteger SVPullToRefreshState;
     return dateFormatter;
 }
 
+- (UIEdgeInsets)originalScrollViewContentInset {
+    return UIEdgeInsetsMake(originalScrollViewContentInset.top, self.scrollView.contentInset.left, self.scrollView.contentInset.bottom, self.scrollView.contentInset.right);
+}
+
 #pragma mark - Setters
+
+- (void)setPullToRefreshActionHandler:(void (^)(void))actionHandler {
+    pullToRefreshActionHandler = actionHandler;
+    [_scrollView addSubview:self];
+    self.showsPullToRefresh = YES;
+    
+    self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 20, 150, 20)];
+    titleLabel.text = NSLocalizedString(@"Pull to refresh...",);
+    titleLabel.font = [UIFont boldSystemFontOfSize:14];
+    titleLabel.backgroundColor = [UIColor clearColor];
+    titleLabel.textColor = textColor;
+    [self addSubview:titleLabel];
+    
+    [self addSubview:self.arrow];
+    	
+    self.state = SVPullToRefreshStateHidden;    
+    self.frame = CGRectMake(0, -60, self.scrollView.bounds.size.width, 60);
+}
+
+- (void)setInfiniteScrollingActionHandler:(void (^)(void))actionHandler {
+    infiniteScrollingActionHandler = actionHandler;
+    self.showsInfiniteScrolling = YES;
+    
+    self.frame = CGRectMake(0, 0, self.scrollView.bounds.size.width, 60);
+    [(UITableView*)self.scrollView setTableFooterView:self];
+    
+    self.state = SVPullToRefreshStateHidden;
+    self.activityIndicatorView.center = self.center;
+    
+    [self layoutSubviews];
+}
 
 - (void)setArrowColor:(UIColor *)newArrowColor {
     arrowColor = newArrowColor;
@@ -210,27 +233,44 @@ typedef NSUInteger SVPullToRefreshState;
     self.dateLabel.text = [NSString stringWithFormat:NSLocalizedString(@"Last Updated: %@",), self.lastUpdatedDate?[newDateFormatter stringFromDate:self.lastUpdatedDate]:NSLocalizedString(@"Never",)];
 }
 
+- (void)setShowsInfiniteScrolling:(BOOL)show {
+    showsInfiniteScrolling = show;
+    if(!show)
+        [(UITableView*)self.scrollView setTableFooterView:nil];
+    else
+        [(UITableView*)self.scrollView setTableFooterView:self];
+}
 
 #pragma mark -
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if([keyPath isEqualToString:@"contentOffset"] && self.state != SVPullToRefreshStateLoading)
+    if([keyPath isEqualToString:@"contentOffset"])
         [self scrollViewDidScroll:[[change valueForKey:NSKeyValueChangeNewKey] CGPointValue]];
     else if([keyPath isEqualToString:@"frame"])
         [self layoutSubviews];
 }
 
 - (void)scrollViewDidScroll:(CGPoint)contentOffset {    
-    CGFloat scrollOffsetThreshold = self.frame.origin.y-self.originalScrollViewContentInset.top;
-    
-    if(!self.scrollView.isDragging && self.state == SVPullToRefreshStateTriggered)
-        self.state = SVPullToRefreshStateLoading;
-    else if(contentOffset.y > scrollOffsetThreshold && contentOffset.y < -self.originalScrollViewContentInset.top && self.scrollView.isDragging && self.state != SVPullToRefreshStateLoading)
-        self.state = SVPullToRefreshStateVisible;
-    else if(contentOffset.y < scrollOffsetThreshold && self.scrollView.isDragging && self.state == SVPullToRefreshStateVisible)
-        self.state = SVPullToRefreshStateTriggered;
-    else if(contentOffset.y >= -self.originalScrollViewContentInset.top && self.state != SVPullToRefreshStateHidden)
-        self.state = SVPullToRefreshStateHidden;
+    if(pullToRefreshActionHandler && self.state != SVPullToRefreshStateLoading) {
+        CGFloat scrollOffsetThreshold = self.frame.origin.y-self.originalScrollViewContentInset.top;
+        
+        if(!self.scrollView.isDragging && self.state == SVPullToRefreshStateTriggered)
+            self.state = SVPullToRefreshStateLoading;
+        else if(contentOffset.y > scrollOffsetThreshold && contentOffset.y < -self.originalScrollViewContentInset.top && self.scrollView.isDragging && self.state != SVPullToRefreshStateLoading)
+            self.state = SVPullToRefreshStateVisible;
+        else if(contentOffset.y < scrollOffsetThreshold && self.scrollView.isDragging && self.state == SVPullToRefreshStateVisible)
+            self.state = SVPullToRefreshStateTriggered;
+        else if(contentOffset.y >= -self.originalScrollViewContentInset.top && self.state != SVPullToRefreshStateHidden)
+            self.state = SVPullToRefreshStateHidden;
+    }
+    else if(infiniteScrollingActionHandler) {
+        CGFloat scrollOffsetThreshold = self.scrollView.contentSize.height-self.scrollView.bounds.size.height-self.originalScrollViewContentInset.top;
+        
+        if(contentOffset.y > MAX(scrollOffsetThreshold, self.scrollView.bounds.size.height-self.scrollView.contentSize.height) && self.state == SVPullToRefreshStateHidden)
+            self.state = SVPullToRefreshStateLoading;
+        else if(contentOffset.y < scrollOffsetThreshold)
+            self.state = SVPullToRefreshStateHidden;
+    }
 }
 
 - (void)triggerRefresh {
@@ -243,8 +283,7 @@ typedef NSUInteger SVPullToRefreshState;
 
 - (void)setState:(SVPullToRefreshState)newState {
     
-    if (!self.showsPullToRefresh && !self.activityIndicatorView.isAnimating) {
-        
+    if(pullToRefreshActionHandler && !self.showsPullToRefresh && !self.activityIndicatorView.isAnimating) {
         titleLabel.text = NSLocalizedString(@"",);
         [self.activityIndicatorView stopAnimating];
         [self setScrollViewContentInset:self.originalScrollViewContentInset];
@@ -252,37 +291,59 @@ typedef NSUInteger SVPullToRefreshState;
         return;   
     }
     
+    if(infiniteScrollingActionHandler && !self.showsInfiniteScrolling)
+        return;   
+    
+    if(state == newState)
+        return;
+    
     state = newState;
     
-    switch (newState) {
-        case SVPullToRefreshStateHidden:
-            titleLabel.text = NSLocalizedString(@"Pull to refresh...",);
-            [self.activityIndicatorView stopAnimating];
-            [self setScrollViewContentInset:self.originalScrollViewContentInset];
-            [self rotateArrow:0 hide:NO];
-            break;
-            
-        case SVPullToRefreshStateVisible:
-            titleLabel.text = NSLocalizedString(@"Pull to refresh...",);
-            arrow.alpha = 1;
-            [self.activityIndicatorView stopAnimating];
-            [self setScrollViewContentInset:self.originalScrollViewContentInset];
-            [self rotateArrow:0 hide:NO];
-            break;
-            
-        case SVPullToRefreshStateTriggered:
-            titleLabel.text = NSLocalizedString(@"Release to refresh...",);
-            [self rotateArrow:M_PI hide:NO];
-            break;
-            
-        case SVPullToRefreshStateLoading:
-            titleLabel.text = NSLocalizedString(@"Loading...",);
-            [self.activityIndicatorView startAnimating];
-            [self setScrollViewContentInset:UIEdgeInsetsMake(self.frame.origin.y*-1+self.originalScrollViewContentInset.top, 0, 0, 0)];
-            [self rotateArrow:0 hide:YES];
-            if(actionHandler)
-                actionHandler();
-            break;
+    if(pullToRefreshActionHandler) {
+        switch (newState) {
+            case SVPullToRefreshStateHidden:
+                titleLabel.text = NSLocalizedString(@"Pull to refresh...",);
+                [self.activityIndicatorView stopAnimating];
+                [self setScrollViewContentInset:self.originalScrollViewContentInset];
+                [self rotateArrow:0 hide:NO];
+                break;
+                
+            case SVPullToRefreshStateVisible:
+                titleLabel.text = NSLocalizedString(@"Pull to refresh...",);
+                arrow.alpha = 1;
+                [self.activityIndicatorView stopAnimating];
+                [self setScrollViewContentInset:self.originalScrollViewContentInset];
+                [self rotateArrow:0 hide:NO];
+                break;
+                
+            case SVPullToRefreshStateTriggered:
+                titleLabel.text = NSLocalizedString(@"Release to refresh...",);
+                [self rotateArrow:M_PI hide:NO];
+                break;
+                
+            case SVPullToRefreshStateLoading:
+                titleLabel.text = NSLocalizedString(@"Loading...",);
+                [self.activityIndicatorView startAnimating];
+                UIEdgeInsets newInsets = self.originalScrollViewContentInset;
+                newInsets.top = self.frame.origin.y*-1+self.originalScrollViewContentInset.top;
+                newInsets.bottom = self.scrollView.contentInset.bottom;
+                [self setScrollViewContentInset:newInsets];
+                [self rotateArrow:0 hide:YES];
+                pullToRefreshActionHandler();
+                break;
+        }
+    }
+    else if(infiniteScrollingActionHandler) {
+        switch (newState) {
+            case SVPullToRefreshStateHidden:
+                [self.activityIndicatorView stopAnimating];
+                break;
+
+            case SVPullToRefreshStateLoading:
+                [self.activityIndicatorView startAnimating];
+                infiniteScrollingActionHandler();
+                break;
+        }
     }
 }
 
@@ -300,17 +361,18 @@ typedef NSUInteger SVPullToRefreshState;
 #import <objc/runtime.h>
 
 static char UIScrollViewPullToRefreshView;
+static char UIScrollViewInfiniteScrollingView;
 
 @implementation UIScrollView (SVPullToRefresh)
 
-@dynamic pullToRefreshView, showsPullToRefresh;
+@dynamic pullToRefreshView, showsPullToRefresh, infiniteScrollingView, showsInfiniteScrolling;
 
 - (void)addPullToRefreshWithActionHandler:(void (^)(void))actionHandler {
-    SVPullToRefresh *pullToRefreshView = [[SVPullToRefresh alloc] initWithScrollView:self];
-    pullToRefreshView.actionHandler = actionHandler;
-    self.pullToRefreshView = pullToRefreshView;
-    self.showsPullToRefresh = TRUE;
-    
+    self.pullToRefreshView.pullToRefreshActionHandler = actionHandler;
+}
+
+- (void)addInfiniteScrollingWithActionHandler:(void (^)(void))actionHandler {
+    self.infiniteScrollingView.infiniteScrollingActionHandler = actionHandler;
 }
 
 - (void)setPullToRefreshView:(SVPullToRefresh *)pullToRefreshView {
@@ -321,16 +383,46 @@ static char UIScrollViewPullToRefreshView;
     [self didChangeValueForKey:@"pullToRefreshView"];
 }
 
-- (SVPullToRefresh *)pullToRefreshView {
-    return objc_getAssociatedObject(self, &UIScrollViewPullToRefreshView);
+- (void)setInfiniteScrollingView:(SVPullToRefresh *)pullToRefreshView {
+    [self willChangeValueForKey:@"infiniteScrollingView"];
+    objc_setAssociatedObject(self, &UIScrollViewInfiniteScrollingView,
+                             pullToRefreshView,
+                             OBJC_ASSOCIATION_ASSIGN);
+    [self didChangeValueForKey:@"infiniteScrollingView"];
 }
 
--(void)setShowsPullToRefresh:(BOOL)showsPullToRefresh{
+- (SVPullToRefresh *)pullToRefreshView {
+    SVPullToRefresh *pullToRefreshView = objc_getAssociatedObject(self, &UIScrollViewPullToRefreshView);
+    if(!pullToRefreshView) {
+        pullToRefreshView = [[SVPullToRefresh alloc] initWithScrollView:self];
+        self.pullToRefreshView = pullToRefreshView;
+    }
+    return pullToRefreshView;
+}
+
+- (void)setShowsPullToRefresh:(BOOL)showsPullToRefresh {
     self.pullToRefreshView.showsPullToRefresh = showsPullToRefresh;   
 }
 
 - (BOOL)showsPullToRefresh {
     return self.pullToRefreshView.showsPullToRefresh;
+}
+
+- (SVPullToRefresh *)infiniteScrollingView {
+    SVPullToRefresh *infiniteScrollingView = objc_getAssociatedObject(self, &UIScrollViewInfiniteScrollingView);
+    if(!infiniteScrollingView) {
+        infiniteScrollingView = [[SVPullToRefresh alloc] initWithScrollView:self];
+        self.infiniteScrollingView = infiniteScrollingView;
+    }
+    return infiniteScrollingView;
+}
+
+- (void)setShowsInfiniteScrolling:(BOOL)showsInfiniteScrolling {
+    self.infiniteScrollingView.showsInfiniteScrolling = showsInfiniteScrolling;   
+}
+
+- (BOOL)showsInfiniteScrolling {
+    return self.infiniteScrollingView.showsInfiniteScrolling;
 }
 
 @end

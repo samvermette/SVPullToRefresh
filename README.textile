@@ -2,9 +2,12 @@ __*Important note if your project doesn't use ARC*: you must add the @-fobjc-arc
 
 h1. SVPullToRefresh
 
-SVPullToRefresh allows you to easily add pull-to-refresh functionality to any @UIScrollView@ subclass with only 1 line of code. Instead of depending on delegates and/or subclassing @UIViewController@, SVPullToRefresh extends @UIScrollView@ with a @addPullToRefreshWithActionHandler:@ method as well as a @pullToRefreshView@ property.
+SVPullToRefresh allows you to easily add pull-to-refresh and/or infinite scrolling functionalities to any @UITableView@ subclass with only 1 line of code. Instead of depending on delegates and/or subclassing @UIViewController@, SVPullToRefresh extends @UIScrollView@ with the following 2 methods:
 
-**Only add pull-to-refresh functionality to your app if it makes sense!** Pull to refresh is only appropriate if the data is sorted chronologically, so that scrolling past the top of the table view (where the newest data lies) should trigger the loading and display of even newer data.
+<pre>
+- (void)addPullToRefreshWithActionHandler:(void (^)(void))actionHandler;
+- (void)addInfiniteScrollingWithActionHandler:(void (^)(void))actionHandler;
+</pre>
 
 h2. Installation
 
@@ -16,7 +19,7 @@ h2. Usage
 
 (see sample Xcode project in @/Demo@)
 
-Adding pull-to-refresh to a table view can be done with one single line of code:
+h3. Adding pull to refresh to your table view
 
 <pre>
 [tableView addPullToRefreshWithActionHandler:^{
@@ -25,7 +28,7 @@ Adding pull-to-refresh to a table view can be done with one single line of code:
 }];
 </pre>
 
-If you'd like to programmatically trigger the refresh (for instance in viewDidLoad), you can do so with:
+If you’d like to programmatically trigger the refresh (for instance in viewDidLoad), you can do so with:
 
 <pre>
 [tableView.pullToRefreshView triggerRefresh];
@@ -37,9 +40,9 @@ You can temporarily hide/disable pull to refresh by setting the @showsPullToRefr
 tableView.showsPullToRefresh = NO;
 </pre>
 
-h2. Customization
+h4. Customization
 
-The SVPullToRefresh view can be customized using the following properties:
+The @pullToRefreshView@ view can be customized using the following properties:
 
 <pre>
 @property (nonatomic, strong) UIColor *arrowColor;
@@ -55,7 +58,7 @@ For instance, you would set the @arrowColor@ property using:
 tableView.pullToRefreshView.arrowColor = [UIColor whiteColor];
 </pre>
 
-h3. Showing a "Last Updated" label
+h4. Showing a "Last Updated" label
 
 If you think it's in the user's interest to display the date of the last refresh, you can set the @lastUpdatedDate@ property of @pullToRefreshView@:
 
@@ -73,10 +76,33 @@ dateFormatter.timeStyle = NSDateFormatterNoStyle;
 tableView.pullToRefreshView.dateFormatter = dateFormatter;
 </pre>
 
+h3. Adding infinite scrolling to your table view
+
+<pre>
+[tableView addInfiniteScrollingWithActionHandler:^{
+    // add data to data source, insert new cells into table view
+}];
+</pre>
+
+You can temporarily hide/disable infinite scrolling by setting the @showsInfiniteScrolling@ property:
+
+<pre>
+tableView.showsInfiniteScrolling = NO;
+</pre>
+
+h4. Customization
+
+The @infiniteScrollingView@ (a @UIView@ subclass) can be customized using the following properties:
+
+<pre>
+@property (nonatomic, readwrite) UIActivityIndicatorViewStyle activityIndicatorViewStyle;
+</pre>
+
+You can access these properties through your scroll view's @infiniteScrollingView@ property. 
 
 h2. Under the hood
 
-SVPullToRefresh extends @UIScrollView@ by adding a new public method as well as a dynamic property (thanks "@seb_morel":http://twitter.com/seb_morel!). It uses key-value observing to track the scrollView's @contentOffset@, which removes the need for the view to be linked to the @UIScrollViewDelegate@ protocol.
+SVPullToRefresh extends @UIScrollView@ by adding new public methods as well as a dynamic properties (thanks "@seb_morel":http://twitter.com/seb_morel!). It uses key-value observing to track the scrollView's @contentOffset@, which removes the need for the view to be linked to the @UIScrollViewDelegate@ protocol.
 
 h2. Credits
 
