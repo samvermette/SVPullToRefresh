@@ -25,6 +25,10 @@
         [tableView.pullToRefreshView performSelector:@selector(stopAnimating) withObject:nil afterDelay:2];
     }];
     
+    [self.tableView addInfiniteScrollingWithActionHandler:^{
+        NSLog(@"load more data");
+    }];
+    
     // trigger the refresh manually at the end of viewDidLoad
     [tableView.pullToRefreshView triggerRefresh];
     
