@@ -31,6 +31,12 @@ If you'd like to programmatically trigger the refresh (for instance in viewDidLo
 [tableView.pullToRefreshView triggerRefresh];
 </pre>
 
+You can temporarily hide/disable pull to refresh by setting the @showsPullToRefresh@ property:
+
+<pre>
+tableView.showsPullToRefresh = NO;
+</pre>
+
 h2. Customization
 
 The SVPullToRefresh view can be customized using the following properties:
