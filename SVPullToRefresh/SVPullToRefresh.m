@@ -66,6 +66,11 @@ typedef NSUInteger SVPullToRefreshState;
     self = [super initWithFrame:CGRectZero];
     self.scrollView = scrollView;
     
+    // default styling values
+    self.arrowColor = [UIColor grayColor];
+    self.activityIndicatorViewStyle = UIActivityIndicatorViewStyleGray;
+    self.textColor = [UIColor darkGrayColor];
+    
     self.originalScrollViewContentInset = self.scrollView.contentInset;
 
     [scrollView addObserver:self forKeyPath:@"contentOffset" options:NSKeyValueObservingOptionNew context:nil];
