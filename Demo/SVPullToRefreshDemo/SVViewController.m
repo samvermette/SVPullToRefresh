@@ -28,7 +28,6 @@
     // trigger the refresh manually at the end of viewDidLoad
     [tableView.pullToRefreshView triggerRefresh];
     
-    
     // you can also display the "last updated" date
     // tableView.pullToRefreshView.lastUpdatedDate = [NSDate date];
     
@@ -37,6 +36,9 @@
     // dateFormatter.dateStyle = NSDateFormatterLongStyle;
     // dateFormatter.timeStyle = NSDateFormatterNoStyle;
     // tableView.pullToRefreshView.dateFormatter = dateFormatter;
+    
+    // you can temporarily toggle the pull to refresh view
+    // tableView.showsPullToRefresh = NO;
 }
 
 #pragma mark -
@@ -56,31 +58,7 @@
     
     if (cell == nil)
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
-
-    if (indexPath.row == 0) {
-        cell.textLabel.text = @"Toggle Pull To Refresh Off";
-    }
-
+    
     return cell;
-}
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    if (indexPath.row == 0) {
-        
-        UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
-
-        if (self.tableView.showsPullToRefresh) {
-            
-            self.tableView.showsPullToRefresh = FALSE;
-            cell.textLabel.text = @"Toggle Pull To Refresh On";
-        } else {
-            
-            self.tableView.showsPullToRefresh = TRUE;
-            cell.textLabel.text = @"Toggle Pull To Refresh Off";
-        }
-    }
-    
-    [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 @end
