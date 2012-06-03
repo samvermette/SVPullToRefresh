@@ -96,7 +96,7 @@ typedef NSUInteger SVPullToRefreshState;
     arrow.frame = arrowFrame;
         
     if(infiniteScrollingActionHandler) {
-        self.activityIndicatorView.center = self.center;
+        self.activityIndicatorView.center = CGPointMake(round(self.bounds.size.width/2), round(self.bounds.size.height/2));
     } else
         self.activityIndicatorView.center = self.arrow.center;
 
@@ -197,9 +197,7 @@ typedef NSUInteger SVPullToRefreshState;
     self.frame = CGRectMake(0, 0, self.scrollView.bounds.size.width, 60);
     [(UITableView*)self.scrollView setTableFooterView:self];
     
-    self.state = SVPullToRefreshStateHidden;
-    self.activityIndicatorView.center = self.center;
-    
+    self.state = SVPullToRefreshStateHidden;    
     [self layoutSubviews];
 }
 
