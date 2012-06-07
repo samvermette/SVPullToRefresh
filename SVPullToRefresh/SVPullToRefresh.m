@@ -40,6 +40,7 @@ typedef NSUInteger SVPullToRefreshState;
 
 @property (nonatomic, unsafe_unretained) UIScrollView *scrollView;
 @property (nonatomic, readwrite) UIEdgeInsets originalScrollViewContentInset;
+@property (nonatomic, strong) UIView *originalTableFooterView;
 
 @property (nonatomic, assign) BOOL showsPullToRefresh;
 @property (nonatomic, assign) BOOL showsInfiniteScrolling;
@@ -55,7 +56,7 @@ typedef NSUInteger SVPullToRefreshState;
 
 @synthesize state;
 @synthesize scrollView = _scrollView;
-@synthesize arrow, arrowImage, activityIndicatorView, titleLabel, dateLabel, originalScrollViewContentInset, showsPullToRefresh, showsInfiniteScrolling;
+@synthesize arrow, arrowImage, activityIndicatorView, titleLabel, dateLabel, originalScrollViewContentInset, originalTableFooterView, showsPullToRefresh, showsInfiniteScrolling;
 
 - (void)dealloc {
     [self.scrollView removeObserver:self forKeyPath:@"contentOffset"];
@@ -195,6 +196,7 @@ typedef NSUInteger SVPullToRefreshState;
     self.showsInfiniteScrolling = YES;
     
     self.frame = CGRectMake(0, 0, self.scrollView.bounds.size.width, 60);
+    self.originalTableFooterView = [(UITableView*)self.scrollView tableFooterView];
     [(UITableView*)self.scrollView setTableFooterView:self];
     
     self.state = SVPullToRefreshStateHidden;    
@@ -239,7 +241,7 @@ typedef NSUInteger SVPullToRefreshState;
 - (void)setShowsInfiniteScrolling:(BOOL)show {
     showsInfiniteScrolling = show;
     if(!show)
-        [(UITableView*)self.scrollView setTableFooterView:nil];
+        [(UITableView*)self.scrollView setTableFooterView:self.originalTableFooterView];
     else
         [(UITableView*)self.scrollView setTableFooterView:self];
 }
