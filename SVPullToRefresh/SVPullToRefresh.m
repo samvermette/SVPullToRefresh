@@ -173,7 +173,7 @@ typedef NSUInteger SVPullToRefreshState;
 #pragma mark - Setters
 
 - (void)setPullToRefreshActionHandler:(void (^)(void))actionHandler {
-    pullToRefreshActionHandler = actionHandler;
+    pullToRefreshActionHandler = [actionHandler copy];
     [_scrollView addSubview:self];
     self.showsPullToRefresh = YES;
     
@@ -191,7 +191,7 @@ typedef NSUInteger SVPullToRefreshState;
 }
 
 - (void)setInfiniteScrollingActionHandler:(void (^)(void))actionHandler {
-    infiniteScrollingActionHandler = actionHandler;
+    infiniteScrollingActionHandler = [actionHandler copy];
     self.showsInfiniteScrolling = YES;
     
     self.frame = CGRectMake(0, 0, self.scrollView.bounds.size.width, 60);
