@@ -27,6 +27,9 @@ typedef NSUInteger SVPullToRefreshState;
 - (void)setScrollViewContentInset:(UIEdgeInsets)contentInset;
 - (void)scrollViewDidScroll:(CGPoint)contentOffset;
 
+- (void)startObservingScrollView;
+- (void)stopObservingScrollView;
+
 @property (nonatomic, copy) void (^pullToRefreshActionHandler)(void);
 @property (nonatomic, copy) void (^infiniteScrollingActionHandler)(void);
 @property (nonatomic, readwrite) SVPullToRefreshState state;
@@ -44,7 +47,7 @@ typedef NSUInteger SVPullToRefreshState;
 
 @property (nonatomic, assign) BOOL showsPullToRefresh;
 @property (nonatomic, assign) BOOL showsInfiniteScrolling;
-@property (nonatomic, assign) BOOL observingScrollView;
+@property (nonatomic, assign) BOOL isObservingScrollView;
 
 @end
 
@@ -57,7 +60,7 @@ typedef NSUInteger SVPullToRefreshState;
 
 @synthesize state;
 @synthesize scrollView = _scrollView;
-@synthesize arrow, arrowImage, activityIndicatorView, titleLabel, dateLabel, originalScrollViewContentInset, originalTableFooterView, showsPullToRefresh, showsInfiniteScrolling, observingScrollView;
+@synthesize arrow, arrowImage, activityIndicatorView, titleLabel, dateLabel, originalScrollViewContentInset, originalTableFooterView, showsPullToRefresh, showsInfiniteScrolling, isObservingScrollView;
 
 - (void)dealloc {
     [self stopObservingScrollView];
@@ -77,13 +80,11 @@ typedef NSUInteger SVPullToRefreshState;
     return self;
 }
 
-- (void)willMoveToSuperview:(UIView *)newSuperview
-{
-    if ( newSuperview == self.scrollView ) {
+- (void)willMoveToSuperview:(UIView *)newSuperview {
+    if(newSuperview == self.scrollView)
         [self startObservingScrollView];
-    } else if ( newSuperview == nil ) {
+    else if(newSuperview == nil)
         [self stopObservingScrollView];
-    }
 }
 
 - (void)layoutSubviews {
@@ -254,24 +255,22 @@ typedef NSUInteger SVPullToRefreshState;
 
 #pragma mark -
 
-- (void)startObservingScrollView
-{
-    if ( self.observingScrollView )
+- (void)startObservingScrollView {
+    if (self.isObservingScrollView)
         return;
     
     [self.scrollView addObserver:self forKeyPath:@"contentOffset" options:NSKeyValueObservingOptionNew context:nil];
     [self.scrollView addObserver:self forKeyPath:@"frame" options:NSKeyValueObservingOptionNew context:nil];
-    self.observingScrollView = YES;
+    self.isObservingScrollView = YES;
 }
 
-- (void)stopObservingScrollView
-{
-    if ( self.observingScrollView )
+- (void)stopObservingScrollView {
+    if(self.isObservingScrollView)
         return;
     
     [self.scrollView removeObserver:self forKeyPath:@"contentOffset"];
     [self.scrollView removeObserver:self forKeyPath:@"frame"];
-    self.observingScrollView = NO;
+    self.isObservingScrollView = NO;
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
