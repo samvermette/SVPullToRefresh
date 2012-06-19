@@ -265,7 +265,7 @@ typedef NSUInteger SVPullToRefreshState;
 }
 
 - (void)stopObservingScrollView {
-    if(self.isObservingScrollView)
+    if(!self.isObservingScrollView)
         return;
     
     [self.scrollView removeObserver:self forKeyPath:@"contentOffset"];
