@@ -21,9 +21,6 @@ typedef NSUInteger SVPullToRefreshState;
 
 
 @interface SVPullToRefresh ()
-{
-    BOOL    _observingScrollView;
-}
 
 - (id)initWithScrollView:(UIScrollView*)scrollView;
 - (void)rotateArrow:(float)degrees hide:(BOOL)hide;
@@ -47,6 +44,7 @@ typedef NSUInteger SVPullToRefreshState;
 
 @property (nonatomic, assign) BOOL showsPullToRefresh;
 @property (nonatomic, assign) BOOL showsInfiniteScrolling;
+@property (nonatomic, assign) BOOL observingScrollView;
 
 @end
 
@@ -59,7 +57,7 @@ typedef NSUInteger SVPullToRefreshState;
 
 @synthesize state;
 @synthesize scrollView = _scrollView;
-@synthesize arrow, arrowImage, activityIndicatorView, titleLabel, dateLabel, originalScrollViewContentInset, originalTableFooterView, showsPullToRefresh, showsInfiniteScrolling;
+@synthesize arrow, arrowImage, activityIndicatorView, titleLabel, dateLabel, originalScrollViewContentInset, originalTableFooterView, showsPullToRefresh, showsInfiniteScrolling, observingScrollView;
 
 - (void)dealloc {
     [self stopObservingScrollView];
@@ -258,22 +256,22 @@ typedef NSUInteger SVPullToRefreshState;
 
 - (void)startObservingScrollView
 {
-    if ( _observingScrollView )
+    if ( self.observingScrollView )
         return;
     
     [self.scrollView addObserver:self forKeyPath:@"contentOffset" options:NSKeyValueObservingOptionNew context:nil];
     [self.scrollView addObserver:self forKeyPath:@"frame" options:NSKeyValueObservingOptionNew context:nil];
-    _observingScrollView = YES;
+    self.observingScrollView = YES;
 }
 
 - (void)stopObservingScrollView
 {
-    if ( !_observingScrollView )
+    if ( self.observingScrollView )
         return;
     
     [self.scrollView removeObserver:self forKeyPath:@"contentOffset"];
     [self.scrollView removeObserver:self forKeyPath:@"frame"];
-    _observingScrollView = NO;
+    self.observingScrollView = NO;
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
