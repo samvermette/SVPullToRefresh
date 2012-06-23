@@ -16,6 +16,10 @@
 @implementation SVViewController
 @synthesize tableView = tableView;
 
+- (IBAction)triggerRefresh:(id)sender {
+    [self.tableView.pullToRefreshView triggerRefresh];
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
@@ -43,17 +47,18 @@
     
     // you can temporarily toggle the pull to refresh view
     // tableView.showsPullToRefresh = NO;
+    
 }
 
 #pragma mark -
 #pragma mark UITableViewDataSource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 1;
+    return 10;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 10;
+    return 2;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -65,4 +70,9 @@
     
     return cell;
 }
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    return [NSString stringWithFormat:@"Section %d", section];
+}
+
 @end
