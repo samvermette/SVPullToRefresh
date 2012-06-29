@@ -16,7 +16,6 @@
 		22E0D92C1545EE5B00BB6BB5 /* SVViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 22E0D92B1545EE5B00BB6BB5 /* SVViewController.m */; };
 		22E0D92F1545EE5B00BB6BB5 /* SVViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 22E0D92D1545EE5B00BB6BB5 /* SVViewController.xib */; };
 		22E0D93D1545EE7600BB6BB5 /* SVPullToRefresh.m in Sources */ = {isa = PBXBuildFile; fileRef = 22E0D93B1545EE7600BB6BB5 /* SVPullToRefresh.m */; };
-		22E0D93E1545EE7600BB6BB5 /* SVPullToRefresh.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 22E0D93C1545EE7600BB6BB5 /* SVPullToRefresh.bundle */; };
 		22E0D9411545EE9000BB6BB5 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22E0D9401545EE9000BB6BB5 /* QuartzCore.framework */; };
 		22E0D94B1545F63300BB6BB5 /* README.textile in Resources */ = {isa = PBXBuildFile; fileRef = 22E0D94A1545F63300BB6BB5 /* README.textile */; };
 /* End PBXBuildFile section */
@@ -37,7 +36,6 @@
 		22E0D92E1545EE5B00BB6BB5 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/SVViewController.xib; sourceTree = "<group>"; };
 		22E0D93A1545EE7600BB6BB5 /* SVPullToRefresh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVPullToRefresh.h; sourceTree = "<group>"; };
 		22E0D93B1545EE7600BB6BB5 /* SVPullToRefresh.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVPullToRefresh.m; sourceTree = "<group>"; };
-		22E0D93C1545EE7600BB6BB5 /* SVPullToRefresh.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = SVPullToRefresh.bundle; sourceTree = "<group>"; };
 		22E0D9401545EE9000BB6BB5 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		22E0D94A1545F63300BB6BB5 /* README.textile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = README.textile; path = ../README.textile; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -117,7 +115,6 @@
 			children = (
 				22E0D93A1545EE7600BB6BB5 /* SVPullToRefresh.h */,
 				22E0D93B1545EE7600BB6BB5 /* SVPullToRefresh.m */,
-				22E0D93C1545EE7600BB6BB5 /* SVPullToRefresh.bundle */,
 			);
 			name = SVPullToRefresh;
 			path = ../SVPullToRefresh;
@@ -177,7 +174,6 @@
 			files = (
 				22E0D9231545EE5B00BB6BB5 /* InfoPlist.strings in Resources */,
 				22E0D92F1545EE5B00BB6BB5 /* SVViewController.xib in Resources */,
-				22E0D93E1545EE7600BB6BB5 /* SVPullToRefresh.bundle in Resources */,
 				22E0D94B1545F63300BB6BB5 /* README.textile in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
