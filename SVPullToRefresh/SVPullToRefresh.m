@@ -19,6 +19,10 @@ enum {
 
 typedef NSUInteger SVPullToRefreshState;
 
+@interface ArrowImage : UIView
+@property (nonatomic, strong) UIColor *arrowColor;
+@end
+
 
 @interface SVPullToRefresh ()
 
@@ -34,8 +38,7 @@ typedef NSUInteger SVPullToRefreshState;
 @property (nonatomic, copy) void (^infiniteScrollingActionHandler)(void);
 @property (nonatomic, readwrite) SVPullToRefreshState state;
 
-@property (nonatomic, strong) UIImageView *arrow;
-@property (nonatomic, strong, readonly) UIImage *arrowImage;
+@property (nonatomic, strong) ArrowImage *arrow;
 @property (nonatomic, strong) UIActivityIndicatorView *activityIndicatorView;
 @property (nonatomic, strong) UILabel *titleLabel;
 
@@ -60,7 +63,7 @@ typedef NSUInteger SVPullToRefreshState;
 
 @synthesize state;
 @synthesize scrollView = _scrollView;
-@synthesize arrow, arrowImage, activityIndicatorView, titleLabel, dateLabel, originalScrollViewContentInset, originalTableFooterView, showsPullToRefresh, showsInfiniteScrolling, isObservingScrollView;
+@synthesize arrow, activityIndicatorView, titleLabel, dateLabel, originalScrollViewContentInset, originalTableFooterView, showsPullToRefresh, showsInfiniteScrolling, isObservingScrollView;
 
 - (void)dealloc {
     [self stopObservingScrollView];
@@ -71,7 +74,6 @@ typedef NSUInteger SVPullToRefreshState;
     self.scrollView = scrollView;
     
     // default styling values
-    self.arrowColor = [UIColor grayColor];
     self.activityIndicatorViewStyle = UIActivityIndicatorViewStyleGray;
     self.textColor = [UIColor darkGrayColor];
     
@@ -102,7 +104,7 @@ typedef NSUInteger SVPullToRefreshState;
     CGRect arrowFrame = arrow.frame;
     arrowFrame.origin.x = ceil(remainingWidth*position);
     arrow.frame = arrowFrame;
-        
+	
     if(infiniteScrollingActionHandler) {
         self.activityIndicatorView.center = CGPointMake(round(self.bounds.size.width/2), round(self.bounds.size.height/2));
     } else
@@ -112,32 +114,16 @@ typedef NSUInteger SVPullToRefreshState;
 
 #pragma mark - Getters
 
-- (UIImageView *)arrow {
+- (ArrowImage *)arrow {
     if(!arrow && pullToRefreshActionHandler) {
-        arrow = [[UIImageView alloc] initWithImage:self.arrowImage];
+		arrow = [ArrowImage new];
         arrow.frame = CGRectMake(0, 6, 22, 48);
         arrow.backgroundColor = [UIColor clearColor];
+		
+		// assign a different default color for arrow
+//		arrow.arrowColor = [UIColor blueColor];
     }
     return arrow;
-}
-
-- (UIImage *)arrowImage {
-    CGRect rect = CGRectMake(0, 0, 22, 48);
-    UIGraphicsBeginImageContextWithOptions(rect.size, NO, 0);
-    
-    CGContextRef context = UIGraphicsGetCurrentContext();
-    [[UIColor clearColor] set];
-    CGContextFillRect(context, rect);
-    
-    [self.arrowColor set];
-    CGContextTranslateCTM(context, 0, rect.size.height);
-    CGContextScaleCTM(context, 1.0, -1.0);
-    CGContextClipToMask(context, rect, [[UIImage imageNamed:@"SVPullToRefresh.bundle/arrow"] CGImage]);
-    CGContextFillRect(context, rect);
-    
-    UIImage *output = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    return output;
 }
 
 - (UIActivityIndicatorView *)activityIndicatorView {
@@ -211,8 +197,12 @@ typedef NSUInteger SVPullToRefreshState;
 }
 
 - (void)setArrowColor:(UIColor *)newArrowColor {
-    arrowColor = newArrowColor;
-    self.arrow.image = self.arrowImage;
+	self.arrow.arrowColor = newArrowColor; // pass through
+	[self.arrow setNeedsDisplay];
+}
+
+- (UIColor *)arrowColor {
+	return self.arrow.arrowColor; // pass through
 }
 
 - (void)setTextColor:(UIColor *)newTextColor {
@@ -455,4 +445,56 @@ static char UIScrollViewInfiniteScrollingView;
     return self.infiniteScrollingView.showsInfiniteScrolling;
 }
 
+@end
+
+
+#pragma mark - ArrowImage
+
+@implementation ArrowImage
+@synthesize arrowColor;
+
+- (UIColor *)arrowColor {
+	if (arrowColor) return arrowColor;
+	return [UIColor grayColor]; // default Color
+}
+
+- (void)drawRect:(CGRect)rect {
+	CGContextRef c = UIGraphicsGetCurrentContext();
+	
+	// the rects above the arrow
+	CGContextAddRect(c, CGRectMake(5, 0, 12, 4)); // to-do: use dynamic points
+	CGContextAddRect(c, CGRectMake(5, 6, 12, 4)); // currently fixed size: 22 x 48pt
+	CGContextAddRect(c, CGRectMake(5, 12, 12, 4));
+	CGContextAddRect(c, CGRectMake(5, 18, 12, 4));
+	CGContextAddRect(c, CGRectMake(5, 24, 12, 4));
+	CGContextAddRect(c, CGRectMake(5, 30, 12, 4));
+	
+	// the arrow
+	CGContextMoveToPoint(c, 0, 34);
+	CGContextAddLineToPoint(c, 11, 48);
+	CGContextAddLineToPoint(c, 22, 34);
+	CGContextAddLineToPoint(c, 0, 34);
+	CGContextClosePath(c);
+	
+	CGContextSaveGState(c);
+	CGContextClip(c);
+	
+	
+	// Gradient Declaration
+	CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+	NSArray* alphaGradientColors = [NSArray arrayWithObjects:
+									(id)[self.arrowColor colorWithAlphaComponent:0].CGColor,
+									(id)[self.arrowColor colorWithAlphaComponent:0.5f].CGColor,
+									(id)self.arrowColor.CGColor, nil];
+	CGFloat alphaGradientLocations[] = {0, 0.25, 1};
+	CGGradientRef alphaGradient = CGGradientCreateWithColors(colorSpace, (__bridge CFArrayRef)alphaGradientColors, alphaGradientLocations);
+	
+	
+	CGContextDrawLinearGradient(c, alphaGradient, CGPointMake(11, -0), CGPointMake(11, 48), 0);
+	
+	CGContextRestoreGState(c);
+	
+	CGGradientRelease(alphaGradient);
+	CGColorSpaceRelease(colorSpace);
+}
 @end
