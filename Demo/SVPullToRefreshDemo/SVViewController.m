@@ -16,10 +16,6 @@
 @implementation SVViewController
 @synthesize tableView = tableView;
 
-- (IBAction)triggerRefresh:(id)sender {
-    [self.tableView.pullToRefreshView triggerRefresh];
-}
-
 - (void)viewDidLoad {
     [super viewDidLoad];
     
