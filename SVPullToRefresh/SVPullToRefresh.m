@@ -19,7 +19,7 @@ enum {
 
 typedef NSUInteger SVPullToRefreshState;
 
-@interface ArrowImage : UIView
+@interface SVPullToRefreshArrow : UIView
 @property (nonatomic, strong) UIColor *arrowColor;
 @end
 
@@ -38,7 +38,7 @@ typedef NSUInteger SVPullToRefreshState;
 @property (nonatomic, copy) void (^infiniteScrollingActionHandler)(void);
 @property (nonatomic, readwrite) SVPullToRefreshState state;
 
-@property (nonatomic, strong) ArrowImage *arrow;
+@property (nonatomic, strong) SVPullToRefreshArrow *arrow;
 @property (nonatomic, strong) UIActivityIndicatorView *activityIndicatorView;
 @property (nonatomic, strong) UILabel *titleLabel;
 
@@ -114,9 +114,9 @@ typedef NSUInteger SVPullToRefreshState;
 
 #pragma mark - Getters
 
-- (ArrowImage *)arrow {
+- (SVPullToRefreshArrow *)arrow {
     if(!arrow && pullToRefreshActionHandler) {
-		arrow = [ArrowImage new];
+		arrow = [SVPullToRefreshArrow new];
         arrow.frame = CGRectMake(0, 6, 22, 48);
         arrow.backgroundColor = [UIColor clearColor];
 		
@@ -448,9 +448,9 @@ static char UIScrollViewInfiniteScrollingView;
 @end
 
 
-#pragma mark - ArrowImage
+#pragma mark - SVPullToRefreshArrow
 
-@implementation ArrowImage
+@implementation SVPullToRefreshArrow
 @synthesize arrowColor;
 
 - (UIColor *)arrowColor {
@@ -484,13 +484,13 @@ static char UIScrollViewInfiniteScrollingView;
 	CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
 	NSArray* alphaGradientColors = [NSArray arrayWithObjects:
 									(id)[self.arrowColor colorWithAlphaComponent:0].CGColor,
-									(id)[self.arrowColor colorWithAlphaComponent:0.5f].CGColor,
-									(id)self.arrowColor.CGColor, nil];
-	CGFloat alphaGradientLocations[] = {0, 0.25, 1};
+									(id)[self.arrowColor colorWithAlphaComponent:1].CGColor,
+									nil];
+	CGFloat alphaGradientLocations[] = {0, 0.8};
 	CGGradientRef alphaGradient = CGGradientCreateWithColors(colorSpace, (__bridge CFArrayRef)alphaGradientColors, alphaGradientLocations);
 	
 	
-	CGContextDrawLinearGradient(c, alphaGradient, CGPointMake(11, -0), CGPointMake(11, 48), 0);
+	CGContextDrawLinearGradient(c, alphaGradient, CGPointZero, CGPointMake(0, rect.size.height), 0);
 	
 	CGContextRestoreGState(c);
 	
