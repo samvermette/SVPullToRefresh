@@ -271,17 +271,23 @@ typedef NSUInteger SVPullToRefreshState;
 }
 
 - (void)scrollViewDidScroll:(CGPoint)contentOffset {    
-    if(pullToRefreshActionHandler && self.state != SVPullToRefreshStateLoading) {
-        CGFloat scrollOffsetThreshold = self.frame.origin.y-self.originalScrollViewContentInset.top;
-        
-        if(!self.scrollView.isDragging && self.state == SVPullToRefreshStateTriggered)
-            self.state = SVPullToRefreshStateLoading;
-        else if(contentOffset.y > scrollOffsetThreshold && contentOffset.y < -self.originalScrollViewContentInset.top && self.scrollView.isDragging && self.state != SVPullToRefreshStateLoading)
-            self.state = SVPullToRefreshStateVisible;
-        else if(contentOffset.y < scrollOffsetThreshold && self.scrollView.isDragging && self.state == SVPullToRefreshStateVisible)
-            self.state = SVPullToRefreshStateTriggered;
-        else if(contentOffset.y >= -self.originalScrollViewContentInset.top && self.state != SVPullToRefreshStateHidden)
-            self.state = SVPullToRefreshStateHidden;
+    if(pullToRefreshActionHandler) {
+        if (self.state == SVPullToRefreshStateLoading) {
+            CGFloat offset = MAX(self.scrollView.contentOffset.y * -1, 0);
+            offset = MIN(offset, 60.0f);
+            self.scrollView.contentInset = UIEdgeInsetsMake(offset, 0.0f, 0.0f, 0.0f);
+        } else {
+            CGFloat scrollOffsetThreshold = self.frame.origin.y-self.originalScrollViewContentInset.top;
+            
+            if(!self.scrollView.isDragging && self.state == SVPullToRefreshStateTriggered)
+                self.state = SVPullToRefreshStateLoading;
+            else if(contentOffset.y > scrollOffsetThreshold && contentOffset.y < -self.originalScrollViewContentInset.top && self.scrollView.isDragging && self.state != SVPullToRefreshStateLoading)
+                self.state = SVPullToRefreshStateVisible;
+            else if(contentOffset.y < scrollOffsetThreshold && self.scrollView.isDragging && self.state == SVPullToRefreshStateVisible)
+                self.state = SVPullToRefreshStateTriggered;
+            else if(contentOffset.y >= -self.originalScrollViewContentInset.top && self.state != SVPullToRefreshStateHidden)
+                self.state = SVPullToRefreshStateHidden;
+        }
     }
     else if(infiniteScrollingActionHandler) {
         CGFloat scrollOffsetThreshold = self.scrollView.contentSize.height-self.scrollView.bounds.size.height-self.originalScrollViewContentInset.top;
@@ -295,6 +301,7 @@ typedef NSUInteger SVPullToRefreshState;
 
 - (void)triggerRefresh {
     self.state = SVPullToRefreshStateLoading;
+    [self.scrollView setContentOffset:CGPointMake(0, -60.0f) animated:YES];
 }
 
 - (void)stopAnimating {
