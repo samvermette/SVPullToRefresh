@@ -17,6 +17,7 @@
 
 @property (nonatomic, strong) NSDate *lastUpdatedDate;
 @property (nonatomic, strong) NSDateFormatter *dateFormatter;
+@property (nonatomic, strong) UILabel *titleLabel;
 
 - (void)triggerRefresh;
 - (void)stopAnimating;
