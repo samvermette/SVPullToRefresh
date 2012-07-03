@@ -19,6 +19,8 @@ enum {
 
 typedef NSUInteger SVPullToRefreshState;
 
+static CGFloat const SVPullToRefreshViewHeight = 60;
+
 @interface SVPullToRefreshArrow : UIView
 @property (nonatomic, strong) UIColor *arrowColor;
 @end
@@ -181,14 +183,14 @@ typedef NSUInteger SVPullToRefreshState;
     [self addSubview:self.arrow];
     	
     self.state = SVPullToRefreshStateHidden;    
-    self.frame = CGRectMake(0, -60, self.scrollView.bounds.size.width, 60);
+    self.frame = CGRectMake(0, -SVPullToRefreshViewHeight, self.scrollView.bounds.size.width, SVPullToRefreshViewHeight);
 }
 
 - (void)setInfiniteScrollingActionHandler:(void (^)(void))actionHandler {
     infiniteScrollingActionHandler = [actionHandler copy];
     self.showsInfiniteScrolling = YES;
     
-    self.frame = CGRectMake(0, 0, self.scrollView.bounds.size.width, 60);
+    self.frame = CGRectMake(0, 0, self.scrollView.bounds.size.width, SVPullToRefreshViewHeight);
     self.originalTableFooterView = [(UITableView*)self.scrollView tableFooterView];
     [(UITableView*)self.scrollView setTableFooterView:self];
     
@@ -274,7 +276,7 @@ typedef NSUInteger SVPullToRefreshState;
     if(pullToRefreshActionHandler) {
         if (self.state == SVPullToRefreshStateLoading) {
             CGFloat offset = MAX(self.scrollView.contentOffset.y * -1, 0);
-            offset = MIN(offset, 60.0f);
+            offset = MIN(offset, SVPullToRefreshViewHeight);
             self.scrollView.contentInset = UIEdgeInsetsMake(offset, 0.0f, 0.0f, 0.0f);
         } else {
             CGFloat scrollOffsetThreshold = self.frame.origin.y-self.originalScrollViewContentInset.top;
@@ -301,7 +303,7 @@ typedef NSUInteger SVPullToRefreshState;
 
 - (void)triggerRefresh {
     self.state = SVPullToRefreshStateLoading;
-    [self.scrollView setContentOffset:CGPointMake(0, -60.0f) animated:YES];
+    [self.scrollView setContentOffset:CGPointMake(0, -SVPullToRefreshViewHeight) animated:YES];
 }
 
 - (void)stopAnimating {
