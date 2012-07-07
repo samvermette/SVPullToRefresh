@@ -187,13 +187,11 @@ static CGFloat const SVPullToRefreshViewHeight = 60;
 }
 
 - (void)setInfiniteScrollingActionHandler:(void (^)(void))actionHandler {
+    self.originalTableFooterView = [(UITableView*)self.scrollView tableFooterView];
     infiniteScrollingActionHandler = [actionHandler copy];
     self.showsInfiniteScrolling = YES;
-    
     self.frame = CGRectMake(0, 0, self.scrollView.bounds.size.width, SVPullToRefreshViewHeight);
-    self.originalTableFooterView = [(UITableView*)self.scrollView tableFooterView];
     [(UITableView*)self.scrollView setTableFooterView:self];
-    
     self.state = SVPullToRefreshStateHidden;    
     [self layoutSubviews];
 }
