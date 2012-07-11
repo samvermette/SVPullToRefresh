@@ -413,7 +413,7 @@ static char UIScrollViewInfiniteScrollingView;
     [self willChangeValueForKey:@"pullToRefreshView"];
     objc_setAssociatedObject(self, &UIScrollViewPullToRefreshView,
                              pullToRefreshView,
-                             OBJC_ASSOCIATION_ASSIGN);
+                             OBJC_ASSOCIATION_RETAIN);
     [self didChangeValueForKey:@"pullToRefreshView"];
 }
 
