@@ -304,6 +304,19 @@ static CGFloat const SVPullToRefreshViewHeight = 60;
     [self.scrollView setContentOffset:CGPointMake(0, -SVPullToRefreshViewHeight) animated:YES];
 }
 
+- (void)startAnimating{
+    state = SVPullToRefreshStateLoading;
+    
+    titleLabel.text = NSLocalizedString(@"Loading...",);
+    [self.activityIndicatorView startAnimating];
+    UIEdgeInsets newInsets = self.originalScrollViewContentInset;
+    newInsets.top = self.frame.origin.y*-1+self.originalScrollViewContentInset.top;
+    newInsets.bottom = self.scrollView.contentInset.bottom;
+    [self setScrollViewContentInset:newInsets];
+    [self.scrollView setContentOffset:CGPointMake(0, -self.frame.size.height) animated:NO];
+    [self rotateArrow:0 hide:YES];
+}
+
 - (void)stopAnimating {
     self.state = SVPullToRefreshStateHidden;
 }
@@ -349,13 +362,7 @@ static CGFloat const SVPullToRefreshViewHeight = 60;
                 break;
                 
             case SVPullToRefreshStateLoading:
-                titleLabel.text = NSLocalizedString(@"Loading...",);
-                [self.activityIndicatorView startAnimating];
-                UIEdgeInsets newInsets = self.originalScrollViewContentInset;
-                newInsets.top = self.frame.origin.y*-1+self.originalScrollViewContentInset.top;
-                newInsets.bottom = self.scrollView.contentInset.bottom;
-                [self setScrollViewContentInset:newInsets];
-                [self rotateArrow:0 hide:YES];
+                [self startAnimating];
                 pullToRefreshActionHandler();
                 break;
         }
