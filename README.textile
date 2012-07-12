@@ -1,5 +1,5 @@
 __*Important note if your project doesn't use ARC*: you must add the @-fobjc-arc@ compiler flag to @SVPullToRefresh.m@ in Target Settings > Build Phases > Compile Sources.__
-__*Important for IOS4*: after adding @-fobjc-arc@ compiler flag to @SVPullToRefresh.m@, add @-fobjc-arc@ in Build Settings > Other Linker Flags. (http://stackoverflow.com/questions/8112035/libobjc-a-dylib-compile-error-on-ios-4-3)
+__Note for IOS4 add @-fobjc-arc@ in Build Settings > Other Linker Flags. (http://stackoverflow.com/questions/8112035/libobjc-a-dylib-compile-error-on-ios-4-3)
 
 h1. SVPullToRefresh
 
