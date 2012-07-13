@@ -19,6 +19,7 @@
 @property (nonatomic, strong) NSDateFormatter *dateFormatter;
 
 - (void)triggerRefresh;
+- (void)startAnimating;
 - (void)stopAnimating;
 
 @end
