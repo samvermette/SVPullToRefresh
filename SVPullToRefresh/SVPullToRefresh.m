@@ -42,7 +42,6 @@ static CGFloat const SVPullToRefreshViewHeight = 60;
 
 @property (nonatomic, strong) SVPullToRefreshArrow *arrow;
 @property (nonatomic, strong) UIActivityIndicatorView *activityIndicatorView;
-@property (nonatomic, strong) UILabel *titleLabel;
 
 @property (nonatomic, strong, readonly) UILabel *dateLabel;
 
@@ -173,7 +172,7 @@ static CGFloat const SVPullToRefreshViewHeight = 60;
     [_scrollView addSubview:self];
     self.showsPullToRefresh = YES;
     
-    self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 20, 150, 20)];
+    self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 20, 250, 20)];
     titleLabel.text = NSLocalizedString(@"Pull to refresh...",);
     titleLabel.font = [UIFont boldSystemFontOfSize:14];
     titleLabel.backgroundColor = [UIColor clearColor];
