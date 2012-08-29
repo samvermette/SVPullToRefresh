@@ -80,6 +80,7 @@ static CGFloat const SVPullToRefreshViewHeight = 60;
     self.textColor = [UIColor darkGrayColor];
     
     self.originalScrollViewContentInset = self.scrollView.contentInset;
+    self.autoresizingMask = UIViewAutoresizingFlexibleWidth;
 
     return self;
 }
