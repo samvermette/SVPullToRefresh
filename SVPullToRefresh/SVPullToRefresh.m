@@ -10,15 +10,6 @@
 #import <QuartzCore/QuartzCore.h>
 #import "SVPullToRefresh.h"
 
-enum {
-    SVPullToRefreshStateHidden = 1,
-	SVPullToRefreshStateVisible,
-    SVPullToRefreshStateTriggered,
-    SVPullToRefreshStateLoading
-};
-
-typedef NSUInteger SVPullToRefreshState;
-
 static CGFloat const SVPullToRefreshViewHeight = 60;
 
 @interface SVPullToRefreshArrow : UIView
@@ -38,7 +29,6 @@ static CGFloat const SVPullToRefreshViewHeight = 60;
 
 @property (nonatomic, copy) void (^pullToRefreshActionHandler)(void);
 @property (nonatomic, copy) void (^infiniteScrollingActionHandler)(void);
-@property (nonatomic, readwrite) SVPullToRefreshState state;
 
 @property (nonatomic, strong) SVPullToRefreshArrow *arrow;
 @property (nonatomic, strong) UIActivityIndicatorView *activityIndicatorView;
@@ -62,7 +52,7 @@ static CGFloat const SVPullToRefreshViewHeight = 60;
 // public properties
 @synthesize pullToRefreshActionHandler, infiniteScrollingActionHandler, arrowColor, textColor, activityIndicatorViewStyle, lastUpdatedDate, dateFormatter;
 
-@synthesize state;
+@synthesize state = _state;
 @synthesize scrollView = _scrollView;
 @synthesize arrow, activityIndicatorView, titleLabel, dateLabel, originalScrollViewContentInset, originalTableFooterView, showsPullToRefresh, showsInfiniteScrolling, isObservingScrollView;
 
@@ -304,7 +294,7 @@ static CGFloat const SVPullToRefreshViewHeight = 60;
 }
 
 - (void)startAnimating{
-    state = SVPullToRefreshStateLoading;
+    _state = SVPullToRefreshStateLoading;
     
     titleLabel.text = NSLocalizedString(@"Loading...",);
     [self.activityIndicatorView startAnimating];
@@ -333,10 +323,10 @@ static CGFloat const SVPullToRefreshViewHeight = 60;
     if(infiniteScrollingActionHandler && !self.showsInfiniteScrolling)
         return;   
     
-    if(state == newState)
+    if(_state == newState)
         return;
     
-    state = newState;
+    _state = newState;
     
     if(pullToRefreshActionHandler) {
         switch (newState) {

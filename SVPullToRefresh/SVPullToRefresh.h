@@ -9,6 +9,15 @@
 
 #import <UIKit/UIKit.h>
 
+enum {
+    SVPullToRefreshStateHidden = 1,
+	SVPullToRefreshStateVisible,
+    SVPullToRefreshStateTriggered,
+    SVPullToRefreshStateLoading
+};
+
+typedef NSUInteger SVPullToRefreshState;
+
 @interface SVPullToRefresh : UIView
 
 @property (nonatomic, strong) UIColor *arrowColor;
@@ -18,6 +27,8 @@
 @property (nonatomic, strong) UILabel *dateLabel;
 @property (nonatomic, strong) NSDate *lastUpdatedDate;
 @property (nonatomic, strong) NSDateFormatter *dateFormatter;
+
+@property (nonatomic, readonly) SVPullToRefreshState state;
 
 - (void)triggerRefresh;
 - (void)startAnimating;
