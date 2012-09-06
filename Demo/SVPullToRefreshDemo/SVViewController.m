@@ -19,6 +19,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    NSDictionary *messages = [NSDictionary dictionaryWithObjectsAndKeys:
+                              @"Downloading...", STRINGIFY(SVPullToRefreshStateLoading), nil];
+    [self.tableView.pullToRefreshView setStateMessages:messages];
+    
     // setup the pull-to-refresh view
     [self.tableView addPullToRefreshWithActionHandler:^{
         NSLog(@"refresh dataSource");

@@ -9,6 +9,8 @@
 
 #import <UIKit/UIKit.h>
 
+#define STRINGIFY(SVPullToRefreshState) [[NSNumber numberWithInt:SVPullToRefreshState] stringValue]
+
 enum {
     SVPullToRefreshStateHidden = 1,
 	SVPullToRefreshStateVisible,
@@ -23,6 +25,7 @@ typedef NSUInteger SVPullToRefreshState;
 @property (nonatomic, strong) UIColor *arrowColor;
 @property (nonatomic, strong) UIColor *textColor;
 @property (nonatomic, readwrite) UIActivityIndicatorViewStyle activityIndicatorViewStyle;
+@property (nonatomic, strong) NSDictionary *stateMessages;
 
 @property (nonatomic, strong) UILabel *dateLabel;
 @property (nonatomic, strong) NSDate *lastUpdatedDate;
