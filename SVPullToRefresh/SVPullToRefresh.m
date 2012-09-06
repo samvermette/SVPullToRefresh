@@ -44,7 +44,6 @@ static CGFloat const SVPullToRefreshViewHeight = 60;
 @property (nonatomic, strong) UIActivityIndicatorView *activityIndicatorView;
 @property (nonatomic, strong) UILabel *titleLabel;
 
-@property (nonatomic, strong, readonly) UILabel *dateLabel;
 
 @property (nonatomic, unsafe_unretained) UIScrollView *scrollView;
 @property (nonatomic, readwrite) UIEdgeInsets originalScrollViewContentInset;
