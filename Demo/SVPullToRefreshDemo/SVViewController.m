@@ -22,6 +22,8 @@
     // setup the pull-to-refresh view
     [self.tableView addPullToRefreshWithActionHandler:^{
         NSLog(@"refresh dataSource");
+        if (tableView.pullToRefreshView.state == SVPullToRefreshStateLoading)
+            NSLog(@"Pull to refresh is loading");
         [tableView.pullToRefreshView performSelector:@selector(stopAnimating) withObject:nil afterDelay:2];
     }];
     
@@ -29,6 +31,9 @@
         NSLog(@"load more data");
     }];
     
+    if (tableView.pullToRefreshView.state == SVPullToRefreshStateHidden)
+        NSLog(@"Pull to refresh is hidden");
+
     // trigger the refresh manually at the end of viewDidLoad
     [tableView.pullToRefreshView triggerRefresh];
     
