@@ -53,6 +53,7 @@ static CGFloat const SVPullToRefreshViewHeight = 60;
 @synthesize pullToRefreshActionHandler, infiniteScrollingActionHandler, arrowColor, textColor, activityIndicatorViewStyle, lastUpdatedDate, dateFormatter;
 
 @synthesize state = _state;
+@synthesize stateMessages;
 @synthesize scrollView = _scrollView;
 @synthesize arrow, activityIndicatorView, titleLabel, dateLabel, originalScrollViewContentInset, originalTableFooterView, showsPullToRefresh, showsInfiniteScrolling, isObservingScrollView;
 
@@ -296,7 +297,7 @@ static CGFloat const SVPullToRefreshViewHeight = 60;
 - (void)startAnimating{
     _state = SVPullToRefreshStateLoading;
     
-    titleLabel.text = NSLocalizedString(@"Loading...",);
+    titleLabel.text = [self messageForState:SVPullToRefreshStateLoading placeholder:NSLocalizedString(@"Loading...",)];
     [self.activityIndicatorView startAnimating];
     UIEdgeInsets newInsets = self.originalScrollViewContentInset;
     newInsets.top = self.frame.origin.y*-1+self.originalScrollViewContentInset.top;
@@ -329,16 +330,17 @@ static CGFloat const SVPullToRefreshViewHeight = 60;
     _state = newState;
     
     if(pullToRefreshActionHandler) {
+        NSString *messagePlaceholder = nil;
         switch (newState) {
             case SVPullToRefreshStateHidden:
-                titleLabel.text = NSLocalizedString(@"Pull to refresh...",);
+                messagePlaceholder = NSLocalizedString(@"Pull to refresh...",);
                 [self.activityIndicatorView stopAnimating];
                 [self setScrollViewContentInset:self.originalScrollViewContentInset];
                 [self rotateArrow:0 hide:NO];
                 break;
                 
             case SVPullToRefreshStateVisible:
-                titleLabel.text = NSLocalizedString(@"Pull to refresh...",);
+                messagePlaceholder = NSLocalizedString(@"Pull to refresh...",);
                 arrow.alpha = 1;
                 [self.activityIndicatorView stopAnimating];
                 [self setScrollViewContentInset:self.originalScrollViewContentInset];
@@ -346,7 +348,7 @@ static CGFloat const SVPullToRefreshViewHeight = 60;
                 break;
                 
             case SVPullToRefreshStateTriggered:
-                titleLabel.text = NSLocalizedString(@"Release to refresh...",);
+                messagePlaceholder = NSLocalizedString(@"Release to refresh...",);
                 [self rotateArrow:M_PI hide:NO];
                 break;
                 
@@ -355,6 +357,8 @@ static CGFloat const SVPullToRefreshViewHeight = 60;
                 pullToRefreshActionHandler();
                 break;
         }
+        if (messagePlaceholder)
+            titleLabel.text = [self messageForState:newState placeholder:messagePlaceholder];
     }
     else if(infiniteScrollingActionHandler) {
         switch (newState) {
@@ -368,6 +372,15 @@ static CGFloat const SVPullToRefreshViewHeight = 60;
                 break;
         }
     }
+}
+
+- (NSString *)messageForState:(SVPullToRefreshState)state placeholder:(NSString *)placeholder
+{
+    NSString *message = nil;
+    NSString *key = STRINGIFY(state);
+    message = [stateMessages valueForKey:key];
+
+    return message == nil ? placeholder : message;
 }
 
 - (void)rotateArrow:(float)degrees hide:(BOOL)hide {
