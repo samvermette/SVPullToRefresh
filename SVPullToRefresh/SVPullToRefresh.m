@@ -19,7 +19,8 @@ enum {
 
 typedef NSUInteger SVPullToRefreshState;
 
-static CGFloat const SVPullToRefreshViewHeight = 60;
+static CGFloat const SVPullToRefreshViewHeight = 180;
+static CGFloat const SVPullToRefreshTriggerHeight = 60;
 
 @interface SVPullToRefreshArrow : UIView
 @property (nonatomic, strong) UIColor *arrowColor;
@@ -118,7 +119,7 @@ static CGFloat const SVPullToRefreshViewHeight = 60;
 
 - (SVPullToRefreshArrow *)arrow {
     if(!arrow && pullToRefreshActionHandler) {
-		self.arrow = [[SVPullToRefreshArrow alloc]initWithFrame:CGRectMake(0, 6, 22, 48)];
+		self.arrow = [[SVPullToRefreshArrow alloc]initWithFrame:CGRectMake(0, SVPullToRefreshViewHeight - 54, 22, 48)];
         arrow.backgroundColor = [UIColor clearColor];
 		
 		// assign a different default color for arrow
@@ -138,14 +139,14 @@ static CGFloat const SVPullToRefreshViewHeight = 60;
 
 - (UILabel *)dateLabel {
     if(!dateLabel && pullToRefreshActionHandler) {
-        dateLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 28, 180, 20)];
+        dateLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, SVPullToRefreshViewHeight - 32, 180, 20)];
         dateLabel.font = [UIFont systemFontOfSize:12];
         dateLabel.backgroundColor = [UIColor clearColor];
         dateLabel.textColor = textColor;
         [self addSubview:dateLabel];
         
         CGRect titleFrame = titleLabel.frame;
-        titleFrame.origin.y = 12;
+        titleFrame.origin.y = SVPullToRefreshViewHeight - 48;
         titleLabel.frame = titleFrame;
     }
     return dateLabel;
@@ -172,7 +173,7 @@ static CGFloat const SVPullToRefreshViewHeight = 60;
     [_scrollView addSubview:self];
     self.showsPullToRefresh = YES;
     
-    self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 20, 150, 20)];
+    self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, SVPullToRefreshViewHeight - 40, 150, 20)];
     titleLabel.text = NSLocalizedString(@"Pull to refresh...",);
     titleLabel.font = [UIFont boldSystemFontOfSize:14];
     titleLabel.backgroundColor = [UIColor clearColor];
@@ -273,16 +274,14 @@ static CGFloat const SVPullToRefreshViewHeight = 60;
     if(pullToRefreshActionHandler) {
         if (self.state == SVPullToRefreshStateLoading) {
             CGFloat offset = MAX(self.scrollView.contentOffset.y * -1, 0);
-            offset = MIN(offset, self.originalScrollViewContentInset.top + SVPullToRefreshViewHeight);
+            offset = MIN(offset, self.originalScrollViewContentInset.top + SVPullToRefreshTriggerHeight);
             self.scrollView.contentInset = UIEdgeInsetsMake(offset, 0.0f, 0.0f, 0.0f);
         } else {
-            CGFloat scrollOffsetThreshold = self.frame.origin.y-self.originalScrollViewContentInset.top;
-            
             if(!self.scrollView.isDragging && self.state == SVPullToRefreshStateTriggered)
                 self.state = SVPullToRefreshStateLoading;
-            else if(contentOffset.y > scrollOffsetThreshold && contentOffset.y < -self.originalScrollViewContentInset.top && self.scrollView.isDragging && self.state != SVPullToRefreshStateLoading)
+            else if(contentOffset.y > -SVPullToRefreshTriggerHeight && contentOffset.y < -self.originalScrollViewContentInset.top && self.scrollView.isDragging && self.state != SVPullToRefreshStateLoading)
                 self.state = SVPullToRefreshStateVisible;
-            else if(contentOffset.y < scrollOffsetThreshold && self.scrollView.isDragging && self.state == SVPullToRefreshStateVisible)
+            else if(contentOffset.y < -SVPullToRefreshTriggerHeight && self.scrollView.isDragging && self.state == SVPullToRefreshStateVisible)
                 self.state = SVPullToRefreshStateTriggered;
             else if(contentOffset.y >= -self.originalScrollViewContentInset.top && self.state != SVPullToRefreshStateHidden)
                 self.state = SVPullToRefreshStateHidden;
@@ -300,7 +299,7 @@ static CGFloat const SVPullToRefreshViewHeight = 60;
 
 - (void)triggerRefresh {
     self.state = SVPullToRefreshStateLoading;
-    [self.scrollView setContentOffset:CGPointMake(0, -SVPullToRefreshViewHeight) animated:YES];
+    [self.scrollView setContentOffset:CGPointMake(0, -SVPullToRefreshTriggerHeight) animated:YES];
 }
 
 - (void)startAnimating{
@@ -312,7 +311,7 @@ static CGFloat const SVPullToRefreshViewHeight = 60;
     newInsets.top = self.frame.origin.y*-1+self.originalScrollViewContentInset.top;
     newInsets.bottom = self.scrollView.contentInset.bottom;
     [self setScrollViewContentInset:newInsets];
-    [self.scrollView setContentOffset:CGPointMake(0, -self.frame.size.height) animated:NO];
+    [self.scrollView setContentOffset:CGPointMake(0, -SVPullToRefreshTriggerHeight) animated:YES];
     [self rotateArrow:0 hide:YES];
 }
 
