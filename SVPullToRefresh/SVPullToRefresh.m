@@ -360,6 +360,18 @@ static CGFloat const SVPullToRefreshViewHeight = 60;
         switch (newState) {
             case SVPullToRefreshStateHidden:
                 [self.activityIndicatorView stopAnimating];
+                if ([self.scrollView isKindOfClass:[UITableView class]]) {
+                    UITableView *tableView = (UITableView *)self.scrollView;
+                    NSInteger lastSectionIndex = [tableView numberOfSections] - 1;
+                    if (lastSectionIndex >= 0) {
+                        NSInteger lastRowIndexAtLastSection = [tableView numberOfRowsInSection:lastSectionIndex] - 1;
+                        if (lastRowIndexAtLastSection >= 0) {
+                            [tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:lastRowIndexAtLastSection inSection:lastSectionIndex]
+                                             atScrollPosition:UITableViewScrollPositionBottom
+                                                     animated:YES];
+                        }
+                    }
+                }
                 break;
 
             case SVPullToRefreshStateLoading:
