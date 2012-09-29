@@ -162,13 +162,16 @@ static CGFloat const SVPullToRefreshViewHeight = 60;
     [_scrollView addSubview:self];
     self.showsPullToRefresh = YES;
     
-    self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 20, 150, 20)];
-    titleLabel.text = NSLocalizedString(@"Pull to refresh...",);
-    titleLabel.font = [UIFont boldSystemFontOfSize:14];
-    titleLabel.backgroundColor = [UIColor clearColor];
-    titleLabel.textColor = textColor;
-    [self addSubview:titleLabel];
-    
+    // If the titleLabel is added before, there is no need to add again.
+    if (self.titleLabel == nil) {
+        self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 20, 150, 20)];
+        titleLabel.text = NSLocalizedString(@"Pull to refresh...",);
+        titleLabel.font = [UIFont boldSystemFontOfSize:14];
+        titleLabel.backgroundColor = [UIColor clearColor];
+        titleLabel.textColor = textColor;
+        [self addSubview:titleLabel];
+    }
+
     [self addSubview:self.arrow];
     	
     self.state = SVPullToRefreshStateHidden;    
