@@ -48,6 +48,7 @@ The @pullToRefreshView@ view can be customized using the following properties:
 @property (nonatomic, strong) UIColor *arrowColor;
 @property (nonatomic, strong) UIColor *textColor;
 @property (nonatomic, readwrite) UIActivityIndicatorViewStyle activityIndicatorViewStyle;
+@property (nonatomic, assign) BOOL showsText;
 </pre>
 
 You can access these properties through your scroll view's @pullToRefreshView@ property. 
@@ -56,6 +57,12 @@ For instance, you would set the @arrowColor@ property using:
 
 <pre>
 tableView.pullToRefreshView.arrowColor = [UIColor whiteColor];
+</pre>
+
+You can also hide the text (pull to refresh, release to refresh, ...) by setting the @showsText@ property to @NO@
+
+<pre>
+tableView.pullToRefreshView.showsText = NO;
 </pre>
 
 h4. Showing a "Last Updated" label
