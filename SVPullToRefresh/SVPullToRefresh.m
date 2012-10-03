@@ -55,6 +55,7 @@ static CGFloat const SVPullToRefreshViewHeight = 60;
 @synthesize state = _state;
 @synthesize scrollView = _scrollView;
 @synthesize arrow, activityIndicatorView, titleLabel, dateLabel, originalScrollViewContentInset, originalTableFooterView, showsPullToRefresh, showsInfiniteScrolling, isObservingScrollView;
+@synthesize showsText = _showsText;
 
 - (void)dealloc {
     [self stopObservingScrollView];
@@ -67,6 +68,7 @@ static CGFloat const SVPullToRefreshViewHeight = 60;
     // default styling values
     self.activityIndicatorViewStyle = UIActivityIndicatorViewStyleGray;
     self.textColor = [UIColor darkGrayColor];
+    self.showsText = YES;
     
     self.originalScrollViewContentInset = self.scrollView.contentInset;
     self.autoresizingMask = UIViewAutoresizingFlexibleWidth;
@@ -82,16 +84,18 @@ static CGFloat const SVPullToRefreshViewHeight = 60;
 }
 
 - (void)layoutSubviews {
-    CGFloat remainingWidth = self.superview.bounds.size.width-200;
+    CGFloat remainingWidth = (self.showsText) ? self.superview.bounds.size.width-200 : self.superview.bounds.size.width;
     float position = 0.50;
     
-    CGRect titleFrame = titleLabel.frame;
-    titleFrame.origin.x = ceil(remainingWidth*position+44);
-    titleLabel.frame = titleFrame;
-    
-    CGRect dateFrame = dateLabel.frame;
-    dateFrame.origin.x = titleFrame.origin.x;
-    dateLabel.frame = dateFrame;
+    if(self.showsText) {
+        CGRect titleFrame = titleLabel.frame;
+        titleFrame.origin.x = ceil(remainingWidth*position+44);
+        titleLabel.frame = titleFrame;
+        
+        CGRect dateFrame = dateLabel.frame;
+        dateFrame.origin.x = titleFrame.origin.x;
+        dateLabel.frame = dateFrame;
+    }
     
     CGRect arrowFrame = arrow.frame;
     arrowFrame.origin.x = ceil(remainingWidth*position);
@@ -102,6 +106,15 @@ static CGFloat const SVPullToRefreshViewHeight = 60;
     } else
         self.activityIndicatorView.center = self.arrow.center;
 
+}
+
+- (void)setShowsText:(BOOL)showsText
+{
+    _showsText = showsText;
+    if (self.titleLabel) {
+        // FIXME is it better to remove it ?
+        self.titleLabel.hidden = ! _showsText;
+    }
 }
 
 #pragma mark - Getters
@@ -163,7 +176,7 @@ static CGFloat const SVPullToRefreshViewHeight = 60;
     self.showsPullToRefresh = YES;
     
     // If the titleLabel is added before, there is no need to add again.
-    if (self.titleLabel == nil) {
+    if (self.titleLabel == nil && self.showsText) {
         self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 20, 150, 20)];
         titleLabel.text = NSLocalizedString(@"Pull to refresh...",);
         titleLabel.font = [UIFont boldSystemFontOfSize:14];
@@ -299,7 +312,8 @@ static CGFloat const SVPullToRefreshViewHeight = 60;
 - (void)startAnimating{
     _state = SVPullToRefreshStateLoading;
     
-    titleLabel.text = NSLocalizedString(@"Loading...",);
+    if (self.showsText)
+        titleLabel.text = NSLocalizedString(@"Loading...",);
     [self.activityIndicatorView startAnimating];
     UIEdgeInsets newInsets = self.originalScrollViewContentInset;
     newInsets.top = self.frame.origin.y*-1+self.originalScrollViewContentInset.top;
@@ -316,7 +330,8 @@ static CGFloat const SVPullToRefreshViewHeight = 60;
 - (void)setState:(SVPullToRefreshState)newState {
     
     if(pullToRefreshActionHandler && !self.showsPullToRefresh && !self.activityIndicatorView.isAnimating) {
-        titleLabel.text = NSLocalizedString(@"",);
+        if (self.showsText)
+            titleLabel.text = NSLocalizedString(@"",);
         [self.activityIndicatorView stopAnimating];
         [self setScrollViewContentInset:self.originalScrollViewContentInset];
         [self rotateArrow:0 hide:YES];
@@ -334,14 +349,16 @@ static CGFloat const SVPullToRefreshViewHeight = 60;
     if(pullToRefreshActionHandler) {
         switch (newState) {
             case SVPullToRefreshStateHidden:
-                titleLabel.text = NSLocalizedString(@"Pull to refresh...",);
+                if (self.showsText)
+                    titleLabel.text = NSLocalizedString(@"Pull to refresh...",);
                 [self.activityIndicatorView stopAnimating];
                 [self setScrollViewContentInset:self.originalScrollViewContentInset];
                 [self rotateArrow:0 hide:NO];
                 break;
                 
             case SVPullToRefreshStateVisible:
-                titleLabel.text = NSLocalizedString(@"Pull to refresh...",);
+                if (self.showsText)
+                    titleLabel.text = NSLocalizedString(@"Pull to refresh...",);
                 arrow.alpha = 1;
                 [self.activityIndicatorView stopAnimating];
                 [self setScrollViewContentInset:self.originalScrollViewContentInset];
@@ -349,7 +366,8 @@ static CGFloat const SVPullToRefreshViewHeight = 60;
                 break;
                 
             case SVPullToRefreshStateTriggered:
-                titleLabel.text = NSLocalizedString(@"Release to refresh...",);
+                if (self.showsText)
+                    titleLabel.text = NSLocalizedString(@"Release to refresh...",);
                 [self rotateArrow:M_PI hide:NO];
                 break;
                 
