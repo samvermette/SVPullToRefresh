@@ -112,9 +112,9 @@ static CGFloat const SVPullToRefreshViewHeight = 60;
 {
     _showsText = showsText;
     if (self.titleLabel) {
-        // FIXME is it better to remove it ?
         self.titleLabel.hidden = ! _showsText;
     }
+    [self setNeedsLayout];
 }
 
 #pragma mark - Getters
