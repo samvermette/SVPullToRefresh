@@ -27,6 +27,7 @@ typedef NSUInteger SVPullToRefreshState;
 @property (nonatomic, strong) UILabel *dateLabel;
 @property (nonatomic, strong) NSDate *lastUpdatedDate;
 @property (nonatomic, strong) NSDateFormatter *dateFormatter;
+@property (nonatomic, assign) BOOL showsText;
 
 @property (nonatomic, readonly) SVPullToRefreshState state;
 
