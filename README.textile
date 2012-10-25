@@ -1,4 +1,4 @@
-__*Upgrading from an earlier version?*: On October 25th, a complete and overdue refactor of this class was pushed that fixes memory issues as well as adds new feature people have been asking for a long time. I tried my best to make this a seamless transition (you will get some deprecation warnings). __
+__*Upgrading from an earlier version?*: On October 25th, a complete and overdue refactor of this class was pushed that fixes memory issues as well as adds new feature people have been asking for a long time. I tried my best to make this a seamless transition (you will get some deprecation warnings).__
 
 __*Important note if your project doesn't use ARC*: you must add the @-fobjc-arc@ compiler flag to @UIScrollView+SVPullToRefresh.m@ and @UIScrollView+SVInfiniteScrolling.m@ in Target Settings > Build Phases > Compile Sources.__
 
