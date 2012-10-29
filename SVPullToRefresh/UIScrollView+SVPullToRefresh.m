@@ -303,25 +303,29 @@ static char UIScrollViewPullToRefreshView;
 }
 
 - (void)setTitle:(NSString *)title forState:(SVPullToRefreshState)state {
-    if(!title)
+    if(!title){
         title = @"";
+    }
     
-    if(state == SVPullToRefreshStateAll)
+    if(state == SVPullToRefreshStateAll){
         [self.titles replaceObjectsInRange:NSMakeRange(0, 3) withObjectsFromArray:@[title, title, title]];
-    else
+    }else{
         [self.titles replaceObjectAtIndex:state withObject:title];
+    }
     
     self.state = self.state;
 }
 
 - (void)setSubtitle:(NSString *)subtitle forState:(SVPullToRefreshState)state {
-    if(!subtitle)
+    if(!subtitle){
         subtitle = @"";
+    }
     
-    if(state == SVPullToRefreshStateAll)
+    if(state == SVPullToRefreshStateAll){
         [self.subtitles replaceObjectsInRange:NSMakeRange(0, 3) withObjectsFromArray:@[subtitle, subtitle, subtitle]];
-    else
+    }else{
         [self.subtitles replaceObjectAtIndex:state withObject:subtitle];
+    }
     
     self.state = self.state;
 }
@@ -329,13 +333,15 @@ static char UIScrollViewPullToRefreshView;
 - (void)setCustomView:(UIView *)view forState:(SVPullToRefreshState)state {
     id viewPlaceholder = view;
     
-    if(!viewPlaceholder)
+    if(!viewPlaceholder){
         viewPlaceholder = @"";
+    }
     
-    if(state == SVPullToRefreshStateAll)
+    if(state == SVPullToRefreshStateAll){
         [self.viewForState replaceObjectsInRange:NSMakeRange(0, 3) withObjectsFromArray:@[viewPlaceholder, viewPlaceholder, viewPlaceholder]];
-    else
+    }else{
         [self.viewForState replaceObjectAtIndex:state withObject:viewPlaceholder];
+    }
     
     self.state = self.state;
 }
@@ -370,9 +376,9 @@ static char UIScrollViewPullToRefreshView;
     if(self.scrollView.contentOffset.y == 0) {
         [self.scrollView setContentOffset:CGPointMake(0, -self.frame.size.height) animated:YES];
         self.wasTriggeredByUser = NO;
-    }
-    else
+    }else{
         self.wasTriggeredByUser = YES;
+    }
     
     self.state = SVPullToRefreshStateLoading;
 }
@@ -386,8 +392,9 @@ static char UIScrollViewPullToRefreshView;
 
 - (void)setState:(SVPullToRefreshState)newState {
     
-    if(_state == newState)
+    if(_state == newState){
         return;
+    }
     
     SVPullToRefreshState previousState = _state;
     _state = newState;
@@ -407,7 +414,7 @@ static char UIScrollViewPullToRefreshView;
     if(hasCustomView) {
         [self addSubview:customView];
         CGRect viewBounds = [customView bounds];
-        CGPoint origin = CGPointMake(round((self.bounds.size.width-viewBounds.size.width)/2), round((self.bounds.size.height-viewBounds.size.height)/2));
+        CGPoint origin = CGPointMake(round((self.bounds.size.width - viewBounds.size.width)/2), round((self.bounds.size.height - viewBounds.size.height)/2));
         [customView setFrame:CGRectMake(origin.x, origin.y, viewBounds.size.width, viewBounds.size.height)];
     }
     else {
@@ -418,38 +425,46 @@ static char UIScrollViewPullToRefreshView;
             self.subtitleLabel.text = subtitle;
         
         switch (newState) {
-            case SVPullToRefreshStateStopped:
+            case SVPullToRefreshStateStopped:{
                 self.arrow.alpha = 1;
                 [self.activityIndicatorView stopAnimating];
                 [self rotateArrow:0 hide:NO];
                 break;
-                
-            case SVPullToRefreshStateTriggered:
+            }
+            case SVPullToRefreshStateTriggered:{
                 [self rotateArrow:M_PI hide:NO];
                 break;
-                
-            case SVPullToRefreshStateLoading:
+            }
+            case SVPullToRefreshStateLoading:{
                 [self.activityIndicatorView startAnimating];
                 [self rotateArrow:0 hide:YES];
                 break;
+            }
+            case SVPullToRefreshStateAll:{
+                break;
+            }
         }
     }
     
     switch (newState) {
-        case SVPullToRefreshStateStopped:
+        case SVPullToRefreshStateStopped:{
             [self resetScrollViewContentInset];
             break;
-            
-        case SVPullToRefreshStateTriggered:
+        }
+        case SVPullToRefreshStateTriggered:{
             break;
-            
-        case SVPullToRefreshStateLoading:
+        }
+        case SVPullToRefreshStateLoading:{
             [self setScrollViewContentInsetForLoading];
             
             if(previousState == SVPullToRefreshStateTriggered && pullToRefreshActionHandler)
                 pullToRefreshActionHandler();
             
             break;
+        }
+        case SVPullToRefreshStateAll:{
+            break;
+        }
     }
 }
 
@@ -526,7 +541,7 @@ static char UIScrollViewPullToRefreshView;
         }
         colors[3] = 0;
         colors[7] = 1;
-        alphaGradient = CGGradientCreateWithColorComponents(colorSpace,colors,alphaGradientLocations,2);
+        alphaGradient = CGGradientCreateWithColorComponents(colorSpace, colors, alphaGradientLocations, 2);
     }
 	
 	

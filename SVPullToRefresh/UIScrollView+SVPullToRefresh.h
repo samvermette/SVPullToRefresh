@@ -24,14 +24,12 @@
 @end
 
 
-enum {
+typedef enum {
     SVPullToRefreshStateStopped = 0,
     SVPullToRefreshStateTriggered,
     SVPullToRefreshStateLoading,
     SVPullToRefreshStateAll = 10
-};
-
-typedef NSUInteger SVPullToRefreshState;
+} SVPullToRefreshState;
 
 @interface SVPullToRefreshView : UIView
 

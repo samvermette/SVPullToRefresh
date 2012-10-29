@@ -23,8 +23,9 @@
     
     self.dataSource = [NSMutableArray array];
     
-    for(int i=0; i<15; i++)
-        [self.dataSource addObject:[NSDate dateWithTimeIntervalSinceNow:-(i*90)]];
+    for(int i = 0; i < 15; ++i){
+        [self.dataSource addObject:[NSDate dateWithTimeIntervalSinceNow: - (i * 90) ]];
+    }
     
     // setup pull-to-refresh
     [self.tableView addPullToRefreshWithActionHandler:^{
@@ -75,8 +76,9 @@
     static NSString *identifier = @"Cell";
     UITableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:identifier];
     
-    if (cell == nil)
+    if (cell == nil){
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
+    }
     
     NSDate *date = [self.dataSource objectAtIndex:indexPath.row];
     cell.textLabel.text = [NSDateFormatter localizedStringFromDate:date dateStyle:NSDateFormatterNoStyle timeStyle:NSDateFormatterMediumStyle];

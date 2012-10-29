@@ -158,9 +158,9 @@ UIEdgeInsets scrollViewOriginalContentInsets;
 #pragma mark - Observing
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {    
-    if([keyPath isEqualToString:@"contentOffset"])
+    if([keyPath isEqualToString:@"contentOffset"]){
         [self scrollViewDidScroll:[[change valueForKey:NSKeyValueChangeNewKey] CGPointValue]];
-    else if([keyPath isEqualToString:@"contentSize"]) {
+    }else if([keyPath isEqualToString:@"contentSize"]) {
         [self layoutSubviews];
         self.frame = CGRectMake(0, self.scrollView.contentSize.height, self.bounds.size.width, SVInfiniteScrollingViewHeight);
     }
@@ -171,12 +171,13 @@ UIEdgeInsets scrollViewOriginalContentInsets;
         CGFloat scrollViewContentHeight = self.scrollView.contentSize.height;
         CGFloat scrollOffsetThreshold = scrollViewContentHeight-self.scrollView.bounds.size.height;
         
-        if(!self.scrollView.isDragging && self.state == SVInfiniteScrollingStateTriggered && !self.scrollView.isDragging)
+        if(!self.scrollView.isDragging && self.state == SVInfiniteScrollingStateTriggered && !self.scrollView.isDragging){
             self.state = SVInfiniteScrollingStateLoading;
-        else if(contentOffset.y > scrollOffsetThreshold && self.state == SVInfiniteScrollingStateStopped && self.scrollView.isDecelerating)
+        }else if(contentOffset.y > scrollOffsetThreshold && self.state == SVInfiniteScrollingStateStopped && self.scrollView.isDecelerating){
             self.state = SVInfiniteScrollingStateTriggered;
-        else if(contentOffset.y < scrollOffsetThreshold  && self.state != SVInfiniteScrollingStateStopped)
+        }else if(contentOffset.y < scrollOffsetThreshold  && self.state != SVInfiniteScrollingStateStopped){
             self.state = SVInfiniteScrollingStateStopped;
+        }
     }
 }
 
@@ -209,13 +210,15 @@ UIEdgeInsets scrollViewOriginalContentInsets;
 - (void)setCustomView:(UIView *)view forState:(SVInfiniteScrollingState)state {
     id viewPlaceholder = view;
     
-    if(!viewPlaceholder)
+    if(!viewPlaceholder){
         viewPlaceholder = @"";
+    }
     
-    if(state == SVInfiniteScrollingStateAll)
+    if(state == SVInfiniteScrollingStateAll){
         [self.viewForState replaceObjectsInRange:NSMakeRange(0, 3) withObjectsFromArray:@[viewPlaceholder, viewPlaceholder, viewPlaceholder]];
-    else
+    }else{
         [self.viewForState replaceObjectAtIndex:state withObject:viewPlaceholder];
+    }
     
     self.state = self.state;
 }
@@ -241,8 +244,9 @@ UIEdgeInsets scrollViewOriginalContentInsets;
 
 - (void)setState:(SVInfiniteScrollingState)newState {
     
-    if(_state == newState)
+    if(_state == newState){
         return;
+    }
     
     SVInfiniteScrollingState previousState = _state;
     _state = newState;
@@ -267,21 +271,26 @@ UIEdgeInsets scrollViewOriginalContentInsets;
         [self.activityIndicatorView setFrame:CGRectMake(origin.x, origin.y, viewBounds.size.width, viewBounds.size.height)];
         
         switch (newState) {
-            case SVInfiniteScrollingStateStopped:
+            case SVInfiniteScrollingStateStopped:{
                 [self.activityIndicatorView stopAnimating];
                 break;
-                
-            case SVInfiniteScrollingStateTriggered:
+            }
+            case SVInfiniteScrollingStateTriggered:{
                 break;
-                
-            case SVInfiniteScrollingStateLoading:
+            }
+            case SVInfiniteScrollingStateLoading:{
                 [self.activityIndicatorView startAnimating];
                 break;
+            }
+            case SVInfiniteScrollingStateAll:{
+                break;
+            }
         }
     }
     
-    if(previousState == SVInfiniteScrollingStateTriggered && newState == SVInfiniteScrollingStateLoading && self.infiniteScrollingHandler)
+    if(previousState == SVInfiniteScrollingStateTriggered && newState == SVInfiniteScrollingStateLoading && self.infiniteScrollingHandler){
         self.infiniteScrollingHandler();
+    }
 }
 
 @end
