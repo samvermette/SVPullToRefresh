@@ -22,14 +22,12 @@
 @end
 
 
-enum {
+typedef enum {
 	SVInfiniteScrollingStateStopped = 0,
     SVInfiniteScrollingStateTriggered,
     SVInfiniteScrollingStateLoading,
     SVInfiniteScrollingStateAll = 10
-};
-
-typedef NSUInteger SVInfiniteScrollingState;
+} SVInfiniteScrollingState;
 
 @interface SVInfiniteScrollingView : UIView
 
