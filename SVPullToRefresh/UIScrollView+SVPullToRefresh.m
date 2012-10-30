@@ -164,6 +164,49 @@ static char UIScrollViewPullToRefreshView;
     self.arrow.frame = arrowFrame;
 
     self.activityIndicatorView.center = self.arrow.center;
+    
+    for(id otherView in self.viewForState) {
+        if([otherView isKindOfClass:[UIView class]])
+            [otherView removeFromSuperview];
+    }
+    
+    id customView = [self.viewForState objectAtIndex:self.state];
+    BOOL hasCustomView = [customView isKindOfClass:[UIView class]];
+    
+    self.titleLabel.hidden = hasCustomView;
+    self.subtitleLabel.hidden = hasCustomView;
+    self.arrow.hidden = hasCustomView;
+    
+    if(hasCustomView) {
+        [self addSubview:customView];
+        CGRect viewBounds = [customView bounds];
+        CGPoint origin = CGPointMake(round((self.bounds.size.width-viewBounds.size.width)/2), round((self.bounds.size.height-viewBounds.size.height)/2));
+        [customView setFrame:CGRectMake(origin.x, origin.y, viewBounds.size.width, viewBounds.size.height)];
+    }
+    else {
+        self.titleLabel.text = [self.titles objectAtIndex:self.state];
+        
+        NSString *subtitle = [self.subtitles objectAtIndex:self.state];
+        if(subtitle.length > 0)
+            self.subtitleLabel.text = subtitle;
+        
+        switch (self.state) {
+            case SVPullToRefreshStateStopped:
+                self.arrow.alpha = 1;
+                [self.activityIndicatorView stopAnimating];
+                [self rotateArrow:0 hide:NO];
+                break;
+                
+            case SVPullToRefreshStateTriggered:
+                [self rotateArrow:M_PI hide:NO];
+                break;
+                
+            case SVPullToRefreshStateLoading:
+                [self.activityIndicatorView startAnimating];
+                [self rotateArrow:0 hide:YES];
+                break;
+        }
+    }
 }
 
 #pragma mark - Scroll View
@@ -311,7 +354,7 @@ static char UIScrollViewPullToRefreshView;
     else
         [self.titles replaceObjectAtIndex:state withObject:title];
     
-    self.state = self.state;
+    [self setNeedsLayout];
 }
 
 - (void)setSubtitle:(NSString *)subtitle forState:(SVPullToRefreshState)state {
@@ -323,7 +366,7 @@ static char UIScrollViewPullToRefreshView;
     else
         [self.subtitles replaceObjectAtIndex:state withObject:subtitle];
     
-    self.state = self.state;
+    [self setNeedsLayout];
 }
 
 - (void)setCustomView:(UIView *)view forState:(SVPullToRefreshState)state {
@@ -337,7 +380,7 @@ static char UIScrollViewPullToRefreshView;
     else
         [self.viewForState replaceObjectAtIndex:state withObject:viewPlaceholder];
     
-    self.state = self.state;
+    [self setNeedsLayout];
 }
 
 - (void)setTextColor:(UIColor *)newTextColor {
@@ -392,48 +435,7 @@ static char UIScrollViewPullToRefreshView;
     SVPullToRefreshState previousState = _state;
     _state = newState;
     
-    for(id otherView in self.viewForState) {
-        if([otherView isKindOfClass:[UIView class]])
-            [otherView removeFromSuperview];
-    }
-    
-    id customView = [self.viewForState objectAtIndex:newState];
-    BOOL hasCustomView = [customView isKindOfClass:[UIView class]];
-    
-    self.titleLabel.hidden = hasCustomView;
-    self.subtitleLabel.hidden = hasCustomView;
-    self.arrow.hidden = hasCustomView;
-    
-    if(hasCustomView) {
-        [self addSubview:customView];
-        CGRect viewBounds = [customView bounds];
-        CGPoint origin = CGPointMake(round((self.bounds.size.width-viewBounds.size.width)/2), round((self.bounds.size.height-viewBounds.size.height)/2));
-        [customView setFrame:CGRectMake(origin.x, origin.y, viewBounds.size.width, viewBounds.size.height)];
-    }
-    else {
-        self.titleLabel.text = [self.titles objectAtIndex:newState];
-        
-        NSString *subtitle = [self.subtitles objectAtIndex:newState];
-        if(subtitle.length > 0)
-            self.subtitleLabel.text = subtitle;
-        
-        switch (newState) {
-            case SVPullToRefreshStateStopped:
-                self.arrow.alpha = 1;
-                [self.activityIndicatorView stopAnimating];
-                [self rotateArrow:0 hide:NO];
-                break;
-                
-            case SVPullToRefreshStateTriggered:
-                [self rotateArrow:M_PI hide:NO];
-                break;
-                
-            case SVPullToRefreshStateLoading:
-                [self.activityIndicatorView startAnimating];
-                [self rotateArrow:0 hide:YES];
-                break;
-        }
-    }
+    [self setNeedsLayout];
     
     switch (newState) {
         case SVPullToRefreshStateStopped:
