@@ -120,6 +120,7 @@ UIEdgeInsets scrollViewOriginalContentInsets;
         self.activityIndicatorViewStyle = UIActivityIndicatorViewStyleGray;
         self.autoresizingMask = UIViewAutoresizingFlexibleWidth;
         self.state = SVInfiniteScrollingStateStopped;
+        self.enabled = YES;
         
         self.viewForState = [NSMutableArray arrayWithObjects:@"", @"", @"", @"", nil];
     }
@@ -167,7 +168,7 @@ UIEdgeInsets scrollViewOriginalContentInsets;
 }
 
 - (void)scrollViewDidScroll:(CGPoint)contentOffset {
-    if(self.state != SVInfiniteScrollingStateLoading) {
+    if(self.state != SVInfiniteScrollingStateLoading && self.enabled) {
         CGFloat scrollViewContentHeight = self.scrollView.contentSize.height;
         CGFloat scrollOffsetThreshold = scrollViewContentHeight-self.scrollView.bounds.size.height;
         
@@ -280,7 +281,7 @@ UIEdgeInsets scrollViewOriginalContentInsets;
         }
     }
     
-    if(previousState == SVInfiniteScrollingStateTriggered && newState == SVInfiniteScrollingStateLoading && self.infiniteScrollingHandler)
+    if(previousState == SVInfiniteScrollingStateTriggered && newState == SVInfiniteScrollingStateLoading && self.infiniteScrollingHandler && self.enabled)
         self.infiniteScrollingHandler();
 }
 
