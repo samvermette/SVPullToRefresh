@@ -10,7 +10,7 @@
 		22E0D9191545EE5B00BB6BB5 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22E0D9181545EE5B00BB6BB5 /* UIKit.framework */; };
 		22E0D91B1545EE5B00BB6BB5 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22E0D91A1545EE5B00BB6BB5 /* Foundation.framework */; };
 		22E0D91D1545EE5B00BB6BB5 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22E0D91C1545EE5B00BB6BB5 /* CoreGraphics.framework */; };
-		22E0D9231545EE5B00BB6BB5 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 22E0D9211545EE5B00BB6BB5 /* InfoPlist.strings */; };
+		22E0D9231545EE5B00BB6BB5 /* SVPullToRefresh.strings in Resources */ = {isa = PBXBuildFile; fileRef = 22E0D9211545EE5B00BB6BB5 /* SVPullToRefresh.strings */; };
 		22E0D9251545EE5B00BB6BB5 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 22E0D9241545EE5B00BB6BB5 /* main.m */; };
 		22E0D9291545EE5B00BB6BB5 /* SVAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 22E0D9281545EE5B00BB6BB5 /* SVAppDelegate.m */; };
 		22E0D92C1545EE5B00BB6BB5 /* SVViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 22E0D92B1545EE5B00BB6BB5 /* SVViewController.m */; };
@@ -31,14 +31,15 @@
 		22E0D91A1545EE5B00BB6BB5 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		22E0D91C1545EE5B00BB6BB5 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		22E0D9201545EE5B00BB6BB5 /* SVPullToRefreshDemo-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "SVPullToRefreshDemo-Info.plist"; sourceTree = "<group>"; };
-		22E0D9221545EE5B00BB6BB5 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		22E0D9221545EE5B00BB6BB5 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/SVPullToRefresh.strings; sourceTree = "<group>"; };
+		C2068B6D16418AAA004C8730 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/SVPullToRefresh.strings; sourceTree = "<group>"; };
 		22E0D9241545EE5B00BB6BB5 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		22E0D9261545EE5B00BB6BB5 /* SVPullToRefreshDemo-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SVPullToRefreshDemo-Prefix.pch"; sourceTree = "<group>"; };
 		22E0D9271545EE5B00BB6BB5 /* SVAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SVAppDelegate.h; sourceTree = "<group>"; };
 		22E0D9281545EE5B00BB6BB5 /* SVAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SVAppDelegate.m; sourceTree = "<group>"; };
 		22E0D92A1545EE5B00BB6BB5 /* SVViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SVViewController.h; sourceTree = "<group>"; };
 		22E0D92B1545EE5B00BB6BB5 /* SVViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SVViewController.m; sourceTree = "<group>"; };
-		22E0D92E1545EE5B00BB6BB5 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/SVViewController.xib; sourceTree = "<group>"; };
+		22E0D92D1545EE5B00BB6BB5 /* SVViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SVViewController.xib; sourceTree = "<group>"; };
 		22E0D93A1545EE7600BB6BB5 /* UIScrollView+SVPullToRefresh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIScrollView+SVPullToRefresh.h"; sourceTree = "<group>"; };
 		22E0D93B1545EE7600BB6BB5 /* UIScrollView+SVPullToRefresh.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIScrollView+SVPullToRefresh.m"; sourceTree = "<group>"; };
 		22E0D9401545EE9000BB6BB5 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
@@ -110,7 +111,7 @@
 			children = (
 				22FDEC961639082E00DB53A8 /* Default-568h@2x.png */,
 				22E0D9201545EE5B00BB6BB5 /* SVPullToRefreshDemo-Info.plist */,
-				22E0D9211545EE5B00BB6BB5 /* InfoPlist.strings */,
+				22E0D9211545EE5B00BB6BB5 /* SVPullToRefresh.strings */,
 				22E0D9241545EE5B00BB6BB5 /* main.m */,
 				22E0D9261545EE5B00BB6BB5 /* SVPullToRefreshDemo-Prefix.pch */,
 			);
@@ -166,6 +167,7 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				fr,
 			);
 			mainGroup = 22E0D9091545EE5B00BB6BB5;
 			productRefGroup = 22E0D9151545EE5B00BB6BB5 /* Products */;
@@ -182,7 +184,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				22E0D9231545EE5B00BB6BB5 /* InfoPlist.strings in Resources */,
+				22E0D9231545EE5B00BB6BB5 /* SVPullToRefresh.strings in Resources */,
 				22E0D92F1545EE5B00BB6BB5 /* SVViewController.xib in Resources */,
 				22E0D94B1545F63300BB6BB5 /* README.textile in Resources */,
 				22FDEC971639082E00DB53A8 /* Default-568h@2x.png in Resources */,
@@ -207,20 +209,13 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		22E0D9211545EE5B00BB6BB5 /* InfoPlist.strings */ = {
+		22E0D9211545EE5B00BB6BB5 /* SVPullToRefresh.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
 				22E0D9221545EE5B00BB6BB5 /* en */,
+				C2068B6D16418AAA004C8730 /* fr */,
 			);
-			name = InfoPlist.strings;
-			sourceTree = "<group>";
-		};
-		22E0D92D1545EE5B00BB6BB5 /* SVViewController.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				22E0D92E1545EE5B00BB6BB5 /* en */,
-			);
-			name = SVViewController.xib;
+			name = SVPullToRefresh.strings;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
