@@ -35,6 +35,9 @@ typedef NSUInteger SVPullToRefreshState;
 
 @interface SVPullToRefreshView : UIView
 
+// default localization bundle is [NSBundle mainBundle]
++ (void)setLocalizationBundle:(NSBundle *)localizationBundle;
+
 @property (nonatomic, strong) UIColor *arrowColor;
 @property (nonatomic, strong) UIColor *textColor;
 @property (nonatomic, readwrite) UIActivityIndicatorViewStyle activityIndicatorViewStyle;

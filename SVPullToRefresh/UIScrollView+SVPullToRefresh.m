@@ -125,6 +125,21 @@ static char UIScrollViewPullToRefreshView;
 @synthesize dateLabel = _dateLabel;
 
 
+static NSBundle *_localizationBundle = nil;
+
++ (void)initialize
+{
+    if (self != [SVPullToRefreshView class])
+        return;
+    
+    _localizationBundle = [NSBundle mainBundle];
+}
+
++ (void)setLocalizationBundle:(NSBundle *)localizationBundle
+{
+    _localizationBundle = localizationBundle ?: [NSBundle mainBundle];
+}
+
 - (id)initWithFrame:(CGRect)frame {
     if(self = [super initWithFrame:frame]) {
         
@@ -135,9 +150,9 @@ static char UIScrollViewPullToRefreshView;
         self.state = SVPullToRefreshStateStopped;
         self.showsDateLabel = NO;
         
-        self.titles = [NSMutableArray arrayWithObjects:NSLocalizedString(@"Pull to refresh...",),
-                                                       NSLocalizedString(@"Release to refresh...",),
-                                                       NSLocalizedString(@"Loading...",),
+        self.titles = [NSMutableArray arrayWithObjects:NSLocalizedStringFromTableInBundle(@"Pull to refresh...", @"SVPullToRefresh", _localizationBundle,),
+                                                       NSLocalizedStringFromTableInBundle(@"Release to refresh...", @"SVPullToRefresh", _localizationBundle,),
+                                                       NSLocalizedStringFromTableInBundle(@"Loading...", @"SVPullToRefresh", _localizationBundle,),
                                                        nil];
         
         self.subtitles = [NSMutableArray arrayWithObjects:@"", @"", @"", @"", nil];
@@ -148,7 +163,7 @@ static char UIScrollViewPullToRefreshView;
 }
 
 - (void)layoutSubviews {
-    CGFloat remainingWidth = self.superview.bounds.size.width-200;
+    CGFloat remainingWidth = self.superview.bounds.size.width-self.titleLabel.bounds.size.width;
     float position = 0.50;
     
     CGRect titleFrame = self.titleLabel.frame;
@@ -278,8 +293,8 @@ static char UIScrollViewPullToRefreshView;
 
 - (UILabel *)titleLabel {
     if(!_titleLabel) {
-        _titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 20, 150, 20)];
-        _titleLabel.text = NSLocalizedString(@"Pull to refresh...",);
+        _titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 20, 220, 20)];
+        _titleLabel.text = NSLocalizedStringFromTableInBundle(@"Pull to refresh...", @"SVPullToRefresh", _localizationBundle,);
         _titleLabel.font = [UIFont boldSystemFontOfSize:14];
         _titleLabel.backgroundColor = [UIColor clearColor];
         _titleLabel.textColor = textColor;
@@ -290,14 +305,14 @@ static char UIScrollViewPullToRefreshView;
 
 - (UILabel *)subtitleLabel {
     if(!_subtitleLabel && self.showsDateLabel) {
-        _subtitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 28, 180, 20)];
+        _subtitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 28, 220, 20)];
         _subtitleLabel.font = [UIFont systemFontOfSize:12];
         _subtitleLabel.backgroundColor = [UIColor clearColor];
         _subtitleLabel.textColor = textColor;
         [self addSubview:_subtitleLabel];
         
         CGRect titleFrame = self.titleLabel.frame;
-        titleFrame.origin.y = 12;
+        titleFrame.origin.y = 8;
         self.titleLabel.frame = titleFrame;
     }
     return _subtitleLabel;
@@ -395,12 +410,12 @@ static char UIScrollViewPullToRefreshView;
 
 - (void)setLastUpdatedDate:(NSDate *)newLastUpdatedDate {
     self.showsDateLabel = YES;
-    self.dateLabel.text = [NSString stringWithFormat:NSLocalizedString(@"Last Updated: %@",), newLastUpdatedDate?[self.dateFormatter stringFromDate:newLastUpdatedDate]:NSLocalizedString(@"Never",)];
+    self.dateLabel.text = [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"Last Updated: %@", @"SVPullToRefresh", _localizationBundle,), newLastUpdatedDate?[self.dateFormatter stringFromDate:newLastUpdatedDate]:NSLocalizedStringFromTableInBundle(@"Never", @"SVPullToRefresh", _localizationBundle,)];
 }
 
 - (void)setDateFormatter:(NSDateFormatter *)newDateFormatter {
-	dateFormatter = newDateFormatter;
-    self.dateLabel.text = [NSString stringWithFormat:NSLocalizedString(@"Last Updated: %@",), self.lastUpdatedDate?[newDateFormatter stringFromDate:self.lastUpdatedDate]:NSLocalizedString(@"Never",)];
+    dateFormatter = newDateFormatter;
+    self.dateLabel.text = [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"Last Updated: %@", @"SVPullToRefresh", _localizationBundle,), self.lastUpdatedDate?[newDateFormatter stringFromDate:self.lastUpdatedDate]:NSLocalizedStringFromTableInBundle(@"Never", @"SVPullToRefresh", _localizationBundle,)];
 }
 
 #pragma mark -
