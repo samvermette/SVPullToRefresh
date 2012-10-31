@@ -28,7 +28,7 @@ static CGFloat const SVInfiniteScrollingViewHeight = 60;
 @property (nonatomic, strong) UIActivityIndicatorView *activityIndicatorView;
 @property (nonatomic, readwrite) SVInfiniteScrollingState state;
 @property (nonatomic, strong) NSMutableArray *viewForState;
-@property (nonatomic, strong, readonly) UIScrollView *scrollView;
+@property (nonatomic, weak) UIScrollView *scrollView;
 @property (nonatomic, readwrite) CGFloat originalBottomInset;
 @property (nonatomic, assign) BOOL wasTriggeredByUser;
 
@@ -55,6 +55,7 @@ UIEdgeInsets scrollViewOriginalContentInsets;
     if(!self.infiniteScrollingView) {
         SVInfiniteScrollingView *view = [[SVInfiniteScrollingView alloc] initWithFrame:CGRectMake(0, self.contentSize.height, self.bounds.size.width, SVInfiniteScrollingViewHeight)];
         view.infiniteScrollingHandler = actionHandler;
+        view.scrollView = self;
         [self addSubview:view];
         
         view.originalBottomInset = self.contentInset.bottom;
@@ -127,6 +128,14 @@ UIEdgeInsets scrollViewOriginalContentInsets;
     return self;
 }
 
+#ifdef SV_DEBUG_MEMORY_LEAK
+- (void)dealloc
+{
+    //If this func not being called, there must be something wrong, e.g retain cycle
+    NSLog(@"%s, %s", __FILE__, __FUNCTION__);
+}
+#endif
+
 - (void)layoutSubviews {
     self.activityIndicatorView.center = CGPointMake(self.bounds.size.width/2, self.bounds.size.height/2);
 }
@@ -189,15 +198,6 @@ UIEdgeInsets scrollViewOriginalContentInsets;
         [self addSubview:_activityIndicatorView];
     }
     return _activityIndicatorView;
-}
-
-- (UIScrollView *)scrollView {
-    _scrollView = (UIScrollView*)self.superview;
-    
-    while(![_scrollView isKindOfClass:[UIScrollView class]])
-        _scrollView = (UIScrollView*)_scrollView.superview;
-    
-    return _scrollView;
 }
 
 - (UIActivityIndicatorViewStyle)activityIndicatorViewStyle {

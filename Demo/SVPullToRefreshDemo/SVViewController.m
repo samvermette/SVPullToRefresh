@@ -18,6 +18,14 @@
 @implementation SVViewController
 @synthesize tableView = tableView;
 
+#ifdef SV_DEBUG_MEMORY_LEAK
+- (void)dealloc
+{
+    //If this func not being called, there must be something wrong, e.g retain cycle
+    NSLog(@"%s, %s", __FILE__, __FUNCTION__);
+}
+#endif
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
@@ -26,18 +34,19 @@
     for(int i=0; i<15; i++)
         [self.dataSource addObject:[NSDate dateWithTimeIntervalSinceNow:-(i*90)]];
     
+    __weak SVViewController *weakSelf = self;
     // setup pull-to-refresh
     [self.tableView addPullToRefreshWithActionHandler:^{
         
         int64_t delayInSeconds = 2.0;
         dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
         dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-            [self.tableView beginUpdates];
-            [self.dataSource insertObject:[NSDate date] atIndex:0];
-            [self.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:0]] withRowAnimation:UITableViewRowAnimationBottom];
-            [self.tableView endUpdates];
+            [weakSelf.tableView beginUpdates];
+            [weakSelf.dataSource insertObject:[NSDate date] atIndex:0];
+            [weakSelf.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:0]] withRowAnimation:UITableViewRowAnimationBottom];
+            [weakSelf.tableView endUpdates];
             
-            [tableView.pullToRefreshView stopAnimating];
+            [weakSelf.tableView.pullToRefreshView stopAnimating];
         });
     }];
     
@@ -47,12 +56,12 @@
         int64_t delayInSeconds = 2.0;
         dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
         dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-            [self.tableView beginUpdates];
-            [self.dataSource addObject:[self.dataSource.lastObject dateByAddingTimeInterval:-90]];
-            [self.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:self.dataSource.count-1 inSection:0]] withRowAnimation:UITableViewRowAnimationTop];
-            [self.tableView endUpdates];
+            [weakSelf.tableView beginUpdates];
+            [weakSelf.dataSource addObject:[weakSelf.dataSource.lastObject dateByAddingTimeInterval:-90]];
+            [weakSelf.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:weakSelf.dataSource.count-1 inSection:0]] withRowAnimation:UITableViewRowAnimationTop];
+            [weakSelf.tableView endUpdates];
             
-            [tableView.infiniteScrollingView stopAnimating];
+            [weakSelf.tableView.infiniteScrollingView stopAnimating];
         });
     }];
     

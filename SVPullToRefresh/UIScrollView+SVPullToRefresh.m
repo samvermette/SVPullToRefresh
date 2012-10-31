@@ -34,7 +34,7 @@ static CGFloat const SVPullToRefreshViewHeight = 60;
 @property (nonatomic, strong) NSMutableArray *subtitles;
 @property (nonatomic, strong) NSMutableArray *viewForState;
 
-@property (nonatomic, strong, readonly) UIScrollView *scrollView;
+@property (nonatomic, weak) UIScrollView *scrollView;
 @property (nonatomic, readwrite) CGFloat originalTopInset;
 
 @property (nonatomic, assign) BOOL wasTriggeredByUser;
@@ -64,6 +64,7 @@ static char UIScrollViewPullToRefreshView;
     if(!self.pullToRefreshView) {
         SVPullToRefreshView *view = [[SVPullToRefreshView alloc] initWithFrame:CGRectMake(0, -SVPullToRefreshViewHeight, self.bounds.size.width, SVPullToRefreshViewHeight)];
         view.pullToRefreshActionHandler = actionHandler;
+        view.scrollView = self;
         [self addSubview:view];
         
         view.originalTopInset = self.contentInset.top;
@@ -146,6 +147,14 @@ static char UIScrollViewPullToRefreshView;
 
     return self;
 }
+
+#ifdef SV_DEBUG_MEMORY_LEAK
+- (void)dealloc
+{
+    //If this func not being called, there must be something wrong, e.g retain cycle
+    NSLog(@"%s, %s", __FILE__, __FUNCTION__);
+}
+#endif
 
 - (void)layoutSubviews {
     CGFloat remainingWidth = self.superview.bounds.size.width-200;
@@ -305,15 +314,6 @@ static char UIScrollViewPullToRefreshView;
 
 - (UILabel *)dateLabel {
     return self.subtitleLabel;
-}
-
-- (UIScrollView *)scrollView {
-    _scrollView = (UIScrollView*)self.superview;
-    
-    while(![_scrollView isKindOfClass:[UIScrollView class]])
-        _scrollView = (UIScrollView*)_scrollView.superview;
-    
-    return _scrollView;
 }
 
 - (NSDateFormatter *)dateFormatter {
