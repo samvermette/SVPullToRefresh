@@ -156,6 +156,16 @@ static char UIScrollViewPullToRefreshView;
 }
 #endif
 
+- (void)willMoveToSuperview:(UIView *)newSuperview
+{ 
+    if (self.superview && newSuperview == nil) {
+        //If enter this branch, it is the moment just before "SVPullToRefreshView's dealloc", so remove observer here
+        [self.superview removeObserver:self forKeyPath:@"contentOffset"];
+        [self.superview removeObserver:self forKeyPath:@"frame"];
+        //use self.superview, not self.scrollView. Why self.scrollView == nil here?
+    }
+}
+
 - (void)layoutSubviews {
     CGFloat remainingWidth = self.superview.bounds.size.width-200;
     float position = 0.50;

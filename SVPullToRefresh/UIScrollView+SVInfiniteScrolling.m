@@ -136,6 +136,14 @@ UIEdgeInsets scrollViewOriginalContentInsets;
 }
 #endif
 
+- (void)willMoveToSuperview:(UIView *)newSuperview
+{
+    if (self.superview && newSuperview == nil) {
+        [self.superview removeObserver:self forKeyPath:@"contentOffset"];
+        [self.superview removeObserver:self forKeyPath:@"contentSize"];
+    }
+}
+
 - (void)layoutSubviews {
     self.activityIndicatorView.center = CGPointMake(self.bounds.size.width/2, self.bounds.size.height/2);
 }
