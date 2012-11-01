@@ -289,7 +289,7 @@ static char UIScrollViewPullToRefreshView;
 }
 
 - (UILabel *)subtitleLabel {
-    if(!_subtitleLabel && self.showsDateLabel) {
+    if(!_subtitleLabel) {
         _subtitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 28, 180, 20)];
         _subtitleLabel.font = [UIFont systemFontOfSize:12];
         _subtitleLabel.backgroundColor = [UIColor clearColor];
@@ -304,7 +304,7 @@ static char UIScrollViewPullToRefreshView;
 }
 
 - (UILabel *)dateLabel {
-    return self.subtitleLabel;
+    return self.showsDateLabel ? self.subtitleLabel : nil;
 }
 
 - (UIScrollView *)scrollView {
