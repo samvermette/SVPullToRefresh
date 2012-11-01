@@ -139,8 +139,11 @@ UIEdgeInsets scrollViewOriginalContentInsets;
 - (void)willMoveToSuperview:(UIView *)newSuperview
 {
     if (self.superview && newSuperview == nil) {
-        [self.superview removeObserver:self forKeyPath:@"contentOffset"];
-        [self.superview removeObserver:self forKeyPath:@"contentSize"];
+        UIScrollView *scrollView = (UIScrollView *)self.superview;
+        if (scrollView.showsInfiniteScrolling) {
+            [scrollView removeObserver:self forKeyPath:@"contentOffset"];
+            [scrollView removeObserver:self forKeyPath:@"contentSize"];
+        }
     }
 }
 

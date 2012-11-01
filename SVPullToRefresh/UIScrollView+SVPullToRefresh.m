@@ -159,10 +159,13 @@ static char UIScrollViewPullToRefreshView;
 - (void)willMoveToSuperview:(UIView *)newSuperview
 { 
     if (self.superview && newSuperview == nil) {
-        //If enter this branch, it is the moment just before "SVPullToRefreshView's dealloc", so remove observer here
-        [self.superview removeObserver:self forKeyPath:@"contentOffset"];
-        [self.superview removeObserver:self forKeyPath:@"frame"];
         //use self.superview, not self.scrollView. Why self.scrollView == nil here?
+        UIScrollView *scrollView = (UIScrollView *)self.superview;
+        if (scrollView.showsPullToRefresh) {
+            //If enter this branch, it is the moment just before "SVPullToRefreshView's dealloc", so remove observer here
+            [scrollView removeObserver:self forKeyPath:@"contentOffset"];
+            [scrollView removeObserver:self forKeyPath:@"frame"];
+        }
     }
 }
 
