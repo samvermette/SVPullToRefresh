@@ -25,7 +25,7 @@ h3. Adding Pull to Refresh
 
 <pre>
 [tableView addPullToRefreshWithActionHandler:^{
-    // refresh data
+    // prepend data to dataSource, insert cells at top of table view
     // call [tableView.pullToRefreshView stopAnimating] when done
 }];
 </pre>
@@ -36,7 +36,7 @@ If you’d like to programmatically trigger the refresh (for instance in viewDid
 [tableView triggerPullToRefresh];
 </pre>
 
-You can temporarily hide/disable pull to refresh by setting the @showsPullToRefresh@ property:
+You can temporarily hide the pull to refresh view by setting the @showsPullToRefresh@ property:
 
 <pre>
 tableView.showsPullToRefresh = NO;
@@ -69,7 +69,7 @@ h3. Adding Infinite Scrolling
 
 <pre>
 [tableView addInfiniteScrollingWithActionHandler:^{
-    // add data to data source, insert new cells into table view
+    // append data to data source, insert new cells at the end of table view
 }];
 </pre>
 
@@ -79,11 +79,19 @@ If you’d like to programmatically trigger the refresh (for instance in viewDid
 [tableView triggerInfiniteScrolling];
 </pre>
 
-You can temporarily hide/disable pull to refresh by setting the @showsPullToRefresh@ property:
+You can temporarily hide the infinite scrolling view by setting the @showsInfiniteScrolling@ property:
 
 <pre>
 tableView.showsInfiniteScrolling = NO;
 </pre>
+
+If you'd like to keep the infinite scrolling view around but disable the action handler and state changing:
+
+<pre>
+tableView.infiniteScrollingView.enabled = NO;
+</pre>
+
+When disabled, the `state` property will always return `SVInfiniteScrollingStateStopped`.
 
 h4. Customization
 
