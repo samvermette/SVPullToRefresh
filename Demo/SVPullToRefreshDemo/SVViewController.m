@@ -18,14 +18,6 @@
 @implementation SVViewController
 @synthesize tableView = tableView;
 
-#ifdef SV_DEBUG_MEMORY_LEAK
-- (void)dealloc
-{
-    //If this func not being called, there must be something wrong, e.g retain cycle
-    NSLog(@"%s, %s", __FILE__, __FUNCTION__);
-}
-#endif
-
 - (void)viewDidLoad {
     [super viewDidLoad];
     
@@ -35,6 +27,7 @@
         [self.dataSource addObject:[NSDate dateWithTimeIntervalSinceNow:-(i*90)]];
     
     __weak SVViewController *weakSelf = self;
+    
     // setup pull-to-refresh
     [self.tableView addPullToRefreshWithActionHandler:^{
         

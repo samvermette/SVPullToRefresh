@@ -148,16 +148,7 @@ static char UIScrollViewPullToRefreshView;
     return self;
 }
 
-#ifdef SV_DEBUG_MEMORY_LEAK
-- (void)dealloc
-{
-    //If this func not being called, there must be something wrong, e.g retain cycle
-    NSLog(@"%s, %s", __FILE__, __FUNCTION__);
-}
-#endif
-
-- (void)willMoveToSuperview:(UIView *)newSuperview
-{ 
+- (void)willMoveToSuperview:(UIView *)newSuperview { 
     if (self.superview && newSuperview == nil) {
         //use self.superview, not self.scrollView. Why self.scrollView == nil here?
         UIScrollView *scrollView = (UIScrollView *)self.superview;

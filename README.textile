@@ -13,7 +13,7 @@ These UIScrollView categories makes it super easy to add pull-to-refresh and inf
 
 h2. Installation
 
-* Drag the @SVPullToRefresh/UIScrollView+SV@ folder into your project. 
+* Drag the @SVPullToRefresh/SVPullToRefresh@ folder into your project. 
 * Add the *QuartzCore* framework to your project.
 * Import @UIScrollView+SVPullToRefresh.h@ and/or @UIScrollView+SVInfiniteScrolling.m@
 
