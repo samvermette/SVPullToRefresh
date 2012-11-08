@@ -11,6 +11,8 @@
 
 @interface SVViewController () <UITableViewDelegate, UITableViewDataSource>
 
+@property (nonatomic, strong) NSMutableArray *dataSource;
+
 @end
 
 @implementation SVViewController
@@ -19,42 +21,56 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    // setup the pull-to-refresh view
+    self.dataSource = [NSMutableArray array];
+    
+    for(int i=0; i<15; i++)
+        [self.dataSource addObject:[NSDate dateWithTimeIntervalSinceNow:-(i*90)]];
+    
+    __weak SVViewController *weakSelf = self;
+    
+    // setup pull-to-refresh
     [self.tableView addPullToRefreshWithActionHandler:^{
-        NSLog(@"refresh dataSource");
-        [tableView.pullToRefreshView performSelector:@selector(stopAnimating) withObject:nil afterDelay:2];
+        
+        int64_t delayInSeconds = 2.0;
+        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+            [weakSelf.tableView beginUpdates];
+            [weakSelf.dataSource insertObject:[NSDate date] atIndex:0];
+            [weakSelf.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:0]] withRowAnimation:UITableViewRowAnimationBottom];
+            [weakSelf.tableView endUpdates];
+            
+            [weakSelf.tableView.pullToRefreshView stopAnimating];
+        });
     }];
     
+    // setup infinite scrolling
     [self.tableView addInfiniteScrollingWithActionHandler:^{
-        NSLog(@"load more data");
+
+        int64_t delayInSeconds = 2.0;
+        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+            [weakSelf.tableView beginUpdates];
+            [weakSelf.dataSource addObject:[weakSelf.dataSource.lastObject dateByAddingTimeInterval:-90]];
+            [weakSelf.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:weakSelf.dataSource.count-1 inSection:0]] withRowAnimation:UITableViewRowAnimationTop];
+            [weakSelf.tableView endUpdates];
+            
+            [weakSelf.tableView.infiniteScrollingView stopAnimating];
+        });
     }];
     
     // trigger the refresh manually at the end of viewDidLoad
-    [tableView.pullToRefreshView triggerRefresh];
-    
-    // you can also display the "last updated" date
-    // tableView.pullToRefreshView.lastUpdatedDate = [NSDate date];
-    
-    // you can configure how that date is displayed
-    // NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    // dateFormatter.dateStyle = NSDateFormatterLongStyle;
-    // dateFormatter.timeStyle = NSDateFormatterNoStyle;
-    // tableView.pullToRefreshView.dateFormatter = dateFormatter;
-    
-    // you can temporarily toggle the pull to refresh view
-    // tableView.showsPullToRefresh = NO;
-    
+    [tableView triggerPullToRefresh];
 }
 
 #pragma mark -
 #pragma mark UITableViewDataSource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 10;
+    return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 2;
+    return self.dataSource.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -64,11 +80,9 @@
     if (cell == nil)
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
     
+    NSDate *date = [self.dataSource objectAtIndex:indexPath.row];
+    cell.textLabel.text = [NSDateFormatter localizedStringFromDate:date dateStyle:NSDateFormatterNoStyle timeStyle:NSDateFormatterMediumStyle];
     return cell;
-}
-
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-    return [NSString stringWithFormat:@"Section %d", section];
 }
 
 @end

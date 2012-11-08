@@ -8,19 +8,17 @@
 
 #import "SVAppDelegate.h"
 
-#import "SVViewController.h"
+#import "SVRootViewController.h"
 
 @implementation SVAppDelegate
 
 @synthesize window = _window;
-@synthesize viewController = _viewController;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
-    self.viewController = [[SVViewController alloc] initWithNibName:@"SVViewController" bundle:nil];
-    self.window.rootViewController = self.viewController;
+    self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:[[SVRootViewController alloc] initWithNibName:@"SVRootViewController" bundle:nil]];
     [self.window makeKeyAndVisible];
     return YES;
 }

@@ -15,12 +15,19 @@
 		22E0D9291545EE5B00BB6BB5 /* SVAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 22E0D9281545EE5B00BB6BB5 /* SVAppDelegate.m */; };
 		22E0D92C1545EE5B00BB6BB5 /* SVViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 22E0D92B1545EE5B00BB6BB5 /* SVViewController.m */; };
 		22E0D92F1545EE5B00BB6BB5 /* SVViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 22E0D92D1545EE5B00BB6BB5 /* SVViewController.xib */; };
-		22E0D93D1545EE7600BB6BB5 /* SVPullToRefresh.m in Sources */ = {isa = PBXBuildFile; fileRef = 22E0D93B1545EE7600BB6BB5 /* SVPullToRefresh.m */; };
+		22E0D93D1545EE7600BB6BB5 /* UIScrollView+SVPullToRefresh.m in Sources */ = {isa = PBXBuildFile; fileRef = 22E0D93B1545EE7600BB6BB5 /* UIScrollView+SVPullToRefresh.m */; };
 		22E0D9411545EE9000BB6BB5 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22E0D9401545EE9000BB6BB5 /* QuartzCore.framework */; };
 		22E0D94B1545F63300BB6BB5 /* README.textile in Resources */ = {isa = PBXBuildFile; fileRef = 22E0D94A1545F63300BB6BB5 /* README.textile */; };
+		22FDEC971639082E00DB53A8 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 22FDEC961639082E00DB53A8 /* Default-568h@2x.png */; };
+		22FDEC9D16390CC800DB53A8 /* UIScrollView+SVInfiniteScrolling.m in Sources */ = {isa = PBXBuildFile; fileRef = 2288146016047C06005C6461 /* UIScrollView+SVInfiniteScrolling.m */; };
+		8E7FDB661640EBA200EE63E5 /* SVRootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8E7FDB641640EBA200EE63E5 /* SVRootViewController.m */; };
+		8E7FDB671640EBA200EE63E5 /* SVRootViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8E7FDB651640EBA200EE63E5 /* SVRootViewController.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		226989041639F55E00FCBB3B /* SVPullToRefresh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVPullToRefresh.h; sourceTree = "<group>"; };
+		2288145F16047C06005C6461 /* UIScrollView+SVInfiniteScrolling.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIScrollView+SVInfiniteScrolling.h"; sourceTree = "<group>"; };
+		2288146016047C06005C6461 /* UIScrollView+SVInfiniteScrolling.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIScrollView+SVInfiniteScrolling.m"; sourceTree = "<group>"; };
 		22E0D9141545EE5B00BB6BB5 /* SVPullToRefreshDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SVPullToRefreshDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		22E0D9181545EE5B00BB6BB5 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		22E0D91A1545EE5B00BB6BB5 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -34,10 +41,14 @@
 		22E0D92A1545EE5B00BB6BB5 /* SVViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SVViewController.h; sourceTree = "<group>"; };
 		22E0D92B1545EE5B00BB6BB5 /* SVViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SVViewController.m; sourceTree = "<group>"; };
 		22E0D92E1545EE5B00BB6BB5 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/SVViewController.xib; sourceTree = "<group>"; };
-		22E0D93A1545EE7600BB6BB5 /* SVPullToRefresh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVPullToRefresh.h; sourceTree = "<group>"; };
-		22E0D93B1545EE7600BB6BB5 /* SVPullToRefresh.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVPullToRefresh.m; sourceTree = "<group>"; };
+		22E0D93A1545EE7600BB6BB5 /* UIScrollView+SVPullToRefresh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIScrollView+SVPullToRefresh.h"; sourceTree = "<group>"; };
+		22E0D93B1545EE7600BB6BB5 /* UIScrollView+SVPullToRefresh.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIScrollView+SVPullToRefresh.m"; sourceTree = "<group>"; };
 		22E0D9401545EE9000BB6BB5 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		22E0D94A1545F63300BB6BB5 /* README.textile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = README.textile; path = ../README.textile; sourceTree = "<group>"; };
+		22FDEC961639082E00DB53A8 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "../Default-568h@2x.png"; sourceTree = "<group>"; };
+		8E7FDB631640EBA200EE63E5 /* SVRootViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVRootViewController.h; sourceTree = "<group>"; };
+		8E7FDB641640EBA200EE63E5 /* SVRootViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVRootViewController.m; sourceTree = "<group>"; };
+		8E7FDB651640EBA200EE63E5 /* SVRootViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SVRootViewController.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -90,6 +101,9 @@
 			children = (
 				22E0D9271545EE5B00BB6BB5 /* SVAppDelegate.h */,
 				22E0D9281545EE5B00BB6BB5 /* SVAppDelegate.m */,
+				8E7FDB631640EBA200EE63E5 /* SVRootViewController.h */,
+				8E7FDB641640EBA200EE63E5 /* SVRootViewController.m */,
+				8E7FDB651640EBA200EE63E5 /* SVRootViewController.xib */,
 				22E0D92A1545EE5B00BB6BB5 /* SVViewController.h */,
 				22E0D92B1545EE5B00BB6BB5 /* SVViewController.m */,
 				22E0D92D1545EE5B00BB6BB5 /* SVViewController.xib */,
@@ -102,6 +116,7 @@
 		22E0D91F1545EE5B00BB6BB5 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				22FDEC961639082E00DB53A8 /* Default-568h@2x.png */,
 				22E0D9201545EE5B00BB6BB5 /* SVPullToRefreshDemo-Info.plist */,
 				22E0D9211545EE5B00BB6BB5 /* InfoPlist.strings */,
 				22E0D9241545EE5B00BB6BB5 /* main.m */,
@@ -113,8 +128,11 @@
 		22E0D9391545EE7600BB6BB5 /* SVPullToRefresh */ = {
 			isa = PBXGroup;
 			children = (
-				22E0D93A1545EE7600BB6BB5 /* SVPullToRefresh.h */,
-				22E0D93B1545EE7600BB6BB5 /* SVPullToRefresh.m */,
+				226989041639F55E00FCBB3B /* SVPullToRefresh.h */,
+				22E0D93A1545EE7600BB6BB5 /* UIScrollView+SVPullToRefresh.h */,
+				22E0D93B1545EE7600BB6BB5 /* UIScrollView+SVPullToRefresh.m */,
+				2288145F16047C06005C6461 /* UIScrollView+SVInfiniteScrolling.h */,
+				2288146016047C06005C6461 /* UIScrollView+SVInfiniteScrolling.m */,
 			);
 			name = SVPullToRefresh;
 			path = ../SVPullToRefresh;
@@ -175,6 +193,8 @@
 				22E0D9231545EE5B00BB6BB5 /* InfoPlist.strings in Resources */,
 				22E0D92F1545EE5B00BB6BB5 /* SVViewController.xib in Resources */,
 				22E0D94B1545F63300BB6BB5 /* README.textile in Resources */,
+				22FDEC971639082E00DB53A8 /* Default-568h@2x.png in Resources */,
+				8E7FDB671640EBA200EE63E5 /* SVRootViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -188,7 +208,9 @@
 				22E0D9251545EE5B00BB6BB5 /* main.m in Sources */,
 				22E0D9291545EE5B00BB6BB5 /* SVAppDelegate.m in Sources */,
 				22E0D92C1545EE5B00BB6BB5 /* SVViewController.m in Sources */,
-				22E0D93D1545EE7600BB6BB5 /* SVPullToRefresh.m in Sources */,
+				22E0D93D1545EE7600BB6BB5 /* UIScrollView+SVPullToRefresh.m in Sources */,
+				22FDEC9D16390CC800DB53A8 /* UIScrollView+SVInfiniteScrolling.m in Sources */,
+				8E7FDB661640EBA200EE63E5 /* SVRootViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
