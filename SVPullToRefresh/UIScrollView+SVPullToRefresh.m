@@ -40,6 +40,7 @@ static CGFloat const SVPullToRefreshViewHeight = 60;
 @property (nonatomic, assign) BOOL wasTriggeredByUser;
 @property (nonatomic, assign) BOOL showsPullToRefresh;
 @property (nonatomic, assign) BOOL showsDateLabel;
+@property(nonatomic, assign) BOOL isObserving;
 
 - (void)resetScrollViewContentInset;
 - (void)setScrollViewContentInsetForLoading;
@@ -94,13 +95,19 @@ static char UIScrollViewPullToRefreshView;
     self.pullToRefreshView.hidden = !showsPullToRefresh;
     
     if(!showsPullToRefresh) {
+      if (self.pullToRefreshView.isObserving) {
         [self removeObserver:self.pullToRefreshView forKeyPath:@"contentOffset"];
         [self removeObserver:self.pullToRefreshView forKeyPath:@"frame"];
         [self.pullToRefreshView resetScrollViewContentInset];
+        self.pullToRefreshView.isObserving = NO;
+      }
     }
     else {
+      if (!self.pullToRefreshView.isObserving) {
         [self addObserver:self.pullToRefreshView forKeyPath:@"contentOffset" options:NSKeyValueObservingOptionNew context:nil];
         [self addObserver:self.pullToRefreshView forKeyPath:@"frame" options:NSKeyValueObservingOptionNew context:nil];
+        self.pullToRefreshView.isObserving = YES;
+      }
     }
 }
 
@@ -153,9 +160,12 @@ static char UIScrollViewPullToRefreshView;
         //use self.superview, not self.scrollView. Why self.scrollView == nil here?
         UIScrollView *scrollView = (UIScrollView *)self.superview;
         if (scrollView.showsPullToRefresh) {
+          if (self.isObserving) {
             //If enter this branch, it is the moment just before "SVPullToRefreshView's dealloc", so remove observer here
             [scrollView removeObserver:self forKeyPath:@"contentOffset"];
             [scrollView removeObserver:self forKeyPath:@"frame"];
+            self.isObserving = NO;
+          }
         }
     }
 }
