@@ -26,8 +26,8 @@ static CGFloat const SVPullToRefreshViewHeight = 60;
 
 @property (nonatomic, strong) SVPullToRefreshArrow *arrow;
 @property (nonatomic, strong) UIActivityIndicatorView *activityIndicatorView;
-@property (nonatomic, strong) UILabel *titleLabel;
-@property (nonatomic, strong) UILabel *subtitleLabel;
+@property (nonatomic, strong, readwrite) UILabel *titleLabel;
+@property (nonatomic, strong, readwrite) UILabel *subtitleLabel;
 @property (nonatomic, readwrite) SVPullToRefreshState state;
 
 @property (nonatomic, strong) NSMutableArray *titles;
