@@ -175,7 +175,7 @@ static char UIScrollViewPullToRefreshView;
     float position = 0.50;
     
     CGRect titleFrame = self.titleLabel.frame;
-    titleFrame.origin.x = ceil(remainingWidth*position+44);
+    titleFrame.origin.x = ceilf(remainingWidth*position+44);
     self.titleLabel.frame = titleFrame;
     
     CGRect dateFrame = self.subtitleLabel.frame;
@@ -183,7 +183,7 @@ static char UIScrollViewPullToRefreshView;
     self.subtitleLabel.frame = dateFrame;
     
     CGRect arrowFrame = self.arrow.frame;
-    arrowFrame.origin.x = ceil(remainingWidth*position);
+    arrowFrame.origin.x = ceilf(remainingWidth*position);
     self.arrow.frame = arrowFrame;
 
     self.activityIndicatorView.center = self.arrow.center;
@@ -203,7 +203,7 @@ static char UIScrollViewPullToRefreshView;
     if(hasCustomView) {
         [self addSubview:customView];
         CGRect viewBounds = [customView bounds];
-        CGPoint origin = CGPointMake(round((self.bounds.size.width-viewBounds.size.width)/2), round((self.bounds.size.height-viewBounds.size.height)/2));
+        CGPoint origin = CGPointMake(roundf((self.bounds.size.width-viewBounds.size.width)/2), roundf((self.bounds.size.height-viewBounds.size.height)/2));
         [customView setFrame:CGRectMake(origin.x, origin.y, viewBounds.size.width, viewBounds.size.height)];
     }
     else {
@@ -221,7 +221,7 @@ static char UIScrollViewPullToRefreshView;
                 break;
                 
             case SVPullToRefreshStateTriggered:
-                [self rotateArrow:M_PI hide:NO];
+                [self rotateArrow:(float)M_PI hide:NO];
                 break;
                 
             case SVPullToRefreshStateLoading:
@@ -513,7 +513,7 @@ static char UIScrollViewPullToRefreshView;
 	
 	// Gradient Declaration
 	CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-	CGFloat alphaGradientLocations[] = {0, 0.8};
+	CGFloat alphaGradientLocations[] = {0, 0.8f};
     
 	CGGradientRef alphaGradient = nil;
     if([[[UIDevice currentDevice] systemVersion]floatValue] >= 5){
