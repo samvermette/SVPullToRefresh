@@ -10,6 +10,8 @@
 #import <QuartzCore/QuartzCore.h>
 #import "UIScrollView+SVPullToRefresh.h"
 
+//fequalzro() from http://stackoverflow.com/a/1614761/184130
+#define fequalzero(a) (fabs(a) < FLT_EPSILON)
 
 static CGFloat const SVPullToRefreshViewHeight = 60;
 
@@ -424,7 +426,7 @@ static char UIScrollViewPullToRefreshView;
 }
 
 - (void)startAnimating{
-    if(self.scrollView.contentOffset.y == 0) {
+    if(fequalzero(self.scrollView.contentOffset.y)) {
         [self.scrollView setContentOffset:CGPointMake(self.scrollView.contentOffset.x, -self.frame.size.height) animated:YES];
         self.wasTriggeredByUser = NO;
     }
