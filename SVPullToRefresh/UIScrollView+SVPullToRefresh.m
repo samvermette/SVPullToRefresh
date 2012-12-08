@@ -526,7 +526,7 @@ static char UIScrollViewPullToRefreshView;
         alphaGradient = CGGradientCreateWithColors(colorSpace, (__bridge CFArrayRef)alphaGradientColors, alphaGradientLocations);
     }else{
         const CGFloat * components = CGColorGetComponents([self.arrowColor CGColor]);
-        int numComponents = CGColorGetNumberOfComponents([self.arrowColor CGColor]);        
+        int numComponents = (int)CGColorGetNumberOfComponents([self.arrowColor CGColor]);
         CGFloat colors[8];
         switch(numComponents){
             case 2:{
