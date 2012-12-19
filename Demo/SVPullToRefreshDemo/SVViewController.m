@@ -85,4 +85,12 @@
     return cell;
 }
 
+/**
+ * added section title to prove it works with section header now
+ */
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+{
+    return [NSString stringWithFormat:@"Section %d", section+1];
+}
+
 @end
