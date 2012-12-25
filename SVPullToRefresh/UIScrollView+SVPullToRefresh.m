@@ -279,8 +279,9 @@ static char UIScrollViewPullToRefreshView;
             self.state = SVPullToRefreshStateStopped;
     } else {
         CGFloat offset = MAX(self.scrollView.contentOffset.y * -1, 0);
-        offset = MIN(offset, self.originalScrollViewContentInset.top + 60.0f);
-        self.scrollView.contentInset = UIEdgeInsetsMake(offset, 0.0f, 0.0f, 0.0f);
+        offset = MIN(offset, self.originalScrollViewContentInset.top + SVPullToRefreshViewHeight);
+        UIEdgeInsets contentInset = self.scrollView.contentInset;
+        self.scrollView.contentInset = UIEdgeInsetsMake(offset, contentInset.left, contentInset.bottom, contentInset.right);
     }
 }
 
