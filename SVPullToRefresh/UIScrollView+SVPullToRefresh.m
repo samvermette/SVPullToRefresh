@@ -35,7 +35,6 @@ static CGFloat const SVPullToRefreshViewHeight = 60;
 @property (nonatomic, strong) NSMutableArray *viewForState;
 
 @property (nonatomic, weak) UIScrollView *scrollView;
-@property (nonatomic, readwrite) UIEdgeInsets originalScrollViewContentInset;
 @property (nonatomic, readwrite) CGFloat originalTopInset;
 
 @property (nonatomic, assign) BOOL wasTriggeredByUser;
@@ -278,8 +277,8 @@ static char UIScrollViewPullToRefreshView;
         else if(contentOffset.y >= scrollOffsetThreshold && self.state != SVPullToRefreshStateStopped)
             self.state = SVPullToRefreshStateStopped;
     } else {
-        CGFloat offset = MAX(self.scrollView.contentOffset.y * -1, 0);
-        offset = MIN(offset, self.originalScrollViewContentInset.top + SVPullToRefreshViewHeight);
+        CGFloat offset = MAX(self.scrollView.contentOffset.y * -1, 0.0f);
+        offset = MIN(offset, self.originalTopInset + SVPullToRefreshViewHeight);
         UIEdgeInsets contentInset = self.scrollView.contentInset;
         self.scrollView.contentInset = UIEdgeInsetsMake(offset, contentInset.left, contentInset.bottom, contentInset.right);
     }
@@ -427,7 +426,6 @@ static char UIScrollViewPullToRefreshView;
 
 - (void)triggerRefresh {
     [self.scrollView triggerPullToRefresh];
-    [self.scrollView setContentOffset:CGPointMake(0, -60.0f) animated:YES];
 }
 
 - (void)startAnimating{
