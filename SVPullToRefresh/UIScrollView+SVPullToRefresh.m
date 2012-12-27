@@ -98,6 +98,7 @@ static char UIScrollViewPullToRefreshView;
       if (self.pullToRefreshView.isObserving) {
         [self removeObserver:self.pullToRefreshView forKeyPath:@"contentOffset"];
         [self removeObserver:self.pullToRefreshView forKeyPath:@"frame"];
+        [[NSNotificationCenter defaultCenter] removeObserver:self name:UIDeviceOrientationDidChangeNotification object:nil];
         [self.pullToRefreshView resetScrollViewContentInset];
         self.pullToRefreshView.isObserving = NO;
       }
@@ -106,6 +107,11 @@ static char UIScrollViewPullToRefreshView;
       if (!self.pullToRefreshView.isObserving) {
         [self addObserver:self.pullToRefreshView forKeyPath:@"contentOffset" options:NSKeyValueObservingOptionNew context:nil];
         [self addObserver:self.pullToRefreshView forKeyPath:@"frame" options:NSKeyValueObservingOptionNew context:nil];
+        [[NSNotificationCenter defaultCenter] addObserverForName:UIDeviceOrientationDidChangeNotification object:nil queue:nil usingBlock:^(NSNotification *notification){
+          CGSize contentSize = self.contentSize;
+          contentSize.width = self.frame.size.width;
+          self.contentSize = contentSize;
+        }];
         self.pullToRefreshView.isObserving = YES;
       }
     }
