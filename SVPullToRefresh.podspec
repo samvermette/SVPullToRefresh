@@ -6,7 +6,8 @@ Pod::Spec.new do |s|
   s.summary  = 'Give pull-to-refresh to any UIScrollView with 1 line of code.'
   s.homepage = 'https://github.com/samvermette/SVPullToRefresh'
   s.author   = { 'Sam Vermette' => 'hello@samvermette.com' }
-  s.source   = { :git => 'https://github.com/pilot34/SVPullToRefresh.git' }
+  s.source   = { :git => 'https://github.com/samvermette/SVPullToRefresh.git',
+                 :tag => '0.2' }
 
   s.description = 'SVPullToRefresh allows you to easily add pull-to-refresh ' \
                   'functionality to any UIScrollView subclass with only 1 ' \
