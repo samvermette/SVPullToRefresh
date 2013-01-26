@@ -82,14 +82,6 @@ You can temporarily hide the infinite scrolling view by setting the `showsInfini
 tableView.showsInfiniteScrolling = NO;
 ```
 
-If you'd like to keep the infinite scrolling view around but disable the action handler and state changing:
-
-```objective-c
-tableView.infiniteScrollingView.enabled = NO;
-```
-
-When disabled, the `state` property will always return `SVInfiniteScrollingStateStopped`.
-
 #### Customization
 
 The infinite scrolling view can be customized using the following properties/methods:
@@ -100,7 +92,7 @@ The infinite scrolling view can be customized using the following properties/met
 - (void)setCustomView:(UIView *)view forState:(SVInfiniteScrollingState)state;
 ```
 
-You can access these properties through your scroll view's @infiniteScrollingView@ property. 
+You can access these properties through your scroll view's `infiniteScrollingView` property. 
 
 ## Under the hood
 
@@ -110,6 +102,4 @@ SVPullToRefresh extends `UIScrollView` by adding new public methods as well as a
 
 SVPullToRefresh is brought to you by [Sam Vermette](http://samvermette.com) and [contributors to the project](https://github.com/samvermette/SVPullToRefresh/contributors). If you have feature suggestions or bug reports, feel free to help out by sending pull requests or by [creating new issues](https://github.com/samvermette/SVPullToRefresh/issues/new). If you're using SVPullToRefresh in your project, attribution would be nice. 
 
-Big thanks to [@seb_morel](http://twitter.com/seb_morel) for his [Demistifying the Objective-C runtime](http://cocoaheadsmtl.s3.amazonaws.com/demistifying-runtime.pdf) talk, which permitted the level of abstraction found in SVPullToRefresh.
-
-Hat tip to [Loren Brichter](http://twitter.com/lorenb) for inventing such a great UI mechanism.
+Big thanks to [@seb_morel](http://twitter.com/seb_morel) for his [Demistifying the Objective-C runtime](http://cocoaheadsmtl.s3.amazonaws.com/demistifying-runtime.pdf) talk, which permitted the level of abstraction found in SVPullToRefresh. Hat tip to [Loren Brichter](http://twitter.com/lorenb) for inventing such a great UI mechanism.
