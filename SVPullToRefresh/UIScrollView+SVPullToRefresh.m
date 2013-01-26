@@ -178,11 +178,13 @@ static char UIScrollViewPullToRefreshView;
     
     CGRect titleFrame = self.titleLabel.frame;
     titleFrame.origin.x = ceilf(remainingWidth*position+44);
+    titleFrame.origin.y = self.bounds.size.height-(self.subtitleLabel.text ? 48 : 40);
     self.titleLabel.frame = titleFrame;
     
-    CGRect dateFrame = self.subtitleLabel.frame;
-    dateFrame.origin.x = titleFrame.origin.x;
-    self.subtitleLabel.frame = dateFrame;
+    CGRect subtitleFrame = self.subtitleLabel.frame;
+    subtitleFrame.origin.x = titleFrame.origin.x;
+    subtitleFrame.origin.y = self.bounds.size.height-32;
+    self.subtitleLabel.frame = subtitleFrame;
     
     CGRect arrowFrame = self.arrow.frame;
     arrowFrame.origin.x = ceilf(remainingWidth*position);
@@ -245,7 +247,7 @@ static char UIScrollViewPullToRefreshView;
 - (void)setScrollViewContentInsetForLoading {
     CGFloat offset = MAX(self.scrollView.contentOffset.y * -1, 0);
     UIEdgeInsets currentInsets = self.scrollView.contentInset;
-    currentInsets.top = MIN(offset, self.originalTopInset + SVPullToRefreshViewHeight);
+    currentInsets.top = MIN(offset, self.originalTopInset + self.bounds.size.height);
     [self setScrollViewContentInset:currentInsets];
 }
 
@@ -280,7 +282,7 @@ static char UIScrollViewPullToRefreshView;
             self.state = SVPullToRefreshStateStopped;
     } else {
         CGFloat offset = MAX(self.scrollView.contentOffset.y * -1, 0.0f);
-        offset = MIN(offset, self.originalTopInset + SVPullToRefreshViewHeight);
+        offset = MIN(offset, self.originalTopInset + self.bounds.size.height);
         UIEdgeInsets contentInset = self.scrollView.contentInset;
         self.scrollView.contentInset = UIEdgeInsetsMake(offset, contentInset.left, contentInset.bottom, contentInset.right);
     }
@@ -290,7 +292,7 @@ static char UIScrollViewPullToRefreshView;
 
 - (SVPullToRefreshArrow *)arrow {
     if(!_arrow) {
-		_arrow = [[SVPullToRefreshArrow alloc]initWithFrame:CGRectMake(0, 6, 22, 48)];
+		_arrow = [[SVPullToRefreshArrow alloc]initWithFrame:CGRectMake(0, self.bounds.size.height-54, 22, 48)];
         _arrow.backgroundColor = [UIColor clearColor];
 		[self addSubview:_arrow];
     }
@@ -308,7 +310,7 @@ static char UIScrollViewPullToRefreshView;
 
 - (UILabel *)titleLabel {
     if(!_titleLabel) {
-        _titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 20, 210, 20)];
+        _titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 210, 20)];
         _titleLabel.text = NSLocalizedString(@"Pull to refresh...",);
         _titleLabel.font = [UIFont boldSystemFontOfSize:14];
         _titleLabel.backgroundColor = [UIColor clearColor];
@@ -320,15 +322,11 @@ static char UIScrollViewPullToRefreshView;
 
 - (UILabel *)subtitleLabel {
     if(!_subtitleLabel) {
-        _subtitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 28, 210, 20)];
+        _subtitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 210, 20)];
         _subtitleLabel.font = [UIFont systemFontOfSize:12];
         _subtitleLabel.backgroundColor = [UIColor clearColor];
         _subtitleLabel.textColor = textColor;
         [self addSubview:_subtitleLabel];
-        
-        CGRect titleFrame = self.titleLabel.frame;
-        titleFrame.origin.y = 12;
-        self.titleLabel.frame = titleFrame;
     }
     return _subtitleLabel;
 }
