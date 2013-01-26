@@ -18,7 +18,7 @@
 		22E0D92F1545EE5B00BB6BB5 /* SVViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 22E0D92D1545EE5B00BB6BB5 /* SVViewController.xib */; };
 		22E0D93D1545EE7600BB6BB5 /* UIScrollView+SVPullToRefresh.m in Sources */ = {isa = PBXBuildFile; fileRef = 22E0D93B1545EE7600BB6BB5 /* UIScrollView+SVPullToRefresh.m */; };
 		22E0D9411545EE9000BB6BB5 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22E0D9401545EE9000BB6BB5 /* QuartzCore.framework */; };
-		22E0D94B1545F63300BB6BB5 /* README.textile in Resources */ = {isa = PBXBuildFile; fileRef = 22E0D94A1545F63300BB6BB5 /* README.textile */; };
+		22E0D94B1545F63300BB6BB5 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 22E0D94A1545F63300BB6BB5 /* README.md */; };
 		22FDEC971639082E00DB53A8 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 22FDEC961639082E00DB53A8 /* Default-568h@2x.png */; };
 		22FDEC9D16390CC800DB53A8 /* UIScrollView+SVInfiniteScrolling.m in Sources */ = {isa = PBXBuildFile; fileRef = 2288146016047C06005C6461 /* UIScrollView+SVInfiniteScrolling.m */; };
 		8E7FDB661640EBA200EE63E5 /* SVRootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8E7FDB641640EBA200EE63E5 /* SVRootViewController.m */; };
@@ -46,7 +46,7 @@
 		22E0D93A1545EE7600BB6BB5 /* UIScrollView+SVPullToRefresh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIScrollView+SVPullToRefresh.h"; sourceTree = "<group>"; };
 		22E0D93B1545EE7600BB6BB5 /* UIScrollView+SVPullToRefresh.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIScrollView+SVPullToRefresh.m"; sourceTree = "<group>"; };
 		22E0D9401545EE9000BB6BB5 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
-		22E0D94A1545F63300BB6BB5 /* README.textile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = README.textile; path = ../README.textile; sourceTree = "<group>"; };
+		22E0D94A1545F63300BB6BB5 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		22FDEC961639082E00DB53A8 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "../Default-568h@2x.png"; sourceTree = "<group>"; };
 		8E7FDB631640EBA200EE63E5 /* SVRootViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVRootViewController.h; sourceTree = "<group>"; };
 		8E7FDB641640EBA200EE63E5 /* SVRootViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVRootViewController.m; sourceTree = "<group>"; };
@@ -71,7 +71,7 @@
 		22E0D9091545EE5B00BB6BB5 = {
 			isa = PBXGroup;
 			children = (
-				22E0D94A1545F63300BB6BB5 /* README.textile */,
+				22E0D94A1545F63300BB6BB5 /* README.md */,
 				2214365516B48FD70057C96E /* SVPullToRefresh.podspec */,
 				22E0D91E1545EE5B00BB6BB5 /* Demo */,
 				22E0D9391545EE7600BB6BB5 /* SVPullToRefresh */,
@@ -195,7 +195,7 @@
 			files = (
 				22E0D9231545EE5B00BB6BB5 /* InfoPlist.strings in Resources */,
 				22E0D92F1545EE5B00BB6BB5 /* SVViewController.xib in Resources */,
-				22E0D94B1545F63300BB6BB5 /* README.textile in Resources */,
+				22E0D94B1545F63300BB6BB5 /* README.md in Resources */,
 				22FDEC971639082E00DB53A8 /* Default-568h@2x.png in Resources */,
 				8E7FDB671640EBA200EE63E5 /* SVRootViewController.xib in Resources */,
 				2214365616B48FD70057C96E /* SVPullToRefresh.podspec in Resources */,
