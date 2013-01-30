@@ -67,6 +67,7 @@ tableView.pullToRefreshView.arrowColor = [UIColor whiteColor];
 ```objective-c
 [tableView addInfiniteScrollingWithActionHandler:^{
     // append data to data source, insert new cells at the end of table view
+    // call [tableView.infiniteScrollingView stopAnimating] when done
 }];
 ```
 
