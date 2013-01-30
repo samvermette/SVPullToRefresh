@@ -205,6 +205,10 @@ static char UIScrollViewPullToRefreshView;
     self.arrow.hidden = hasCustomView;
     
     if(hasCustomView) {
+        for (UIView *subview in self.subviews) {
+            [subview removeFromSuperview];
+        }
+
         [self addSubview:customView];
         CGRect viewBounds = [customView bounds];
         CGPoint origin = CGPointMake(roundf((self.bounds.size.width-viewBounds.size.width)/2), roundf((self.bounds.size.height-viewBounds.size.height)/2));
