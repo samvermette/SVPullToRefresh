@@ -129,6 +129,7 @@ static char UIScrollViewPullToRefreshView;
 @synthesize scrollView = _scrollView;
 @synthesize showsPullToRefresh = _showsPullToRefresh;
 @synthesize arrow = _arrow;
+@synthesize arrowView = _arrowView;
 @synthesize activityIndicatorView = _activityIndicatorView;
 
 @synthesize titleLabel = _titleLabel;
@@ -173,7 +174,7 @@ static char UIScrollViewPullToRefreshView;
 }
 
 - (void)layoutSubviews {
-    CGFloat remainingWidth = self.superview.bounds.size.width-200;
+    CGFloat remainingWidth = self.superview.bounds.size.width - 230.0f;
     float position = 0.50;
     
     CGRect titleFrame = self.titleLabel.frame;
@@ -186,11 +187,11 @@ static char UIScrollViewPullToRefreshView;
     subtitleFrame.origin.y = self.bounds.size.height-32;
     self.subtitleLabel.frame = subtitleFrame;
     
-    CGRect arrowFrame = self.arrow.frame;
+    CGRect arrowFrame = self.arrowView.frame;
     arrowFrame.origin.x = ceilf(remainingWidth*position);
-    self.arrow.frame = arrowFrame;
+    self.arrowView.frame = arrowFrame;
 
-    self.activityIndicatorView.center = self.arrow.center;
+    self.activityIndicatorView.center = self.arrowView.center;
     
     for(id otherView in self.viewForState) {
         if([otherView isKindOfClass:[UIView class]])
@@ -202,7 +203,7 @@ static char UIScrollViewPullToRefreshView;
     
     self.titleLabel.hidden = hasCustomView;
     self.subtitleLabel.hidden = hasCustomView;
-    self.arrow.hidden = hasCustomView;
+    self.arrowView.hidden = hasCustomView;
     
     if(hasCustomView) {
         for (UIView *subview in self.subviews) {
@@ -223,7 +224,7 @@ static char UIScrollViewPullToRefreshView;
         
         switch (self.state) {
             case SVPullToRefreshStateStopped:
-                self.arrow.alpha = 1;
+                self.arrowView.alpha = 1;
                 [self.activityIndicatorView stopAnimating];
                 [self rotateArrow:0 hide:NO];
                 break;
@@ -294,6 +295,14 @@ static char UIScrollViewPullToRefreshView;
 
 #pragma mark - Getters
 
+- (UIView *)arrowView
+{
+    if (!_arrowView) {
+        _arrowView = self.arrow; // There's no need to `addSubview`.
+    }
+    return _arrowView;
+}
+
 - (SVPullToRefreshArrow *)arrow {
     if(!_arrow) {
 		_arrow = [[SVPullToRefreshArrow alloc]initWithFrame:CGRectMake(0, self.bounds.size.height-54, 22, 48)];
@@ -362,6 +371,17 @@ static char UIScrollViewPullToRefreshView;
 }
 
 #pragma mark - Setters
+
+- (void)setArrowView:(UIView *)arrowView
+{
+    [_arrowView removeFromSuperview];
+    _arrowView = arrowView;
+    if (_arrowView != nil) {
+        [self addSubview:_arrowView];
+    }
+    
+    [self setNeedsLayout];
+}
 
 - (void)setArrowColor:(UIColor *)newArrowColor {
 	self.arrow.arrowColor = newArrowColor; // pass through
@@ -479,9 +499,10 @@ static char UIScrollViewPullToRefreshView;
 }
 
 - (void)rotateArrow:(float)degrees hide:(BOOL)hide {
+    
     [UIView animateWithDuration:0.2 delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
-        self.arrow.layer.transform = CATransform3DMakeRotation(degrees, 0, 0, 1);
-        self.arrow.layer.opacity = !hide;
+        self.arrowView.layer.transform = CATransform3DMakeRotation(degrees, 0, 0, 1);
+        self.arrowView.layer.opacity = !hide;
         //[self.arrow setNeedsDisplay];//ios 4
     } completion:NULL];
 }
