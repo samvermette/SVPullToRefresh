@@ -39,6 +39,13 @@ typedef NSUInteger SVPullToRefreshState;
 @property (nonatomic, strong) UIColor *textColor;
 @property (nonatomic, strong, readonly) UILabel *titleLabel;
 @property (nonatomic, strong, readonly) UILabel *subtitleLabel;
+
+/**
+ The arrow view. It's a gray arrow by default.
+ 
+ @discussion You can set the custom view you like. For example, an `UIImageView` which displays a fancy arrow. Be careful with the frame, since there hasn't been proper APIs for custom layout so far.
+ */
+@property (nonatomic, strong) UIView *arrowView;
 @property (nonatomic, readwrite) UIActivityIndicatorViewStyle activityIndicatorViewStyle;
 
 @property (nonatomic, readonly) SVPullToRefreshState state;
