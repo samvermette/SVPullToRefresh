@@ -76,6 +76,14 @@ static char UIScrollViewPullToRefreshView;
     }
 }
 
+- (void)removePullToRefresh {
+    if (self.pullToRefreshView) {
+        [self.pullToRefreshView removeFromSuperview];
+        self.pullToRefreshView = nil;
+        self.showsPullToRefresh = NO;
+    }
+}
+
 - (void)triggerPullToRefresh {
     self.pullToRefreshView.state = SVPullToRefreshStateTriggered;
     [self.pullToRefreshView startAnimating];
