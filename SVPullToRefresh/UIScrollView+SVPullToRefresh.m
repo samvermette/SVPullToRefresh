@@ -173,23 +173,7 @@ static char UIScrollViewPullToRefreshView;
 }
 
 - (void)layoutSubviews {
-    CGFloat remainingWidth = self.superview.bounds.size.width-200;
-    float position = 0.50;
     
-    CGRect titleFrame = self.titleLabel.frame;
-    titleFrame.origin.x = ceilf(remainingWidth*position+44);
-    titleFrame.origin.y = self.bounds.size.height-(self.subtitleLabel.text ? 48 : 40);
-    self.titleLabel.frame = titleFrame;
-    
-    CGRect subtitleFrame = self.subtitleLabel.frame;
-    subtitleFrame.origin.x = titleFrame.origin.x;
-    subtitleFrame.origin.y = self.bounds.size.height-32;
-    self.subtitleLabel.frame = subtitleFrame;
-    
-    CGRect arrowFrame = self.arrow.frame;
-    arrowFrame.origin.x = ceilf(remainingWidth*position);
-    self.arrow.frame = arrowFrame;
-
     self.activityIndicatorView.center = self.arrow.center;
     
     for(id otherView in self.viewForState) {
@@ -205,10 +189,6 @@ static char UIScrollViewPullToRefreshView;
     self.arrow.hidden = hasCustomView;
     
     if(hasCustomView) {
-        for (UIView *subview in self.subviews) {
-            [subview removeFromSuperview];
-        }
-
         [self addSubview:customView];
         CGRect viewBounds = [customView bounds];
         CGPoint origin = CGPointMake(roundf((self.bounds.size.width-viewBounds.size.width)/2), roundf((self.bounds.size.height-viewBounds.size.height)/2));
@@ -238,6 +218,24 @@ static char UIScrollViewPullToRefreshView;
                 break;
         }
     }
+    
+    CGFloat remainingWidth = self.superview.bounds.size.width-200;
+    float position = 0.50;
+    
+    CGRect titleFrame = self.titleLabel.frame;
+    titleFrame.origin.x = ceilf(remainingWidth*position+44);
+    titleFrame.origin.y = self.bounds.size.height-(self.subtitleLabel.text ? 48 : 40);
+    self.titleLabel.frame = titleFrame;
+    
+    CGRect subtitleFrame = self.subtitleLabel.frame;
+    subtitleFrame.origin.x = titleFrame.origin.x;
+    subtitleFrame.origin.y = self.bounds.size.height-32;
+    self.subtitleLabel.frame = subtitleFrame;
+    
+    CGRect arrowFrame = self.arrow.frame;
+    arrowFrame.origin.x = ceilf(remainingWidth*position);
+    self.arrow.frame = arrowFrame;
+
 }
 
 #pragma mark - Scroll View
