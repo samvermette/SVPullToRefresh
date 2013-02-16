@@ -96,10 +96,14 @@ You can access these properties through your scroll view's `infiniteScrollingVie
 
 ## Under the hood
 
-SVPullToRefresh extends `UIScrollView` by adding new public methods as well as a dynamic properties. It uses key-value observing to track the scrollView's `contentOffset`.
+SVPullToRefresh extends `UIScrollView` by adding new public methods as well as a dynamic properties. 
+
+It uses key-value observing to track the scrollView's `contentOffset`.
 
 ## Credits
 
 SVPullToRefresh is brought to you by [Sam Vermette](http://samvermette.com) and [contributors to the project](https://github.com/samvermette/SVPullToRefresh/contributors). If you have feature suggestions or bug reports, feel free to help out by sending pull requests or by [creating new issues](https://github.com/samvermette/SVPullToRefresh/issues/new). If you're using SVPullToRefresh in your project, attribution would be nice. 
 
-Big thanks to [@seb_morel](http://twitter.com/seb_morel) for his [Demistifying the Objective-C runtime](http://cocoaheadsmtl.s3.amazonaws.com/demistifying-runtime.pdf) talk which really helped for this project. Hat tip to [Loren Brichter](http://twitter.com/lorenb) for inventing pull-to-refresh.
+Big thanks to [@seb_morel](http://twitter.com/seb_morel) for his [Demistifying the Objective-C runtime](http://cocoaheadsmtl.s3.amazonaws.com/demistifying-runtime.pdf) talk which really helped for this project. 
+
+Hat tip to [Loren Brichter](http://twitter.com/lorenb) for inventing pull-to-refresh.
