@@ -213,6 +213,7 @@ static char UIScrollViewPullToRefreshView;
         CGFloat leftViewWidth = MAX(self.arrow.bounds.size.width,self.activityIndicatorView.bounds.size.width);
         
         CGFloat margin = 10;
+        CGFloat marginY = 2;
         CGFloat labelMaxWidth = self.bounds.size.width - margin - leftViewWidth;
         
         self.titleLabel.text = [self.titles objectAtIndex:self.state];
@@ -235,19 +236,19 @@ static char UIScrollViewPullToRefreshView;
         CGFloat labelX = (self.bounds.size.width / 2) - (totalMaxWidth / 2) + leftViewWidth + margin;
         
         if(subtitleSize.height > 0){
-            CGFloat totalHeigth = titleSize.height + subtitleSize.height + margin;
-            CGFloat minY = (self.bounds.size.height / 2)  - (totalHeigth / 2);
+            CGFloat totalHeight = titleSize.height + subtitleSize.height + marginY;
+            CGFloat minY = (self.bounds.size.height / 2)  - (totalHeight / 2);
             
             CGFloat titleY = minY;
-            self.titleLabel.frame = CGRectIntegral(CGRectMake(labelX,titleY,titleSize.width,titleSize.height));
-            self.subtitleLabel.frame = CGRectIntegral(CGRectMake(labelX,titleY + titleSize.height + margin,subtitleSize.width,subtitleSize.height));
+            self.titleLabel.frame = CGRectIntegral(CGRectMake(labelX, titleY, titleSize.width, titleSize.height));
+            self.subtitleLabel.frame = CGRectIntegral(CGRectMake(labelX, titleY + titleSize.height + marginY, subtitleSize.width, subtitleSize.height));
         }else{
-            CGFloat totalHeigth = titleSize.height;
-            CGFloat minY = (self.bounds.size.height / 2)  - (totalHeigth / 2);
+            CGFloat totalHeight = titleSize.height;
+            CGFloat minY = (self.bounds.size.height / 2)  - (totalHeight / 2);
             
             CGFloat titleY = minY;
-            self.titleLabel.frame = CGRectIntegral(CGRectMake(labelX,titleY,titleSize.width,titleSize.height));
-            self.subtitleLabel.frame = CGRectIntegral(CGRectMake(labelX,titleY + titleSize.height + margin,subtitleSize.width,subtitleSize.height));
+            self.titleLabel.frame = CGRectIntegral(CGRectMake(labelX, titleY, titleSize.width, titleSize.height));
+            self.subtitleLabel.frame = CGRectIntegral(CGRectMake(labelX, titleY + titleSize.height + marginY, subtitleSize.width, subtitleSize.height));
         }
         
         CGFloat arrowX = (self.bounds.size.width / 2) - (totalMaxWidth / 2) + (leftViewWidth - self.arrow.bounds.size.width) / 2;

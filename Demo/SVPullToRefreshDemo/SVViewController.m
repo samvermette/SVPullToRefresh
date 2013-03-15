@@ -43,6 +43,8 @@
         });
     }];
     
+    [self.tableView.pullToRefreshView setTitle:@"" forState:SVPullToRefreshStateAll];
+    
     // setup infinite scrolling
     [self.tableView addInfiniteScrollingWithActionHandler:^{
 
