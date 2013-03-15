@@ -174,8 +174,6 @@ static char UIScrollViewPullToRefreshView;
 
 - (void)layoutSubviews {
     
-    self.activityIndicatorView.center = self.arrow.center;
-    
     for(id otherView in self.viewForState) {
         if([otherView isKindOfClass:[UIView class]])
             [otherView removeFromSuperview];
@@ -195,12 +193,6 @@ static char UIScrollViewPullToRefreshView;
         [customView setFrame:CGRectMake(origin.x, origin.y, viewBounds.size.width, viewBounds.size.height)];
     }
     else {
-        self.titleLabel.text = [self.titles objectAtIndex:self.state];
-        
-        NSString *subtitle = [self.subtitles objectAtIndex:self.state];
-        if(subtitle.length > 0)
-            self.subtitleLabel.text = subtitle;
-        
         switch (self.state) {
             case SVPullToRefreshStateStopped:
                 self.arrow.alpha = 1;
@@ -217,25 +209,51 @@ static char UIScrollViewPullToRefreshView;
                 [self rotateArrow:0 hide:YES];
                 break;
         }
+        
+        CGFloat leftViewWidth = MAX(self.arrow.bounds.size.width,self.activityIndicatorView.bounds.size.width);
+        
+        CGFloat margin = 10;
+        CGFloat labelMaxWidth = self.bounds.size.width - margin - leftViewWidth;
+        
+        self.titleLabel.text = [self.titles objectAtIndex:self.state];
+        
+        NSString *subtitle = [self.subtitles objectAtIndex:self.state];
+        self.subtitleLabel.text = subtitle.length > 0 ? subtitle : nil;
+        
+        
+        CGSize titleSize = [self.titleLabel.text sizeWithFont:self.titleLabel.font
+                                            constrainedToSize:CGSizeMake(labelMaxWidth,self.titleLabel.font.lineHeight)
+                                                lineBreakMode:self.titleLabel.lineBreakMode];
+        
+        
+        CGSize subtitleSize = [self.subtitleLabel.text sizeWithFont:self.subtitleLabel.font
+                                                  constrainedToSize:CGSizeMake(labelMaxWidth,self.subtitleLabel.font.lineHeight)
+                                                      lineBreakMode:self.subtitleLabel.lineBreakMode];
+        
+        CGFloat maxLabelWidth = MAX(titleSize.width,subtitleSize.width);
+        CGFloat totalMaxWidth = leftViewWidth + margin + maxLabelWidth;
+        CGFloat labelX = (self.bounds.size.width / 2) - (totalMaxWidth / 2) + leftViewWidth + margin;
+        
+        if(subtitleSize.height > 0){
+            CGFloat totalHeigth = titleSize.height + subtitleSize.height + margin;
+            CGFloat minY = (self.bounds.size.height / 2)  - (totalHeigth / 2);
+            
+            CGFloat titleY = minY;
+            self.titleLabel.frame = CGRectIntegral(CGRectMake(labelX,titleY,titleSize.width,titleSize.height));
+            self.subtitleLabel.frame = CGRectIntegral(CGRectMake(labelX,titleY + titleSize.height + margin,subtitleSize.width,subtitleSize.height));
+        }else{
+            CGFloat totalHeigth = titleSize.height;
+            CGFloat minY = (self.bounds.size.height / 2)  - (totalHeigth / 2);
+            
+            CGFloat titleY = minY;
+            self.titleLabel.frame = CGRectIntegral(CGRectMake(labelX,titleY,titleSize.width,titleSize.height));
+            self.subtitleLabel.frame = CGRectIntegral(CGRectMake(labelX,titleY + titleSize.height + margin,subtitleSize.width,subtitleSize.height));
+        }
+        
+        CGFloat arrowX = (self.bounds.size.width / 2) - (totalMaxWidth / 2) + (leftViewWidth - self.arrow.bounds.size.width) / 2;
+        self.arrow.frame = CGRectIntegral(CGRectMake(arrowX,(self.bounds.size.height / 2) - (self.arrow.bounds.size.height / 2),self.arrow.bounds.size.width,self.arrow.bounds.size.height));
+        self.activityIndicatorView.center = self.arrow.center;
     }
-    
-    CGFloat remainingWidth = self.superview.bounds.size.width-200;
-    float position = 0.50;
-    
-    CGRect titleFrame = self.titleLabel.frame;
-    titleFrame.origin.x = ceilf(remainingWidth*position+44);
-    titleFrame.origin.y = self.bounds.size.height-(self.subtitleLabel.text ? 48 : 40);
-    self.titleLabel.frame = titleFrame;
-    
-    CGRect subtitleFrame = self.subtitleLabel.frame;
-    subtitleFrame.origin.x = titleFrame.origin.x;
-    subtitleFrame.origin.y = self.bounds.size.height-32;
-    self.subtitleLabel.frame = subtitleFrame;
-    
-    CGRect arrowFrame = self.arrow.frame;
-    arrowFrame.origin.x = ceilf(remainingWidth*position);
-    self.arrow.frame = arrowFrame;
-
 }
 
 #pragma mark - Scroll View
