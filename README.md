@@ -1,5 +1,3 @@
-_**If your project doesn't use ARC**: you must add the `-fobjc-arc` compiler flag to `UIScrollView+SVPullToRefresh.m` and `UIScrollView+SVInfiniteScrolling.m` in Target Settings > Build Phases > Compile Sources._
-
 # SVPullToRefresh + SVInfiniteScrolling
 
 These UIScrollView categories makes it super easy to add pull-to-refresh and infinite scrolling fonctionalities to any UIScrollView (or any of its subclass). Instead of relying on delegates and/or subclassing `UIViewController`, SVPullToRefresh uses the Objective-C runtime to add the following 2 methods to `UIScrollView`:
@@ -10,6 +8,14 @@ These UIScrollView categories makes it super easy to add pull-to-refresh and inf
 ```
 
 ## Installation
+
+### From CocoaPods
+
+Add `pod 'SVPullToRefresh'` to your Podfile or `pod 'SVPullToRefresh', :head` if you're feeling adventurous.
+
+### Manually
+
+_**Important note if your project doesn't use ARC**: you must add the `-fobjc-arc` compiler flag to `UIScrollView+SVPullToRefresh.m` and `UIScrollView+SVInfiniteScrolling.m` in Target Settings > Build Phases > Compile Sources._
 
 * Drag the `SVPullToRefresh/SVPullToRefresh` folder into your project.
 * Add the **QuartzCore** framework to your project.
