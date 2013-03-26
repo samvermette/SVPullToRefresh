@@ -252,7 +252,10 @@ static char UIScrollViewPullToRefreshView;
         }
         
         CGFloat arrowX = (self.bounds.size.width / 2) - (totalMaxWidth / 2) + (leftViewWidth - self.arrow.bounds.size.width) / 2;
-        self.arrow.frame = CGRectIntegral(CGRectMake(arrowX,(self.bounds.size.height / 2) - (self.arrow.bounds.size.height / 2),self.arrow.bounds.size.width,self.arrow.bounds.size.height));
+        self.arrow.frame = CGRectMake(arrowX,
+                                      (self.bounds.size.height / 2) - (self.arrow.bounds.size.height / 2),
+                                      self.arrow.bounds.size.width,
+                                      self.arrow.bounds.size.height);
         self.activityIndicatorView.center = self.arrow.center;
     }
 }
