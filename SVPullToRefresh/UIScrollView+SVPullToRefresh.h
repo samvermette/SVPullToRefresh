@@ -15,7 +15,15 @@
 
 @interface UIScrollView (SVPullToRefresh)
 
+enum {
+    SVPullToRefreshPositionTop = 0,
+    SVPullToRefreshPositionBottom,
+};
+
+typedef NSUInteger SVPullToRefreshPosition;
+
 - (void)addPullToRefreshWithActionHandler:(void (^)(void))actionHandler;
+- (void)addPullToRefreshWithActionHandler:(void (^)(void))actionHandler position:(SVPullToRefreshPosition)position;
 - (void)triggerPullToRefresh;
 
 @property (nonatomic, strong, readonly) SVPullToRefreshView *pullToRefreshView;
@@ -42,6 +50,7 @@ typedef NSUInteger SVPullToRefreshState;
 @property (nonatomic, readwrite) UIActivityIndicatorViewStyle activityIndicatorViewStyle;
 
 @property (nonatomic, readonly) SVPullToRefreshState state;
+@property (nonatomic, readonly) SVPullToRefreshPosition position;
 
 - (void)setTitle:(NSString *)title forState:(SVPullToRefreshState)state;
 - (void)setSubtitle:(NSString *)subtitle forState:(SVPullToRefreshState)state;
