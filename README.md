@@ -1,9 +1,10 @@
 # SVPullToRefresh + SVInfiniteScrolling
 
-These UIScrollView categories makes it super easy to add pull-to-refresh and infinite scrolling fonctionalities to any UIScrollView (or any of its subclass). Instead of relying on delegates and/or subclassing `UIViewController`, SVPullToRefresh uses the Objective-C runtime to add the following 2 methods to `UIScrollView`:
+These UIScrollView categories makes it super easy to add pull-to-refresh and infinite scrolling fonctionalities to any UIScrollView (or any of its subclass). Instead of relying on delegates and/or subclassing `UIViewController`, SVPullToRefresh uses the Objective-C runtime to add the following 3 methods to `UIScrollView`:
 
 ```objective-c
 - (void)addPullToRefreshWithActionHandler:(void (^)(void))actionHandler;
+- (void)addPullToRefreshWithPosition:(SVPullToRefreshPosition)position actionHandler:(void (^)(void))actionHandler;
 - (void)addInfiniteScrollingWithActionHandler:(void (^)(void))actionHandler;
 ```
 
@@ -32,6 +33,14 @@ _**Important note if your project doesn't use ARC**: you must add the `-fobjc-ar
     // prepend data to dataSource, insert cells at top of table view
     // call [tableView.pullToRefreshView stopAnimating] when done
 }];
+```
+or if you want pull to refresh from the bottom
+
+```objective-c
+[tableView addPullToRefreshWithActionHandler:^{
+    // prepend data to dataSource, insert cells at top of table view
+    // call [tableView.pullToRefreshView stopAnimating] when done
+} position:SVPullToRefreshPositionBottom];
 ```
 
 If you’d like to programmatically trigger the refresh (for instance in `viewDidAppear:`), you can do so with:
