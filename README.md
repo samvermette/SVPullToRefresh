@@ -4,7 +4,7 @@ These UIScrollView categories makes it super easy to add pull-to-refresh and inf
 
 ```objective-c
 - (void)addPullToRefreshWithActionHandler:(void (^)(void))actionHandler;
-- (void)addPullToRefreshWithPosition:(SVPullToRefreshPosition)position actionHandler:(void (^)(void))actionHandler;
+- (void)addPullToRefreshWithActionHandler:(void (^)(void))actionHandler position:(SVPullToRefreshPosition)position;
 - (void)addInfiniteScrollingWithActionHandler:(void (^)(void))actionHandler;
 ```
 
