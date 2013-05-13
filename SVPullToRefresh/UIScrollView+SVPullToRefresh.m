@@ -132,7 +132,7 @@ static char UIScrollViewPullToRefreshView;
             [self addObserver:self.pullToRefreshView forKeyPath:@"frame" options:NSKeyValueObservingOptionNew context:nil];
             self.pullToRefreshView.isObserving = YES;
             
-            CGFloat yOrigin;
+            CGFloat yOrigin = 0;
             switch (self.pullToRefreshView.position) {
                 case SVPullToRefreshPositionTop:
                     yOrigin = -SVPullToRefreshViewHeight;
@@ -383,10 +383,10 @@ static char UIScrollViewPullToRefreshView;
 
 - (void)scrollViewDidScroll:(CGPoint)contentOffset {
     if(self.state != SVPullToRefreshStateLoading) {
-        CGFloat scrollOffsetThreshold;
+        CGFloat scrollOffsetThreshold = 0;
         switch (self.position) {
             case SVPullToRefreshPositionTop:
-                scrollOffsetThreshold = self.frame.origin.y-self.originalTopInset;
+                scrollOffsetThreshold = self.frame.origin.y - self.originalTopInset;
                 break;
             case SVPullToRefreshPositionBottom:
                 scrollOffsetThreshold = MAX(self.scrollView.contentSize.height - self.scrollView.bounds.size.height, 0.0f) + self.bounds.size.height + self.originalBottomInset;
