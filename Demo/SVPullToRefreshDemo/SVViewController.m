@@ -48,33 +48,35 @@
 }
 
 - (void)insertRowAtTop {
-    __weak SVViewController *weakSelf = self;
+    __typeof__(self) __weak weakSelf = self;
 
     int64_t delayInSeconds = 2.0;
     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
     dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-        [weakSelf.tableView beginUpdates];
-        [weakSelf.dataSource insertObject:[NSDate date] atIndex:0];
-        [weakSelf.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:0]] withRowAnimation:UITableViewRowAnimationBottom];
-        [weakSelf.tableView endUpdates];
+        __typeof__(weakSelf) __strong strongWeakSelf = weakSelf;
+        [strongWeakSelf.tableView beginUpdates];
+        [strongWeakSelf.dataSource insertObject:[NSDate date] atIndex:0];
+        [strongWeakSelf.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:0]] withRowAnimation:UITableViewRowAnimationBottom];
+        [strongWeakSelf.tableView endUpdates];
         
-        [weakSelf.tableView.pullToRefreshView stopAnimating];
+        [strongWeakSelf.tableView.pullToRefreshView stopAnimating];
     });
 }
 
 
 - (void)insertRowAtBottom {
-    __weak SVViewController *weakSelf = self;
+    __typeof__(self) __weak weakSelf = self;
 
     int64_t delayInSeconds = 2.0;
     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
     dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-        [weakSelf.tableView beginUpdates];
-        [weakSelf.dataSource addObject:[weakSelf.dataSource.lastObject dateByAddingTimeInterval:-90]];
-        [weakSelf.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:weakSelf.dataSource.count-1 inSection:0]] withRowAnimation:UITableViewRowAnimationTop];
-        [weakSelf.tableView endUpdates];
+        __typeof__(weakSelf) __strong strongWeakSelf = weakSelf;
+        [strongWeakSelf.tableView beginUpdates];
+        [strongWeakSelf.dataSource addObject:[strongWeakSelf.dataSource.lastObject dateByAddingTimeInterval:-90]];
+        [strongWeakSelf.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:strongWeakSelf.dataSource.count-1 inSection:0]] withRowAnimation:UITableViewRowAnimationTop];
+        [strongWeakSelf.tableView endUpdates];
         
-        [weakSelf.tableView.infiniteScrollingView stopAnimating];
+        [strongWeakSelf.tableView.infiniteScrollingView stopAnimating];
     });
 }
 #pragma mark -

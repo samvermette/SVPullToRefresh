@@ -334,8 +334,9 @@ static char UIScrollViewPullToRefreshView;
 }
 
 - (void)setScrollViewContentInsetForLoading {
-    CGFloat offset = MAX(self.scrollView.contentOffset.y * -1, 0);
-    UIEdgeInsets currentInsets = self.scrollView.contentInset;
+    __typeof__(self.scrollView) strongScrollView = self.scrollView;
+    CGFloat offset = MAX(strongScrollView.contentOffset.y * -1, 0);
+    UIEdgeInsets currentInsets = strongScrollView.contentInset;
     switch (self.position) {
         case SVPullToRefreshPositionTop:
             currentInsets.top = MIN(offset, self.originalTopInset + self.bounds.size.height);
@@ -371,7 +372,10 @@ static char UIScrollViewPullToRefreshView;
                 yOrigin = -SVPullToRefreshViewHeight;
                 break;
             case SVPullToRefreshPositionBottom:
-                yOrigin = MAX(self.scrollView.contentSize.height, self.scrollView.bounds.size.height);
+            {
+                __typeof__(self.scrollView) strongScrollView = self.scrollView;
+                yOrigin = MAX(strongScrollView.contentSize.height, strongScrollView.bounds.size.height);
+            }
                 break;
         }
         self.frame = CGRectMake(0, yOrigin, self.bounds.size.width, SVPullToRefreshViewHeight);
@@ -382,6 +386,7 @@ static char UIScrollViewPullToRefreshView;
 }
 
 - (void)scrollViewDidScroll:(CGPoint)contentOffset {
+    __typeof__(self.scrollView) strongScrollView = self.scrollView;
     if(self.state != SVPullToRefreshStateLoading) {
         CGFloat scrollOffsetThreshold;
         switch (self.position) {
@@ -389,17 +394,17 @@ static char UIScrollViewPullToRefreshView;
                 scrollOffsetThreshold = self.frame.origin.y-self.originalTopInset;
                 break;
             case SVPullToRefreshPositionBottom:
-                scrollOffsetThreshold = MAX(self.scrollView.contentSize.height - self.scrollView.bounds.size.height, 0.0f) + self.bounds.size.height + self.originalBottomInset;
+                scrollOffsetThreshold = MAX(strongScrollView.contentSize.height - strongScrollView.bounds.size.height, 0.0f) + self.bounds.size.height + self.originalBottomInset;
                 break;
         }
         
-        if(!self.scrollView.isDragging && self.state == SVPullToRefreshStateTriggered)
+        if(!strongScrollView.isDragging && self.state == SVPullToRefreshStateTriggered)
             self.state = SVPullToRefreshStateLoading;
-        else if(contentOffset.y < scrollOffsetThreshold && self.scrollView.isDragging && self.state == SVPullToRefreshStateStopped && self.position == SVPullToRefreshPositionTop)
+        else if(contentOffset.y < scrollOffsetThreshold && strongScrollView.isDragging && self.state == SVPullToRefreshStateStopped && self.position == SVPullToRefreshPositionTop)
             self.state = SVPullToRefreshStateTriggered;
         else if(contentOffset.y >= scrollOffsetThreshold && self.state != SVPullToRefreshStateStopped && self.position == SVPullToRefreshPositionTop)
             self.state = SVPullToRefreshStateStopped;
-        else if(contentOffset.y > scrollOffsetThreshold && self.scrollView.isDragging && self.state == SVPullToRefreshStateStopped && self.position == SVPullToRefreshPositionBottom)
+        else if(contentOffset.y > scrollOffsetThreshold && strongScrollView.isDragging && self.state == SVPullToRefreshStateStopped && self.position == SVPullToRefreshPositionBottom)
             self.state = SVPullToRefreshStateTriggered;
         else if(contentOffset.y <= scrollOffsetThreshold && self.state != SVPullToRefreshStateStopped && self.position == SVPullToRefreshPositionBottom)
             self.state = SVPullToRefreshStateStopped;
@@ -408,21 +413,21 @@ static char UIScrollViewPullToRefreshView;
         UIEdgeInsets contentInset;
         switch (self.position) {
             case SVPullToRefreshPositionTop:
-                offset = MAX(self.scrollView.contentOffset.y * -1, 0.0f);
+                offset = MAX(strongScrollView.contentOffset.y * -1, 0.0f);
                 offset = MIN(offset, self.originalTopInset + self.bounds.size.height);
-                contentInset = self.scrollView.contentInset;
-                self.scrollView.contentInset = UIEdgeInsetsMake(offset, contentInset.left, contentInset.bottom, contentInset.right);
+                contentInset = strongScrollView.contentInset;
+                strongScrollView.contentInset = UIEdgeInsetsMake(offset, contentInset.left, contentInset.bottom, contentInset.right);
                 break;
             case SVPullToRefreshPositionBottom:
-                if (self.scrollView.contentSize.height >= self.scrollView.bounds.size.height) {
-                    offset = MAX(self.scrollView.contentSize.height - self.scrollView.bounds.size.height + self.bounds.size.height, 0.0f);
+                if (strongScrollView.contentSize.height >= strongScrollView.bounds.size.height) {
+                    offset = MAX(strongScrollView.contentSize.height - strongScrollView.bounds.size.height + self.bounds.size.height, 0.0f);
                     offset = MIN(offset, self.originalBottomInset + self.bounds.size.height);
-                    contentInset = self.scrollView.contentInset;
-                    self.scrollView.contentInset = UIEdgeInsetsMake(contentInset.top, contentInset.left, offset, contentInset.right);
+                    contentInset = strongScrollView.contentInset;
+                    strongScrollView.contentInset = UIEdgeInsetsMake(contentInset.top, contentInset.left, offset, contentInset.right);
                 } else if (self.wasTriggeredByUser) {
                     offset = MIN(self.bounds.size.height, self.originalBottomInset + self.bounds.size.height);
-                    contentInset = self.scrollView.contentInset;
-                    self.scrollView.contentInset = UIEdgeInsetsMake(-offset, contentInset.left, contentInset.bottom, contentInset.right);
+                    contentInset = strongScrollView.contentInset;
+                    strongScrollView.contentInset = UIEdgeInsetsMake(-offset, contentInset.left, contentInset.bottom, contentInset.right);
                 }
                 break;
         }
@@ -570,11 +575,12 @@ static char UIScrollViewPullToRefreshView;
 }
 
 - (void)startAnimating{
+    __typeof__(self.scrollView) strongScrollView = self.scrollView;
     switch (self.position) {
         case SVPullToRefreshPositionTop:
             
-            if(fequalzero(self.scrollView.contentOffset.y)) {
-                [self.scrollView setContentOffset:CGPointMake(self.scrollView.contentOffset.x, -self.frame.size.height) animated:YES];
+            if(fequalzero(strongScrollView.contentOffset.y)) {
+                [strongScrollView setContentOffset:CGPointMake(strongScrollView.contentOffset.x, -self.frame.size.height) animated:YES];
                 self.wasTriggeredByUser = NO;
             }
             else
@@ -583,9 +589,9 @@ static char UIScrollViewPullToRefreshView;
             break;
         case SVPullToRefreshPositionBottom:
             
-            if((fequalzero(self.scrollView.contentOffset.y) && self.scrollView.contentSize.height < self.scrollView.bounds.size.height)
-               || fequal(self.scrollView.contentOffset.y, self.scrollView.contentSize.height - self.scrollView.bounds.size.height)) {
-                [self.scrollView setContentOffset:(CGPoint){.y = MAX(self.scrollView.contentSize.height - self.scrollView.bounds.size.height, 0.0f) + self.frame.size.height} animated:YES];
+            if((fequalzero(strongScrollView.contentOffset.y) && strongScrollView.contentSize.height < strongScrollView.bounds.size.height)
+               || fequal(strongScrollView.contentOffset.y, strongScrollView.contentSize.height - strongScrollView.bounds.size.height)) {
+                [strongScrollView setContentOffset:(CGPoint){.y = MAX(strongScrollView.contentSize.height - strongScrollView.bounds.size.height, 0.0f) + self.frame.size.height} animated:YES];
                 self.wasTriggeredByUser = NO;
             }
             else
@@ -600,14 +606,16 @@ static char UIScrollViewPullToRefreshView;
 - (void)stopAnimating {
     self.state = SVPullToRefreshStateStopped;
     
+    __typeof__(self.scrollView) strongScrollView = self.scrollView;
+    
     switch (self.position) {
         case SVPullToRefreshPositionTop:
-            if(!self.wasTriggeredByUser && self.scrollView.contentOffset.y < -self.originalTopInset)
-                [self.scrollView setContentOffset:CGPointMake(self.scrollView.contentOffset.x, -self.originalTopInset) animated:YES];
+            if(!self.wasTriggeredByUser && strongScrollView.contentOffset.y < -self.originalTopInset)
+                [strongScrollView setContentOffset:CGPointMake(strongScrollView.contentOffset.x, -self.originalTopInset) animated:YES];
             break;
         case SVPullToRefreshPositionBottom:
-            if(!self.wasTriggeredByUser && self.scrollView.contentOffset.y < -self.originalTopInset)
-                [self.scrollView setContentOffset:CGPointMake(self.scrollView.contentOffset.x, self.scrollView.contentSize.height - self.scrollView.bounds.size.height + self.originalBottomInset) animated:YES];
+            if(!self.wasTriggeredByUser && strongScrollView.contentOffset.y < -self.originalTopInset)
+                [strongScrollView setContentOffset:CGPointMake(strongScrollView.contentOffset.x, strongScrollView.contentSize.height - strongScrollView.bounds.size.height + self.originalBottomInset) animated:YES];
             break;
     }
 }
