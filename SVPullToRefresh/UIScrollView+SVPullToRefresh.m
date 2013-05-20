@@ -230,6 +230,7 @@ static char UIScrollViewPullToRefreshView;
     }
     else {
         switch (self.state) {
+            case SVPullToRefreshStateAll:
             case SVPullToRefreshStateStopped:
                 self.arrow.alpha = 1;
                 [self.activityIndicatorView stopAnimating];
@@ -623,6 +624,7 @@ static char UIScrollViewPullToRefreshView;
     [self setNeedsLayout];
     
     switch (newState) {
+        case SVPullToRefreshStateAll:
         case SVPullToRefreshStateStopped:
             [self resetScrollViewContentInset];
             self.wasTriggeredByUser = YES;
