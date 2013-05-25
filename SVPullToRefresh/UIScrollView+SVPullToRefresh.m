@@ -327,7 +327,6 @@ static char UIScrollViewPullToRefreshView;
             break;
         case SVPullToRefreshPositionBottom:
             currentInsets.bottom = self.originalBottomInset;
-            currentInsets.top = self.originalTopInset;
             break;
     }
     [self setScrollViewContentInset:currentInsets];
