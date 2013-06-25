@@ -90,7 +90,10 @@ static char UIScrollViewPullToRefreshView;
         self.pullToRefreshView = view;
         self.showsPullToRefresh = YES;
     }
-    
+    else{
+      self.pullToRefreshView.pullToRefreshActionHandler = actionHandler;
+      self.pullToRefreshView.position = position;
+    }
 }
 
 - (void)addPullToRefreshWithActionHandler:(void (^)(void))actionHandler {
