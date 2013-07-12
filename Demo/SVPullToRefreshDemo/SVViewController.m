@@ -33,6 +33,31 @@
     [self.tableView addInfiniteScrollingWithActionHandler:^{
         [weakSelf insertRowAtBottom];
     }];
+    
+    UIImageView* spin = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
+    spin.animationImages = @[[UIImage imageNamed:@"pull-to-refresh_1.png"],
+                             [UIImage imageNamed:@"pull-to-refresh_2.png"],
+                             [UIImage imageNamed:@"pull-to-refresh_3.png"],
+                             [UIImage imageNamed:@"pull-to-refresh_4.png"],
+                             [UIImage imageNamed:@"pull-to-refresh_5.png"],
+                             [UIImage imageNamed:@"pull-to-refresh_6.png"],
+                             [UIImage imageNamed:@"pull-to-refresh_7.png"],
+                             [UIImage imageNamed:@"pull-to-refresh_8.png"],
+                             ];
+    spin.animationDuration = .8 ;
+    spin.animationRepeatCount = 0;
+    [spin startAnimating];
+   // spin.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+    
+    
+    UIImageView* stopSpin = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
+    stopSpin.image = [UIImage imageNamed:@"pull-to-refresh-inactive.png"];
+
+    
+    [self.tableView.pullToRefreshView setCustomView:spin forState:SVPullToRefreshStateLoading];
+    [self.tableView.pullToRefreshView setCustomView:spin forState:SVPullToRefreshStateTriggered];
+    [self.tableView.pullToRefreshView setCustomView:stopSpin forState:SVPullToRefreshStateStopped];
+    
 }
 
 - (void)viewDidAppear:(BOOL)animated {
