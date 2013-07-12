@@ -185,7 +185,7 @@ static char UIScrollViewPullToRefreshView;
                                 nil];
         
         self.subtitles = [NSMutableArray arrayWithObjects:@"", @"", @"", @"", nil];
-        self.viewForState = [NSMutableArray arrayWithObjects:@"", @"", @"", @"", nil];
+        self.viewForState = [NSMutableArray arrayWithObjects:[NSNull null], [NSNull null], [NSNull null], [NSNull null], nil];
         self.wasTriggeredByUser = YES;
     }
     
@@ -215,8 +215,8 @@ static char UIScrollViewPullToRefreshView;
             [otherView removeFromSuperview];
     }
     
-    id customView = [self.viewForState objectAtIndex:self.state];
-    BOOL hasCustomView = [customView isKindOfClass:[UIView class]];
+    UIView* customView = [self.viewForState objectAtIndex:self.state];
+    BOOL hasCustomView = (customView != nil);
     
     self.titleLabel.hidden = hasCustomView;
     self.subtitleLabel.hidden = hasCustomView;
@@ -533,7 +533,7 @@ static char UIScrollViewPullToRefreshView;
     id viewPlaceholder = view;
     
     if(!viewPlaceholder)
-        viewPlaceholder = @"";
+        viewPlaceholder = [NSNull null];
     
     if(state == SVPullToRefreshStateAll)
         [self.viewForState replaceObjectsInRange:NSMakeRange(0, 3) withObjectsFromArray:@[viewPlaceholder, viewPlaceholder, viewPlaceholder]];
