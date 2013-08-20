@@ -36,7 +36,7 @@ static CGFloat const SVPullToRefreshViewHeight = 60;
 @property (nonatomic, strong) NSMutableArray *subtitles;
 @property (nonatomic, strong) NSMutableArray *viewForState;
 
-@property (nonatomic, weak) UIScrollView *scrollView;
+@property (nonatomic, unsafe_unretained) UIScrollView *scrollView;
 @property (nonatomic, readwrite) CGFloat originalTopInset;
 
 @property (nonatomic, assign) BOOL wasTriggeredByUser;
@@ -143,7 +143,7 @@ static char UIScrollViewPullToRefreshView;
         self.textColor = [UIColor darkGrayColor];
         self.autoresizingMask = UIViewAutoresizingFlexibleWidth;
         self.state = SVPullToRefreshStateStopped;
-        self.showsDateLabel = NO;
+        self.showsDateLabel = YES;
         
         self.titles = [NSMutableArray arrayWithObjects:NSLocalizedString(@"Pull to refresh...",),
                                                        NSLocalizedString(@"Release to refresh...",),
@@ -173,23 +173,7 @@ static char UIScrollViewPullToRefreshView;
 }
 
 - (void)layoutSubviews {
-    CGFloat remainingWidth = self.superview.bounds.size.width-200;
-    float position = 0.50;
     
-    CGRect titleFrame = self.titleLabel.frame;
-    titleFrame.origin.x = ceilf(remainingWidth*position+44);
-    titleFrame.origin.y = self.bounds.size.height-(self.subtitleLabel.text ? 48 : 40);
-    self.titleLabel.frame = titleFrame;
-    
-    CGRect subtitleFrame = self.subtitleLabel.frame;
-    subtitleFrame.origin.x = titleFrame.origin.x;
-    subtitleFrame.origin.y = self.bounds.size.height-32;
-    self.subtitleLabel.frame = subtitleFrame;
-    
-    CGRect arrowFrame = self.arrow.frame;
-    arrowFrame.origin.x = ceilf(remainingWidth*position);
-    self.arrow.frame = arrowFrame;
-
     self.activityIndicatorView.center = self.arrow.center;
     
     for(id otherView in self.viewForState) {
@@ -234,6 +218,26 @@ static char UIScrollViewPullToRefreshView;
                 break;
         }
     }
+    
+    CGFloat remainingWidth = self.superview.bounds.size.width-260;
+    float position = 0.50;
+    
+    CGRect titleFrame = self.titleLabel.frame;
+    titleFrame.origin.x = ceilf(remainingWidth*position+28);
+    titleFrame.origin.y = self.bounds.size.height-(self.subtitleLabel.text ? 48 : 40);
+    self.titleLabel.frame = titleFrame;
+    [self.titleLabel setTextAlignment:NSTextAlignmentCenter];
+    
+    CGRect subtitleFrame = self.subtitleLabel.frame;
+    subtitleFrame.origin.x = titleFrame.origin.x;
+    subtitleFrame.origin.y = self.bounds.size.height-32;
+    self.subtitleLabel.frame = subtitleFrame;
+    [self.subtitleLabel setTextAlignment:NSTextAlignmentCenter];
+    
+    CGRect arrowFrame = self.arrow.frame;
+    arrowFrame.origin.x = ceilf(remainingWidth*position);
+    self.arrow.frame = arrowFrame;
+
 }
 
 #pragma mark - Scroll View
@@ -440,10 +444,9 @@ static char UIScrollViewPullToRefreshView;
 }
 
 - (void)stopAnimating {
+    if(!self.wasTriggeredByUser && self.scrollView.contentOffset.y <= -self.originalTopInset)
+        [self.scrollView setContentOffset:CGPointMake(self.scrollView.contentOffset.x, -self.originalTopInset) animated:NO];
     self.state = SVPullToRefreshStateStopped;
-    
-    if(!self.wasTriggeredByUser && self.scrollView.contentOffset.y < -self.originalTopInset)
-        [self.scrollView setContentOffset:CGPointMake(self.scrollView.contentOffset.x, -self.originalTopInset) animated:YES];
 }
 
 - (void)setState:(SVPullToRefreshState)newState {
