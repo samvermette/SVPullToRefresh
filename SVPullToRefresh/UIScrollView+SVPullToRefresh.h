@@ -47,6 +47,7 @@ typedef NSUInteger SVPullToRefreshState;
 @property (nonatomic, strong) UIColor *textColor;
 @property (nonatomic, strong, readonly) UILabel *titleLabel;
 @property (nonatomic, strong, readonly) UILabel *subtitleLabel;
+@property (nonatomic, strong) UIColor *activityIndicatorViewColor;
 @property (nonatomic, readwrite) UIActivityIndicatorViewStyle activityIndicatorViewStyle;
 
 @property (nonatomic, readonly) SVPullToRefreshState state;
