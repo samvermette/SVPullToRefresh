@@ -611,11 +611,11 @@ static char UIScrollViewPullToRefreshView;
     
     switch (self.position) {
         case SVPullToRefreshPositionTop:
-            if(!self.wasTriggeredByUser && self.scrollView.contentOffset.y < -self.originalTopInset)
+            if(!self.wasTriggeredByUser)
                 [self.scrollView setContentOffset:CGPointMake(self.scrollView.contentOffset.x, -self.originalTopInset) animated:YES];
             break;
         case SVPullToRefreshPositionBottom:
-            if(!self.wasTriggeredByUser && self.scrollView.contentOffset.y < -self.originalTopInset)
+            if(!self.wasTriggeredByUser)
                 [self.scrollView setContentOffset:CGPointMake(self.scrollView.contentOffset.x, self.scrollView.contentSize.height - self.scrollView.bounds.size.height + self.originalBottomInset) animated:YES];
             break;
     }
@@ -634,7 +634,6 @@ static char UIScrollViewPullToRefreshView;
     switch (newState) {
         case SVPullToRefreshStateStopped:
             [self resetScrollViewContentInset];
-            self.wasTriggeredByUser = YES;
             break;
             
         case SVPullToRefreshStateTriggered:
