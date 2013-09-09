@@ -32,6 +32,7 @@ static CGFloat const SVInfiniteScrollingViewHeight = 60;
 @property (nonatomic, readwrite) CGFloat originalBottomInset;
 @property (nonatomic, assign) BOOL wasTriggeredByUser;
 @property (nonatomic, assign) BOOL isObserving;
+@property (nonatomic, readwrite, assign, getter = isSettingTableViewContentInsetInternally) BOOL settingScrollViewContentInsetInternally;
 
 - (void)resetScrollViewContentInset;
 - (void)setScrollViewContentInsetForInfiniteScrolling;
@@ -54,7 +55,7 @@ UIEdgeInsets scrollViewOriginalContentInsets;
 - (void)addInfiniteScrollingWithActionHandler:(void (^)(void))actionHandler {
     
     if(!self.infiniteScrollingView) {
-        SVInfiniteScrollingView *view = [[SVInfiniteScrollingView alloc] initWithFrame:CGRectMake(0, self.contentSize.height, self.bounds.size.width, SVInfiniteScrollingViewHeight)];
+        SVInfiniteScrollingView *view = [[SVInfiniteScrollingView alloc] initWithFrame:CGRectMake(0, self.contentSize.height + self.contentInset.bottom, self.bounds.size.width, SVInfiniteScrollingViewHeight)];
         view.infiniteScrollingHandler = actionHandler;
         view.scrollView = self;
         [self addSubview:view];
@@ -89,6 +90,7 @@ UIEdgeInsets scrollViewOriginalContentInsets;
       if (self.infiniteScrollingView.isObserving) {
         [self removeObserver:self.infiniteScrollingView forKeyPath:@"contentOffset"];
         [self removeObserver:self.infiniteScrollingView forKeyPath:@"contentSize"];
+        [self removeObserver:self.infiniteScrollingView forKeyPath:@"contentInset"];
         [self.infiniteScrollingView resetScrollViewContentInset];
         self.infiniteScrollingView.isObserving = NO;
       }
@@ -97,6 +99,7 @@ UIEdgeInsets scrollViewOriginalContentInsets;
       if (!self.infiniteScrollingView.isObserving) {
         [self addObserver:self.infiniteScrollingView forKeyPath:@"contentOffset" options:NSKeyValueObservingOptionNew context:nil];
         [self addObserver:self.infiniteScrollingView forKeyPath:@"contentSize" options:NSKeyValueObservingOptionNew context:nil];
+        [self addObserver:self.infiniteScrollingView forKeyPath:@"contentInset" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:nil];
         [self.infiniteScrollingView setScrollViewContentInsetForInfiniteScrolling];
         self.infiniteScrollingView.isObserving = YES;
           
@@ -146,6 +149,7 @@ UIEdgeInsets scrollViewOriginalContentInsets;
           if (self.isObserving) {
             [scrollView removeObserver:self forKeyPath:@"contentOffset"];
             [scrollView removeObserver:self forKeyPath:@"contentSize"];
+            [scrollView removeObserver:self forKeyPath:@"contentInset"];
             self.isObserving = NO;
           }
         }
@@ -175,7 +179,9 @@ UIEdgeInsets scrollViewOriginalContentInsets;
                           delay:0
                         options:UIViewAnimationOptionAllowUserInteraction|UIViewAnimationOptionBeginFromCurrentState
                      animations:^{
+                         self.settingScrollViewContentInsetInternally = YES;
                          self.scrollView.contentInset = contentInset;
+                         self.settingScrollViewContentInsetInternally = NO;
                      }
                      completion:NULL];
 }
@@ -187,7 +193,11 @@ UIEdgeInsets scrollViewOriginalContentInsets;
         [self scrollViewDidScroll:[[change valueForKey:NSKeyValueChangeNewKey] CGPointValue]];
     else if([keyPath isEqualToString:@"contentSize"]) {
         [self layoutSubviews];
-        self.frame = CGRectMake(0, self.scrollView.contentSize.height, self.bounds.size.width, SVInfiniteScrollingViewHeight);
+        self.frame = CGRectMake(0, self.scrollView.contentSize.height + self.originalBottomInset, self.bounds.size.width, SVInfiniteScrollingViewHeight);
+    }
+    else if ([keyPath isEqualToString:@"contentInset"]) {
+        [self scrollViewDidChangeContentFromInset:[[change valueForKey:NSKeyValueChangeOldKey] UIEdgeInsetsValue]
+                                          toInset:[[change valueForKey:NSKeyValueChangeNewKey] UIEdgeInsetsValue]];
     }
 }
 
@@ -202,6 +212,25 @@ UIEdgeInsets scrollViewOriginalContentInsets;
             self.state = SVInfiniteScrollingStateTriggered;
         else if(contentOffset.y < scrollOffsetThreshold  && self.state != SVInfiniteScrollingStateStopped)
             self.state = SVInfiniteScrollingStateStopped;
+    }
+}
+
+- (void)scrollViewDidChangeContentFromInset:(UIEdgeInsets)oldInset toInset:(UIEdgeInsets)newInset
+{
+    if (!self.isSettingTableViewContentInsetInternally && oldInset.bottom != newInset.bottom) {
+        self.originalBottomInset = newInset.bottom;
+        
+        CGRect frame = self.frame;
+        frame.origin.y = self.scrollView.contentSize.height + self.originalBottomInset;
+        self.frame = frame;
+        
+        if (self.scrollView.showsInfiniteScrolling) {
+            UIEdgeInsets currentInsets = self.scrollView.contentInset;
+            currentInsets.bottom = self.originalBottomInset + SVInfiniteScrollingViewHeight;
+            self.settingScrollViewContentInsetInternally = YES;
+            self.scrollView.contentInset = currentInsets;
+            self.settingScrollViewContentInsetInternally = NO;
+        }
     }
 }
 
