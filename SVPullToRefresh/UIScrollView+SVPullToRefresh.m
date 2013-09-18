@@ -161,7 +161,7 @@ static char UIScrollViewPullToRefreshView;
 @implementation SVPullToRefreshView
 
 // public properties
-@synthesize pullToRefreshActionHandler, arrowColor, textColor, activityIndicatorViewStyle, lastUpdatedDate, dateFormatter;
+@synthesize pullToRefreshActionHandler, arrowColor, textColor, activityIndicatorViewColor, activityIndicatorViewStyle, lastUpdatedDate, dateFormatter;
 
 @synthesize state = _state;
 @synthesize scrollView = _scrollView;
@@ -499,6 +499,10 @@ static char UIScrollViewPullToRefreshView;
     return self.titleLabel.textColor;
 }
 
+- (UIColor *)activityIndicatorViewColor {
+    return self.activityIndicatorView.color;
+}
+
 - (UIActivityIndicatorViewStyle)activityIndicatorViewStyle {
     return self.activityIndicatorView.activityIndicatorViewStyle;
 }
@@ -552,6 +556,10 @@ static char UIScrollViewPullToRefreshView;
     textColor = newTextColor;
     self.titleLabel.textColor = newTextColor;
 	self.subtitleLabel.textColor = newTextColor;
+}
+
+- (void)setActivityIndicatorViewColor:(UIColor *)color {
+    self.activityIndicatorView.color = color;
 }
 
 - (void)setActivityIndicatorViewStyle:(UIActivityIndicatorViewStyle)viewStyle {
