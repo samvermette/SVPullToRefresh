@@ -45,7 +45,8 @@ static CGFloat const SVPullToRefreshViewHeight = 60;
 @property (nonatomic, assign) BOOL wasTriggeredByUser;
 @property (nonatomic, assign) BOOL showsPullToRefresh;
 @property (nonatomic, assign) BOOL showsDateLabel;
-@property(nonatomic, assign) BOOL isObserving;
+@property (nonatomic, assign) BOOL isObserving;
+@property (nonatomic, assign) BOOL customViewIsFixed;
 
 - (void)resetScrollViewContentInset;
 - (void)setScrollViewContentInsetForLoading;
@@ -224,9 +225,11 @@ static char UIScrollViewPullToRefreshView;
     
     if(hasCustomView) {
         [self addSubview:customView];
-        CGRect viewBounds = [customView bounds];
-        CGPoint origin = CGPointMake(roundf((self.bounds.size.width-viewBounds.size.width)/2), roundf((self.bounds.size.height-viewBounds.size.height)/2));
-        [customView setFrame:CGRectMake(origin.x, origin.y, viewBounds.size.width, viewBounds.size.height)];
+        if (!self.customViewIsFixed) {
+            CGRect viewBounds = [customView bounds];
+            CGPoint origin = CGPointMake(roundf((self.bounds.size.width-viewBounds.size.width)/2), roundf((self.bounds.size.height-viewBounds.size.height)/2));
+            [customView setFrame:CGRectMake(origin.x, origin.y, viewBounds.size.width, viewBounds.size.height)];
+        }
     }
     else {
         switch (self.state) {
@@ -530,6 +533,10 @@ static char UIScrollViewPullToRefreshView;
 }
 
 - (void)setCustomView:(UIView *)view forState:(SVPullToRefreshState)state {
+    [self setCustomView:view forState:state withFixedOrigin:NO];
+}
+
+- (void)setCustomView:(UIView *)view forState:(SVPullToRefreshState)state withFixedOrigin:(BOOL)fixedOrigin {
     id viewPlaceholder = view;
     
     if(!viewPlaceholder)
@@ -539,6 +546,8 @@ static char UIScrollViewPullToRefreshView;
         [self.viewForState replaceObjectsInRange:NSMakeRange(0, 3) withObjectsFromArray:@[viewPlaceholder, viewPlaceholder, viewPlaceholder]];
     else
         [self.viewForState replaceObjectAtIndex:state withObject:viewPlaceholder];
+    
+    self.customViewIsFixed = fixedOrigin;
     
     [self setNeedsLayout];
 }
