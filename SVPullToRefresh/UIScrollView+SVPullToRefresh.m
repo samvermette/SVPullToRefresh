@@ -622,6 +622,7 @@ static char UIScrollViewPullToRefreshView;
     _state = newState;
     
     [self setNeedsLayout];
+    [self layoutIfNeeded];
     
     switch (newState) {
         case SVPullToRefreshStateStopped:
