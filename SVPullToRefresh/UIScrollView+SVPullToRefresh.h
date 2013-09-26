@@ -15,12 +15,10 @@
 
 @interface UIScrollView (SVPullToRefresh)
 
-enum {
+typedef NS_ENUM(NSUInteger, SVPullToRefreshPosition) {
     SVPullToRefreshPositionTop = 0,
     SVPullToRefreshPositionBottom,
 };
-
-typedef NSUInteger SVPullToRefreshPosition;
 
 - (void)addPullToRefreshWithActionHandler:(void (^)(void))actionHandler;
 - (void)addPullToRefreshWithActionHandler:(void (^)(void))actionHandler position:(SVPullToRefreshPosition)position;
@@ -32,14 +30,12 @@ typedef NSUInteger SVPullToRefreshPosition;
 @end
 
 
-enum {
+typedef NS_ENUM(NSUInteger, SVPullToRefreshState) {
     SVPullToRefreshStateStopped = 0,
     SVPullToRefreshStateTriggered,
     SVPullToRefreshStateLoading,
     SVPullToRefreshStateAll = 10
 };
-
-typedef NSUInteger SVPullToRefreshState;
 
 @interface SVPullToRefreshView : UIView
 
