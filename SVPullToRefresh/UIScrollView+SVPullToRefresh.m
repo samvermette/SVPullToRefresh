@@ -120,6 +120,7 @@ static char UIScrollViewPullToRefreshView;
     if(!showsPullToRefresh) {
         if (self.pullToRefreshView.isObserving) {
             [self removeObserver:self.pullToRefreshView forKeyPath:@"contentOffset"];
+            [self removeObserver:self.pullToRefreshView forKeyPath:@"contentSize"];
             [self removeObserver:self.pullToRefreshView forKeyPath:@"frame"];
             [self.pullToRefreshView resetScrollViewContentInset];
             self.pullToRefreshView.isObserving = NO;
@@ -636,6 +637,7 @@ static char UIScrollViewPullToRefreshView;
     _state = newState;
     
     [self setNeedsLayout];
+    [self layoutIfNeeded];
     
     switch (newState) {
         case SVPullToRefreshStateStopped:
