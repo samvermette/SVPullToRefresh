@@ -15,12 +15,10 @@
 
 @interface UIScrollView (SVPullToRefresh)
 
-enum {
+typedef NS_ENUM(NSUInteger, SVPullToRefreshPosition) {
     SVPullToRefreshPositionTop = 0,
     SVPullToRefreshPositionBottom,
 };
-
-typedef NSUInteger SVPullToRefreshPosition;
 
 - (void)addPullToRefreshWithActionHandler:(void (^)(void))actionHandler;
 - (void)addPullToRefreshWithActionHandler:(void (^)(void))actionHandler position:(SVPullToRefreshPosition)position;
@@ -32,14 +30,12 @@ typedef NSUInteger SVPullToRefreshPosition;
 @end
 
 
-enum {
+typedef NS_ENUM(NSUInteger, SVPullToRefreshState) {
     SVPullToRefreshStateStopped = 0,
     SVPullToRefreshStateTriggered,
     SVPullToRefreshStateLoading,
     SVPullToRefreshStateAll = 10
 };
-
-typedef NSUInteger SVPullToRefreshState;
 
 @interface SVPullToRefreshView : UIView
 
@@ -47,7 +43,7 @@ typedef NSUInteger SVPullToRefreshState;
 @property (nonatomic, strong) UIColor *textColor;
 @property (nonatomic, strong, readonly) UILabel *titleLabel;
 @property (nonatomic, strong, readonly) UILabel *subtitleLabel;
-@property (nonatomic, strong) UIColor *activityIndicatorViewColor;
+@property (nonatomic, strong, readwrite) UIColor *activityIndicatorViewColor NS_AVAILABLE_IOS(5_0);
 @property (nonatomic, readwrite) UIActivityIndicatorViewStyle activityIndicatorViewStyle;
 
 @property (nonatomic, readonly) SVPullToRefreshState state;
