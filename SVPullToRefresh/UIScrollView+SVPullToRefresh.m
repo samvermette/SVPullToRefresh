@@ -90,7 +90,10 @@ static char UIScrollViewPullToRefreshView;
         self.pullToRefreshView = view;
         self.showsPullToRefresh = YES;
     }
-    
+    else{
+      self.pullToRefreshView.pullToRefreshActionHandler = actionHandler;
+      self.pullToRefreshView.position = position;
+    }
 }
 
 - (void)addPullToRefreshWithActionHandler:(void (^)(void))actionHandler {
@@ -133,7 +136,7 @@ static char UIScrollViewPullToRefreshView;
             [self addObserver:self.pullToRefreshView forKeyPath:@"frame" options:NSKeyValueObservingOptionNew context:nil];
             self.pullToRefreshView.isObserving = YES;
             
-            CGFloat yOrigin = 0;
+            CGFloat yOrigin = 0.0f;
             switch (self.pullToRefreshView.position) {
                 case SVPullToRefreshPositionTop:
                     yOrigin = -SVPullToRefreshViewHeight;
@@ -143,7 +146,7 @@ static char UIScrollViewPullToRefreshView;
                     break;
             }
             
-            self.pullToRefreshView.frame = CGRectMake(0, yOrigin, self.bounds.size.width, SVPullToRefreshViewHeight);
+            self.pullToRefreshView.frame = CGRectMake(0.0f, yOrigin, self.bounds.size.width, SVPullToRefreshViewHeight);
         }
     }
 }
@@ -392,7 +395,8 @@ static char UIScrollViewPullToRefreshView;
 
 - (void)scrollViewDidScroll:(CGPoint)contentOffset {
     if(self.state != SVPullToRefreshStateLoading) {
-        CGFloat scrollOffsetThreshold = 0;
+        CGFloat scrollOffsetThreshold = 0.0f;
+        
         switch (self.position) {
             case SVPullToRefreshPositionTop:
                 scrollOffsetThreshold = self.frame.origin.y - self.originalTopInset;
