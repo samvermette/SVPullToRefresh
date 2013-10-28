@@ -28,15 +28,20 @@
     [self.tableView addPullToRefreshWithActionHandler:^{
         [weakSelf insertRowAtTop];
     }];
-        
+    /*
     // setup infinite scrolling
     [self.tableView addInfiniteScrollingWithActionHandler:^{
         [weakSelf insertRowAtBottom];
     }];
+     */
+    [self.tableView addPullToRefreshWithActionHandler:^{
+        [weakSelf insertRowAtBottom];
+    } position:SVPullToRefreshPositionBottom];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
-    [tableView triggerPullToRefresh];
+    //[tableView triggerPullToRefresh];
+    [tableView triggerPullToRefreshBottom];
 }
 
 #pragma mark - Actions
@@ -50,7 +55,7 @@
 - (void)insertRowAtTop {
     __weak SVViewController *weakSelf = self;
 
-    int64_t delayInSeconds = 2.0;
+    int64_t delayInSeconds = 1.0;
     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
     dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
         [weakSelf.tableView beginUpdates];
@@ -66,7 +71,7 @@
 - (void)insertRowAtBottom {
     __weak SVViewController *weakSelf = self;
 
-    int64_t delayInSeconds = 2.0;
+    int64_t delayInSeconds = 1.0;
     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
     dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
         [weakSelf.tableView beginUpdates];
@@ -74,7 +79,9 @@
         [weakSelf.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:weakSelf.dataSource.count-1 inSection:0]] withRowAnimation:UITableViewRowAnimationTop];
         [weakSelf.tableView endUpdates];
         
-        [weakSelf.tableView.infiniteScrollingView stopAnimating];
+        //[weakSelf.tableView.infiniteScrollingView stopAnimating];
+        [weakSelf.tableView.pullToRefreshBottomView stopAnimating];
+        [weakSelf.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:[weakSelf.tableView numberOfRowsInSection:0]-1 inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
     });
 }
 #pragma mark -

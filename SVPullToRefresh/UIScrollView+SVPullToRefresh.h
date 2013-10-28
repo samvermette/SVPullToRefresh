@@ -25,10 +25,12 @@ typedef NSUInteger SVPullToRefreshPosition;
 - (void)addPullToRefreshWithActionHandler:(void (^)(void))actionHandler;
 - (void)addPullToRefreshWithActionHandler:(void (^)(void))actionHandler position:(SVPullToRefreshPosition)position;
 - (void)triggerPullToRefresh;
+- (void)triggerPullToRefreshBottom;
 
 @property (nonatomic, strong, readonly) SVPullToRefreshView *pullToRefreshView;
+@property (nonatomic, strong, readonly) SVPullToRefreshView *pullToRefreshBottomView;
 @property (nonatomic, assign) BOOL showsPullToRefresh;
-
+@property (nonatomic, assign) BOOL showsPullToRefreshBottom;
 @end
 
 
