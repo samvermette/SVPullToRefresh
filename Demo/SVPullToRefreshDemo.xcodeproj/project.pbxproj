@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		04FCA47E181F793000417276 /* UIScrollView+SVPullToRefresh_CustomView.m in Sources */ = {isa = PBXBuildFile; fileRef = 04FCA47D181F793000417276 /* UIScrollView+SVPullToRefresh_CustomView.m */; };
 		2214365616B48FD70057C96E /* SVPullToRefresh.podspec in Resources */ = {isa = PBXBuildFile; fileRef = 2214365516B48FD70057C96E /* SVPullToRefresh.podspec */; };
 		22E0D9191545EE5B00BB6BB5 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22E0D9181545EE5B00BB6BB5 /* UIKit.framework */; };
 		22E0D91B1545EE5B00BB6BB5 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22E0D91A1545EE5B00BB6BB5 /* Foundation.framework */; };
@@ -24,6 +25,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		04FCA47C181F793000417276 /* UIScrollView+SVPullToRefresh_CustomView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIScrollView+SVPullToRefresh_CustomView.h"; sourceTree = "<group>"; };
+		04FCA47D181F793000417276 /* UIScrollView+SVPullToRefresh_CustomView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIScrollView+SVPullToRefresh_CustomView.m"; sourceTree = "<group>"; };
 		2214365516B48FD70057C96E /* SVPullToRefresh.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = SVPullToRefresh.podspec; path = ../SVPullToRefresh.podspec; sourceTree = "<group>"; };
 		226989041639F55E00FCBB3B /* SVPullToRefresh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVPullToRefresh.h; sourceTree = "<group>"; };
 		2288145F16047C06005C6461 /* UIScrollView+SVInfiniteScrolling.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIScrollView+SVInfiniteScrolling.h"; sourceTree = "<group>"; };
@@ -128,6 +131,8 @@
 				22E0D93B1545EE7600BB6BB5 /* UIScrollView+SVPullToRefresh.m */,
 				2288145F16047C06005C6461 /* UIScrollView+SVInfiniteScrolling.h */,
 				2288146016047C06005C6461 /* UIScrollView+SVInfiniteScrolling.m */,
+				04FCA47C181F793000417276 /* UIScrollView+SVPullToRefresh_CustomView.h */,
+				04FCA47D181F793000417276 /* UIScrollView+SVPullToRefresh_CustomView.m */,
 			);
 			name = SVPullToRefresh;
 			path = ../SVPullToRefresh;
@@ -200,6 +205,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				04FCA47E181F793000417276 /* UIScrollView+SVPullToRefresh_CustomView.m in Sources */,
 				22E0D9251545EE5B00BB6BB5 /* main.m in Sources */,
 				22E0D9291545EE5B00BB6BB5 /* SVAppDelegate.m in Sources */,
 				22E0D92C1545EE5B00BB6BB5 /* SVViewController.m in Sources */,

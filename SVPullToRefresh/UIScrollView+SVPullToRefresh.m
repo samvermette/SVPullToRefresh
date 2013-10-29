@@ -59,18 +59,18 @@ static CGFloat const SVPullToRefreshViewHeight = 60;
 #pragma mark - UIScrollView (SVPullToRefresh)
 #import <objc/runtime.h>
 
-static char UIScrollViewPullToRefreshView;
+static char UIScrollViewPullToRefreshTopView;
 static char UIScrollViewPullToRefreshBottomView;
 
 @implementation UIScrollView (SVPullToRefresh)
 
-@dynamic pullToRefreshView, pullToRefreshBottomView, showsPullToRefresh, showsPullToRefreshBottom;
+@dynamic pullToRefreshTopView, pullToRefreshBottomView, showsPullToRefreshTop, showsPullToRefreshBottom;
 
 - (void)addPullToRefreshWithActionHandler:(void (^)(void))actionHandler position:(SVPullToRefreshPosition)position
 {
     if(position == SVPullToRefreshPositionTop)
     {
-        if(!self.pullToRefreshView)
+        if(!self.pullToRefreshTopView)
         {
             CGFloat yOrigin = -SVPullToRefreshViewHeight;
             SVPullToRefreshView *view = [[SVPullToRefreshView alloc] initWithFrame:CGRectMake(0, yOrigin, self.bounds.size.width, SVPullToRefreshViewHeight)];
@@ -81,8 +81,8 @@ static char UIScrollViewPullToRefreshBottomView;
             view.originalTopInset = self.contentInset.top;
             view.originalBottomInset = self.contentInset.bottom;
             view.position = position;
-            self.pullToRefreshView = view;
-            self.showsPullToRefresh = YES;
+            self.pullToRefreshTopView = view;
+            self.showsPullToRefreshTop = YES;
         }
     }
     else if(position == SVPullToRefreshPositionBottom)
@@ -104,14 +104,14 @@ static char UIScrollViewPullToRefreshBottomView;
     }
 }
 
-- (void)addPullToRefreshWithActionHandler:(void (^)(void))actionHandler {
+- (void)addPullToRefreshTopWithActionHandler:(void (^)(void))actionHandler {
     [self addPullToRefreshWithActionHandler:actionHandler position:SVPullToRefreshPositionTop];
 }
 
-- (void)triggerPullToRefresh
+- (void)triggerPullToRefreshTop
 {
-    self.pullToRefreshView.state = SVPullToRefreshStateTriggered;
-    [self.pullToRefreshView startAnimating];
+    self.pullToRefreshTopView.state = SVPullToRefreshStateTriggered;
+    [self.pullToRefreshTopView startAnimating];
 }
 
 - (void)triggerPullToRefreshBottom
@@ -120,11 +120,27 @@ static char UIScrollViewPullToRefreshBottomView;
     [self.pullToRefreshBottomView startAnimating];
 }
 
-- (void)setPullToRefreshView:(SVPullToRefreshView *)pullToRefreshView
+- (void)stopRefreshTop
+{
+    [self.pullToRefreshTopView stopAnimating];
+}
+
+- (void)stopRefreshBottom
+{
+    [self.pullToRefreshBottomView stopAnimating];
+}
+
+- (void)stopRefreshAll
+{
+    [self stopRefreshTop];
+    [self stopRefreshBottom];
+}
+
+- (void)setPullToRefreshTopView:(SVPullToRefreshView *)pullToRefreshTopView
 {
     [self willChangeValueForKey:@"SVPullToRefreshView"];
-    objc_setAssociatedObject(self, &UIScrollViewPullToRefreshView,
-                             pullToRefreshView,
+    objc_setAssociatedObject(self, &UIScrollViewPullToRefreshTopView,
+                             pullToRefreshTopView,
                              OBJC_ASSOCIATION_ASSIGN);
     [self didChangeValueForKey:@"SVPullToRefreshView"];
 }
@@ -138,9 +154,9 @@ static char UIScrollViewPullToRefreshBottomView;
     [self didChangeValueForKey:@"SVPullToRefreshView"];
 }
 
-- (SVPullToRefreshView *)pullToRefreshView
+- (SVPullToRefreshView *)pullToRefreshTopView
 {
-    return objc_getAssociatedObject(self, &UIScrollViewPullToRefreshView);
+    return objc_getAssociatedObject(self, &UIScrollViewPullToRefreshTopView);
 }
 
 - (SVPullToRefreshView *)pullToRefreshBottomView
@@ -148,30 +164,30 @@ static char UIScrollViewPullToRefreshBottomView;
     return objc_getAssociatedObject(self, &UIScrollViewPullToRefreshBottomView);
 }
 
-- (void)setShowsPullToRefresh:(BOOL)showsPullToRefresh {
-    self.pullToRefreshView.hidden = !showsPullToRefresh;
+- (void)setShowsPullToRefreshTop:(BOOL)showsPullToRefreshTop {
+    self.pullToRefreshTopView.hidden = !showsPullToRefreshTop;
     
-    if(!showsPullToRefresh)
+    if(!showsPullToRefreshTop)
     {
-        if (self.pullToRefreshView.isObserving)
+        if (self.pullToRefreshTopView.isObserving)
         {
-            [self removeObserver:self.pullToRefreshView forKeyPath:@"contentOffset"];
-            [self removeObserver:self.pullToRefreshView forKeyPath:@"frame"];
-            [self.pullToRefreshView resetScrollViewContentInset];
-            self.pullToRefreshView.isObserving = NO;
+            [self removeObserver:self.pullToRefreshTopView forKeyPath:@"contentOffset"];
+            [self removeObserver:self.pullToRefreshTopView forKeyPath:@"frame"];
+            [self.pullToRefreshTopView resetScrollViewContentInset];
+            self.pullToRefreshTopView.isObserving = NO;
         }
     }
     else
     {
-        if (!self.pullToRefreshView.isObserving)
+        if (!self.pullToRefreshTopView.isObserving)
         {
-            [self addObserver:self.pullToRefreshView forKeyPath:@"contentOffset" options:NSKeyValueObservingOptionNew context:nil];
-            [self addObserver:self.pullToRefreshView forKeyPath:@"contentSize" options:NSKeyValueObservingOptionNew context:nil];
-            [self addObserver:self.pullToRefreshView forKeyPath:@"frame" options:NSKeyValueObservingOptionNew context:nil];
-            self.pullToRefreshView.isObserving = YES;
+            [self addObserver:self.pullToRefreshTopView forKeyPath:@"contentOffset" options:NSKeyValueObservingOptionNew context:nil];
+            [self addObserver:self.pullToRefreshTopView forKeyPath:@"contentSize" options:NSKeyValueObservingOptionNew context:nil];
+            [self addObserver:self.pullToRefreshTopView forKeyPath:@"frame" options:NSKeyValueObservingOptionNew context:nil];
+            self.pullToRefreshTopView.isObserving = YES;
             
             CGFloat yOrigin;
-            switch (self.pullToRefreshView.position)
+            switch (self.pullToRefreshTopView.position)
             {
                 case SVPullToRefreshPositionTop:
                     yOrigin = -SVPullToRefreshViewHeight;
@@ -180,7 +196,7 @@ static char UIScrollViewPullToRefreshBottomView;
                     yOrigin = self.contentSize.height;
                     break;
             }
-            self.pullToRefreshView.frame = CGRectMake(0, yOrigin, self.bounds.size.width, SVPullToRefreshViewHeight);
+            self.pullToRefreshTopView.frame = CGRectMake(0, yOrigin, self.bounds.size.width, SVPullToRefreshViewHeight);
         }
     }
 }
@@ -223,9 +239,9 @@ static char UIScrollViewPullToRefreshBottomView;
     }
 }
 
-- (BOOL)showsPullToRefresh
+- (BOOL)showsPullToRefreshTop
 {
-    return !self.pullToRefreshView.hidden;
+    return !self.pullToRefreshTopView.hidden;
 }
 
 - (BOOL)showsPullToRefreshBottom
@@ -280,7 +296,7 @@ static char UIScrollViewPullToRefreshBottomView;
         UIScrollView *scrollView = (UIScrollView *)self.superview;
         if(self.position == SVPullToRefreshPositionTop)
         {
-            if (scrollView.showsPullToRefresh) {
+            if (scrollView.showsPullToRefreshTop) {
                 if (self.isObserving) {
                     //If enter this branch, it is the moment just before "SVPullToRefreshView's dealloc", so remove observer here
                     [scrollView removeObserver:self forKeyPath:@"contentOffset"];
@@ -663,7 +679,14 @@ static char UIScrollViewPullToRefreshBottomView;
 #pragma mark -
 
 - (void)triggerRefresh {
-    [self.scrollView triggerPullToRefresh];
+    if(self.position == SVPullToRefreshPositionTop)
+    {
+        [self.scrollView triggerPullToRefreshTop];
+    }
+    else if(self.position == SVPullToRefreshPositionBottom)
+    {
+        [self.scrollView triggerPullToRefreshBottom];
+    }
 }
 
 - (void)startAnimating{

@@ -25,9 +25,11 @@
     __weak SVViewController *weakSelf = self;
     
     // setup pull-to-refresh
-    [self.tableView addPullToRefreshWithActionHandler:^{
+    [self.tableView addPullToRefreshTopWithActionHandler:^{
         [weakSelf insertRowAtTop];
     }];
+    
+    [self.tableView setPullToRefreshCustomViewWith:self.tableView.pullToRefreshTopView];
     /*
     // setup infinite scrolling
     [self.tableView addInfiniteScrollingWithActionHandler:^{
@@ -41,7 +43,7 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     //[tableView triggerPullToRefresh];
-    [tableView triggerPullToRefreshBottom];
+    //[tableView triggerPullToRefreshBottom];
 }
 
 #pragma mark - Actions
@@ -63,7 +65,7 @@
         [weakSelf.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:0]] withRowAnimation:UITableViewRowAnimationBottom];
         [weakSelf.tableView endUpdates];
         
-        [weakSelf.tableView.pullToRefreshView stopAnimating];
+        [weakSelf.tableView.pullToRefreshTopView stopAnimating];
     });
 }
 

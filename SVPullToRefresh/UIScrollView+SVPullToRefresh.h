@@ -22,14 +22,18 @@ enum {
 
 typedef NSUInteger SVPullToRefreshPosition;
 
-- (void)addPullToRefreshWithActionHandler:(void (^)(void))actionHandler;
+- (void)addPullToRefreshTopWithActionHandler:(void (^)(void))actionHandler;
 - (void)addPullToRefreshWithActionHandler:(void (^)(void))actionHandler position:(SVPullToRefreshPosition)position;
-- (void)triggerPullToRefresh;
+- (void)triggerPullToRefreshTop;
 - (void)triggerPullToRefreshBottom;
 
-@property (nonatomic, strong, readonly) SVPullToRefreshView *pullToRefreshView;
+- (void)stopRefreshTop;
+- (void)stopRefreshBottom;
+- (void)stopRefreshAll;
+
+@property (nonatomic, strong, readonly) SVPullToRefreshView *pullToRefreshTopView;
 @property (nonatomic, strong, readonly) SVPullToRefreshView *pullToRefreshBottomView;
-@property (nonatomic, assign) BOOL showsPullToRefresh;
+@property (nonatomic, assign) BOOL showsPullToRefreshTop;
 @property (nonatomic, assign) BOOL showsPullToRefreshBottom;
 @end
 
