@@ -23,6 +23,7 @@ enum {
 typedef NSUInteger SVPullToRefreshPosition;
 
 - (void)addPullToRefreshTopWithActionHandler:(void (^)(void))actionHandler;
+- (void)addPullToRefreshBottomWithActionHandler:(void (^)(void))actionHandler;
 - (void)addPullToRefreshWithActionHandler:(void (^)(void))actionHandler position:(SVPullToRefreshPosition)position;
 - (void)triggerPullToRefreshTop;
 - (void)triggerPullToRefreshBottom;

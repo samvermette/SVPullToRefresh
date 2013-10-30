@@ -108,6 +108,10 @@ static char UIScrollViewPullToRefreshBottomView;
     [self addPullToRefreshWithActionHandler:actionHandler position:SVPullToRefreshPositionTop];
 }
 
+- (void)addPullToRefreshBottomWithActionHandler:(void (^)(void))actionHandler {
+    [self addPullToRefreshWithActionHandler:actionHandler position:SVPullToRefreshPositionBottom];
+}
+
 - (void)triggerPullToRefreshTop
 {
     self.pullToRefreshTopView.state = SVPullToRefreshStateTriggered;
