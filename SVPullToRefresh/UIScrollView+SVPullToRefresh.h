@@ -23,7 +23,6 @@
 
 @end
 
-
 enum {
     SVPullToRefreshStateStopped = 0,
     SVPullToRefreshStateTriggered,
@@ -32,6 +31,12 @@ enum {
 };
 
 typedef NSUInteger SVPullToRefreshState;
+
+@protocol SVCustomRefreshViewProtocol <NSObject>
+@optional
+- (void)stateDidChangeFrom:(SVPullToRefreshState)oldState to:(SVPullToRefreshState)newState;
+
+@end
 
 @interface SVPullToRefreshView : UIView
 
@@ -45,7 +50,7 @@ typedef NSUInteger SVPullToRefreshState;
 
 - (void)setTitle:(NSString *)title forState:(SVPullToRefreshState)state;
 - (void)setSubtitle:(NSString *)subtitle forState:(SVPullToRefreshState)state;
-- (void)setCustomView:(UIView *)view forState:(SVPullToRefreshState)state;
+- (void)setCustomView:(UIView<SVCustomRefreshViewProtocol> *)view forState:(SVPullToRefreshState)state;
 
 - (void)startAnimating;
 - (void)stopAnimating;

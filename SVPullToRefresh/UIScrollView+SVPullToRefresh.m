@@ -35,6 +35,7 @@ static CGFloat const SVPullToRefreshViewHeight = 60;
 @property (nonatomic, strong) NSMutableArray *titles;
 @property (nonatomic, strong) NSMutableArray *subtitles;
 @property (nonatomic, strong) NSMutableArray *viewForState;
+@property (nonatomic, weak) UIView<SVCustomRefreshViewProtocol> *currentCustomSubview;
 
 @property (nonatomic, weak) UIScrollView *scrollView;
 @property (nonatomic, readwrite) CGFloat originalTopInset;
@@ -192,23 +193,26 @@ static char UIScrollViewPullToRefreshView;
 
     self.activityIndicatorView.center = self.arrow.center;
     
-    for(id otherView in self.viewForState) {
-        if([otherView isKindOfClass:[UIView class]])
-            [otherView removeFromSuperview];
-    }
-    
     id customView = [self.viewForState objectAtIndex:self.state];
     BOOL hasCustomView = [customView isKindOfClass:[UIView class]];
+    BOOL customViewChanged = customView != self.currentCustomSubview;
+    if (customViewChanged || !hasCustomView) {
+        [self.currentCustomSubview removeFromSuperview];
+        self.currentCustomSubview = nil;
+    }
     
     self.titleLabel.hidden = hasCustomView;
     self.subtitleLabel.hidden = hasCustomView;
     self.arrow.hidden = hasCustomView;
     
     if(hasCustomView) {
-        [self addSubview:customView];
-        CGRect viewBounds = [customView bounds];
-        CGPoint origin = CGPointMake(roundf((self.bounds.size.width-viewBounds.size.width)/2), roundf((self.bounds.size.height-viewBounds.size.height)/2));
-        [customView setFrame:CGRectMake(origin.x, origin.y, viewBounds.size.width, viewBounds.size.height)];
+        if (customViewChanged) {
+            self.currentCustomSubview = customView;
+            [self addSubview:customView];
+            CGRect viewBounds = [customView bounds];
+            CGPoint origin = CGPointMake(roundf((self.bounds.size.width-viewBounds.size.width)/2), roundf((self.bounds.size.height-viewBounds.size.height)/2));
+            [customView setFrame:CGRectMake(origin.x, origin.y, viewBounds.size.width, viewBounds.size.height)];
+        }
     }
     else {
         self.titleLabel.text = [self.titles objectAtIndex:self.state];
@@ -388,7 +392,7 @@ static char UIScrollViewPullToRefreshView;
     [self setNeedsLayout];
 }
 
-- (void)setCustomView:(UIView *)view forState:(SVPullToRefreshState)state {
+- (void)setCustomView:(UIView<SVCustomRefreshViewProtocol> *)view forState:(SVPullToRefreshState)state {
     id viewPlaceholder = view;
     
     if(!viewPlaceholder)
@@ -453,6 +457,10 @@ static char UIScrollViewPullToRefreshView;
     
     SVPullToRefreshState previousState = _state;
     _state = newState;
+    
+    if (self.currentCustomSubview && [self.currentCustomSubview respondsToSelector:@selector(stateDidChangeFrom:to:)]) {
+        [self.currentCustomSubview stateDidChangeFrom:previousState to:newState];
+    }
     
     [self setNeedsLayout];
     
