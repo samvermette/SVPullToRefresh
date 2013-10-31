@@ -8,6 +8,17 @@
 
 #import "SVViewController.h"
 #import "SVPullToRefresh.h"
+@interface CustomRefreshView : UIView<SVCustomRefreshViewProtocol>@end
+
+@implementation CustomRefreshView
+
+- (void)stateDidChangeFrom:(SVPullToRefreshState)oldState to:(SVPullToRefreshState)newState
+{
+    NSLog(@"State changed from %d to %d", oldState, newState);
+}
+
+@end
+
 
 @interface SVViewController () <UITableViewDelegate, UITableViewDataSource>
 
@@ -27,7 +38,6 @@
         [self.dataSource addObject:[NSDate dateWithTimeIntervalSinceNow:-(i*90)]];
     
     __weak SVViewController *weakSelf = self;
-    
     // setup pull-to-refresh
     [self.tableView addPullToRefreshWithActionHandler:^{
         
@@ -42,6 +52,10 @@
             [weakSelf.tableView.pullToRefreshView stopAnimating];
         });
     }];
+    
+//    UIView<SVCustomRefreshViewProtocol> *customView = [CustomRefreshView new];
+//    [self.tableView.pullToRefreshView setCustomView:customView forState:SVPullToRefreshStateAll];
+
     
     // setup infinite scrolling
     [self.tableView addInfiniteScrollingWithActionHandler:^{
@@ -86,3 +100,4 @@
 }
 
 @end
+
