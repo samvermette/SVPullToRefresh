@@ -34,7 +34,7 @@ static CGFloat const SVInfiniteScrollingViewHeight = 60;
 @property (nonatomic, assign) BOOL isObserving;
 
 - (void)resetScrollViewContentInset;
-- (void)setScrollViewContentInsetForInfiniteScrolling;
+- (void)setScrollViewContentInsetForInfiniteScrolling:(CGFloat)newInsetBottomHeight;
 - (void)setScrollViewContentInset:(UIEdgeInsets)insets;
 
 @end
@@ -97,7 +97,7 @@ UIEdgeInsets scrollViewOriginalContentInsets;
       if (!self.infiniteScrollingView.isObserving) {
         [self addObserver:self.infiniteScrollingView forKeyPath:@"contentOffset" options:NSKeyValueObservingOptionNew context:nil];
         [self addObserver:self.infiniteScrollingView forKeyPath:@"contentSize" options:NSKeyValueObservingOptionNew context:nil];
-        [self.infiniteScrollingView setScrollViewContentInsetForInfiniteScrolling];
+          [self.infiniteScrollingView setScrollViewContentInsetForInfiniteScrolling:SVInfiniteScrollingViewHeight];
         self.infiniteScrollingView.isObserving = YES;
           
         [self.infiniteScrollingView setNeedsLayout];
@@ -164,9 +164,9 @@ UIEdgeInsets scrollViewOriginalContentInsets;
     [self setScrollViewContentInset:currentInsets];
 }
 
-- (void)setScrollViewContentInsetForInfiniteScrolling {
+- (void)setScrollViewContentInsetForInfiniteScrolling:(CGFloat)newInsetBottomHeight {
     UIEdgeInsets currentInsets = self.scrollView.contentInset;
-    currentInsets.bottom = self.originalBottomInset + SVInfiniteScrollingViewHeight;
+    currentInsets.bottom = self.originalBottomInset + newInsetBottomHeight;
     [self setScrollViewContentInset:currentInsets];
 }
 
@@ -228,11 +228,18 @@ UIEdgeInsets scrollViewOriginalContentInsets;
     if(!viewPlaceholder)
         viewPlaceholder = @"";
     
-    if(state == SVInfiniteScrollingStateAll)
+    if(state == SVInfiniteScrollingStateAll) {
+		for(id otherView in self.viewForState) {
+	        if([otherView isKindOfClass:[UIView class]])
+	            [otherView removeFromSuperview];
+	    }
         [self.viewForState replaceObjectsInRange:NSMakeRange(0, 3) withObjectsFromArray:@[viewPlaceholder, viewPlaceholder, viewPlaceholder]];
-    else
+    } else {
+		id otherView = [self.viewForState objectAtIndex:state];
+		if([otherView isKindOfClass:[UIView class]])
+            [otherView removeFromSuperview];
         [self.viewForState replaceObjectAtIndex:state withObject:viewPlaceholder];
-    
+    }
     self.state = self.state;
 }
 
@@ -273,9 +280,10 @@ UIEdgeInsets scrollViewOriginalContentInsets;
     
     if(hasCustomView) {
         [self addSubview:customView];
-        CGRect viewBounds = [customView bounds];
-        CGPoint origin = CGPointMake(roundf((self.bounds.size.width-viewBounds.size.width)/2), roundf((self.bounds.size.height-viewBounds.size.height)/2));
-        [customView setFrame:CGRectMake(origin.x, origin.y, viewBounds.size.width, viewBounds.size.height)];
+        [self setScrollViewContentInsetForInfiniteScrolling:(((UIView *)customView).frame.size.height+SVInfiniteScrollingViewHeight)];
+      //  CGRect viewBounds = [customView bounds];
+      //  CGPoint origin = CGPointMake(roundf((self.bounds.size.width-viewBounds.size.width)/2), roundf((self.bounds.size.height-viewBounds.size.height)/2));
+      //  [customView setFrame:CGRectMake(origin.x, origin.y, viewBounds.size.width, viewBounds.size.height)];
     }
     else {
         CGRect viewBounds = [self.activityIndicatorView bounds];
