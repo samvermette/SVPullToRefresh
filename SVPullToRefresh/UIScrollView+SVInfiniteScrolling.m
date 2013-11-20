@@ -236,7 +236,8 @@ UIEdgeInsets scrollViewOriginalContentInsets;
         [self.viewForState replaceObjectsInRange:NSMakeRange(0, 3) withObjectsFromArray:@[viewPlaceholder, viewPlaceholder, viewPlaceholder]];
     } else {
 		id otherView = [self.viewForState objectAtIndex:state];
-		[otherView removeFromSuperview]; 
+		 if([otherView isKindOfClass:[UIView class]])
+	            [otherView removeFromSuperview];
         [self.viewForState replaceObjectAtIndex:state withObject:viewPlaceholder];
     }
     self.state = self.state;
