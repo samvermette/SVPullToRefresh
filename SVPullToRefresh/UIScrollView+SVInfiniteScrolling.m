@@ -89,8 +89,8 @@ UIEdgeInsets scrollViewOriginalContentInsets;
       if (self.infiniteScrollingView.isObserving) {
         [self removeObserver:self.infiniteScrollingView forKeyPath:@"contentOffset"];
         [self removeObserver:self.infiniteScrollingView forKeyPath:@"contentSize"];
-        [self.infiniteScrollingView resetScrollViewContentInset];
         self.infiniteScrollingView.isObserving = NO;
+        [self.infiniteScrollingView resetScrollViewContentInset];
       }
     }
     else {
