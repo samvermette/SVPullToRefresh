@@ -209,6 +209,27 @@ static char UIScrollViewPullToRefreshView;
     }
 }
 
+
+-(CGSize)frameForText:(NSString*)text sizeWithFont:(UIFont*)font constrainedToSize:(CGSize)size lineBreakMode:(NSLineBreakMode)lineBreakMode  {
+    
+    NSMutableParagraphStyle * paragraphStyle = [[NSMutableParagraphStyle defaultParagraphStyle] mutableCopy];
+    paragraphStyle.lineBreakMode = lineBreakMode;
+    
+    NSDictionary * attributes = @{NSFontAttributeName:font,
+                                  NSParagraphStyleAttributeName:paragraphStyle
+                                  };
+    
+    
+    CGRect textRect = [text boundingRectWithSize:size
+                                         options:NSStringDrawingUsesLineFragmentOrigin
+                                      attributes:attributes
+                                         context:nil];
+    
+    //Contains both width & height ... Needed: The height
+    return textRect.size;
+}
+
+
 - (void)layoutSubviews {
     
     for(id otherView in self.viewForState) {
@@ -281,14 +302,29 @@ static char UIScrollViewPullToRefreshView;
         self.subtitleLabel.text = subtitle.length > 0 ? subtitle : nil;
         
         
-        CGSize titleSize = [self.titleLabel.text sizeWithFont:self.titleLabel.font
+        CGSize titleSize;
+        CGSize subtitleSize;
+        
+    #ifdef __IPHONE_7_0
+        
+         titleSize = [self frameForText:self.titleLabel.text sizeWithFont:self.titleLabel.font constrainedToSize:CGSizeMake(labelMaxWidth,self.titleLabel.font.lineHeight) lineBreakMode:self.titleLabel.lineBreakMode ];
+        
+         subtitleSize = [self frameForText:self.subtitleLabel.text sizeWithFont:self.subtitleLabel.font  constrainedToSize:CGSizeMake(labelMaxWidth,self.subtitleLabel.font.lineHeight) lineBreakMode:self.subtitleLabel.lineBreakMode];
+    
+    #else
+
+        
+         titleSize = [self.titleLabel.text sizeWithFont:self.titleLabel.font
                                             constrainedToSize:CGSizeMake(labelMaxWidth,self.titleLabel.font.lineHeight)
                                                 lineBreakMode:self.titleLabel.lineBreakMode];
         
-        
-        CGSize subtitleSize = [self.subtitleLabel.text sizeWithFont:self.subtitleLabel.font
+         subtitleSize =   [self.subtitleLabel.text sizeWithFont:self.subtitleLabel.font
                                                   constrainedToSize:CGSizeMake(labelMaxWidth,self.subtitleLabel.font.lineHeight)
                                                       lineBreakMode:self.subtitleLabel.lineBreakMode];
+    #endif
+        
+     
+
         
         CGFloat maxLabelWidth = MAX(titleSize.width,subtitleSize.width);
         
