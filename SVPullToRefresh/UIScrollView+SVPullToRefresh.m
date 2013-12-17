@@ -302,20 +302,23 @@ static char UIScrollViewPullToRefreshView;
         self.subtitleLabel.text = subtitle.length > 0 ? subtitle : nil;
         
         
+        CGSize titleSize;
+        CGSize subtitleSize;
+        
     #ifdef __IPHONE_7_0
         
-        CGSize titleSize = [self frameForText:self.titleLabel.text sizeWithFont:self.titleLabel.font constrainedToSize:CGSizeMake(labelMaxWidth,self.titleLabel.font.lineHeight) lineBreakMode:self.titleLabel.lineBreakMode ];
+         titleSize = [self frameForText:self.titleLabel.text sizeWithFont:self.titleLabel.font constrainedToSize:CGSizeMake(labelMaxWidth,self.titleLabel.font.lineHeight) lineBreakMode:self.titleLabel.lineBreakMode ];
         
-          CGSize subtitleSize = [self frameForText:self.subtitleLabel.text sizeWithFont:self.subtitleLabel.font  constrainedToSize:CGSizeMake(labelMaxWidth,self.subtitleLabel.font.lineHeight) lineBreakMode:self.subtitleLabel.lineBreakMode];
+         subtitleSize = [self frameForText:self.subtitleLabel.text sizeWithFont:self.subtitleLabel.font  constrainedToSize:CGSizeMake(labelMaxWidth,self.subtitleLabel.font.lineHeight) lineBreakMode:self.subtitleLabel.lineBreakMode];
     
     #else
 
         
-        CGSize titleSize = [self.titleLabel.text sizeWithFont:self.titleLabel.font
+         titleSize = [self.titleLabel.text sizeWithFont:self.titleLabel.font
                                             constrainedToSize:CGSizeMake(labelMaxWidth,self.titleLabel.font.lineHeight)
                                                 lineBreakMode:self.titleLabel.lineBreakMode];
         
-        CGSize subtitleSize =   [self.subtitleLabel.text sizeWithFont:self.subtitleLabel.font
+         subtitleSize =   [self.subtitleLabel.text sizeWithFont:self.subtitleLabel.font
                                                   constrainedToSize:CGSizeMake(labelMaxWidth,self.subtitleLabel.font.lineHeight)
                                                       lineBreakMode:self.subtitleLabel.lineBreakMode];
     #endif
