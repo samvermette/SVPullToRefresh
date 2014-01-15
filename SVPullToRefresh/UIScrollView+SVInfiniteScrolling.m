@@ -170,7 +170,8 @@ UIEdgeInsets scrollViewOriginalContentInsets;
 - (void)setScrollViewContentInsetForInfiniteScrolling {
     UIEdgeInsets currentInsets = self.scrollView.contentInset;
     currentInsets.bottom = self.originalBottomInset + SVInfiniteScrollingViewHeight;
-    [self setScrollViewContentInset:currentInsets];
+    //[self setScrollViewContentInset:currentInsets];
+    self.scrollView.contentInset = currentInsets;
 }
 
 - (void)setScrollViewContentInset:(UIEdgeInsets)contentInset {
