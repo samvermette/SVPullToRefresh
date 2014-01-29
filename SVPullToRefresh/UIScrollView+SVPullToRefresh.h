@@ -46,6 +46,7 @@ typedef NSUInteger SVPullToRefreshState;
 - (void)setTitle:(NSString *)title forState:(SVPullToRefreshState)state;
 - (void)setSubtitle:(NSString *)subtitle forState:(SVPullToRefreshState)state;
 - (void)setCustomView:(UIView *)view forState:(SVPullToRefreshState)state;
+- (void)updateOriginalContentInset:(UIEdgeInsets)newOriginalContentInset;
 
 - (void)startAnimating;
 - (void)stopAnimating;

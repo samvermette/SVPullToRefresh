@@ -402,6 +402,14 @@ static char UIScrollViewPullToRefreshView;
     [self setNeedsLayout];
 }
 
+- (void)updateOriginalContentInset:(UIEdgeInsets)newOriginalContentInset {
+	if (self.originalTopInset == newOriginalContentInset.top) return;
+
+	self.originalTopInset = newOriginalContentInset.top;
+	// doing nothing else for now
+}
+
+
 - (void)setTextColor:(UIColor *)newTextColor {
     textColor = newTextColor;
     self.titleLabel.textColor = newTextColor;

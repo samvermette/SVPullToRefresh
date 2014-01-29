@@ -247,6 +247,18 @@ UIEdgeInsets scrollViewOriginalContentInsets;
     self.state = SVInfiniteScrollingStateLoading;
 }
 
+- (void)updateOriginalContentInset:(UIEdgeInsets)newOriginalContentInset {
+	if (self.originalBottomInset == newOriginalContentInset.bottom) return;
+
+	self.originalBottomInset = newOriginalContentInset.bottom;
+	if (self.isHidden) {
+		[self resetScrollViewContentInset];
+	}
+	else {
+		[self setScrollViewContentInsetForInfiniteScrolling];
+	}
+}
+
 - (void)startAnimating{
     self.state = SVInfiniteScrollingStateLoading;
 }

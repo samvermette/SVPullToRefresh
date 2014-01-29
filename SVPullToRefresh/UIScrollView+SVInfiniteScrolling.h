@@ -38,6 +38,7 @@ typedef NSUInteger SVInfiniteScrollingState;
 @property (nonatomic, readwrite) BOOL enabled;
 
 - (void)setCustomView:(UIView *)view forState:(SVInfiniteScrollingState)state;
+- (void)updateOriginalContentInset:(UIEdgeInsets)newOriginalContentInset;
 
 - (void)startAnimating;
 - (void)stopAnimating;
