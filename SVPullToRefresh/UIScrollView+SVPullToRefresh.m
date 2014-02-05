@@ -339,6 +339,7 @@ static char UIScrollViewPullToRefreshView;
             currentInsets.top = self.originalTopInset;
             break;
     }
+    [self.scrollView setContentOffset:self.scrollView.contentOffset animated:NO];
     [self setScrollViewContentInset:currentInsets];
 }
 
