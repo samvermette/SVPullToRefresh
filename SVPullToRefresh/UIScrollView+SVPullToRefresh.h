@@ -15,7 +15,13 @@
 
 @interface UIScrollView (SVPullToRefresh)
 
+typedef NS_ENUM(NSUInteger, SVPullToRefreshPosition) {
+    SVPullToRefreshPositionTop = 0,
+    SVPullToRefreshPositionBottom,
+};
+
 - (void)addPullToRefreshWithActionHandler:(void (^)(void))actionHandler;
+- (void)addPullToRefreshWithActionHandler:(void (^)(void))actionHandler position:(SVPullToRefreshPosition)position;
 - (void)triggerPullToRefresh;
 
 @property (nonatomic, strong, readonly) SVPullToRefreshView *pullToRefreshView;
@@ -24,14 +30,12 @@
 @end
 
 
-enum {
+typedef NS_ENUM(NSUInteger, SVPullToRefreshState) {
     SVPullToRefreshStateStopped = 0,
     SVPullToRefreshStateTriggered,
     SVPullToRefreshStateLoading,
     SVPullToRefreshStateAll = 10
 };
-
-typedef NSUInteger SVPullToRefreshState;
 
 @interface SVPullToRefreshView : UIView
 
@@ -46,9 +50,11 @@ typedef NSUInteger SVPullToRefreshState;
  @discussion You can set the custom view you like. For example, an `UIImageView` which displays a fancy arrow. Be careful with the frame, since there hasn't been proper APIs for custom layout so far.
  */
 @property (nonatomic, strong) UIView *arrowView;
+@property (nonatomic, strong, readwrite) UIColor *activityIndicatorViewColor NS_AVAILABLE_IOS(5_0);
 @property (nonatomic, readwrite) UIActivityIndicatorViewStyle activityIndicatorViewStyle;
 
 @property (nonatomic, readonly) SVPullToRefreshState state;
+@property (nonatomic, readonly) SVPullToRefreshPosition position;
 
 - (void)setTitle:(NSString *)title forState:(SVPullToRefreshState)state;
 - (void)setSubtitle:(NSString *)subtitle forState:(SVPullToRefreshState)state;
