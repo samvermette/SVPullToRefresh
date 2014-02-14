@@ -92,8 +92,8 @@ UIEdgeInsets scrollViewOriginalContentInsets;
       if (self.infiniteScrollingView.isObserving) {
         [self removeObserver:self.infiniteScrollingView forKeyPath:@"contentOffset"];
         [self removeObserver:self.infiniteScrollingView forKeyPath:@"contentSize"];
-        self.infiniteScrollingView.isObserving = NO;
         [self.infiniteScrollingView resetScrollViewContentInset];
+        self.infiniteScrollingView.isObserving = NO;
       }
     }
     else {
@@ -170,8 +170,7 @@ UIEdgeInsets scrollViewOriginalContentInsets;
 - (void)setScrollViewContentInsetForInfiniteScrolling {
     UIEdgeInsets currentInsets = self.scrollView.contentInset;
     currentInsets.bottom = self.originalBottomInset + SVInfiniteScrollingViewHeight;
-    //[self setScrollViewContentInset:currentInsets];
-    self.scrollView.contentInset = currentInsets;
+    [self setScrollViewContentInset:currentInsets];
 }
 
 - (void)setScrollViewContentInset:(UIEdgeInsets)contentInset {
