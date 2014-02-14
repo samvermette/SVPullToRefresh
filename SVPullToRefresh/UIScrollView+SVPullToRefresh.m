@@ -167,7 +167,6 @@ static char UIScrollViewPullToRefreshView;
 @synthesize scrollView = _scrollView;
 @synthesize showsPullToRefresh = _showsPullToRefresh;
 @synthesize arrow = _arrow;
-@synthesize arrowView = _arrowView;
 @synthesize activityIndicatorView = _activityIndicatorView;
 
 @synthesize titleLabel = _titleLabel;
@@ -224,19 +223,22 @@ static char UIScrollViewPullToRefreshView;
     
     self.titleLabel.hidden = hasCustomView;
     self.subtitleLabel.hidden = hasCustomView;
-    self.arrowView.hidden = hasCustomView;
+    self.arrow.hidden = hasCustomView;
     
     if(hasCustomView) {
         [self addSubview:customView];
         CGRect viewBounds = [customView bounds];
         CGPoint origin = CGPointMake(roundf((self.bounds.size.width-viewBounds.size.width)/2), roundf((self.bounds.size.height-viewBounds.size.height)/2));
         [customView setFrame:CGRectMake(origin.x, origin.y, viewBounds.size.width, viewBounds.size.height)];
+        if ([self.delegate respondsToSelector:@selector(pullToRefreshView:didLayoutCustomView:withState:)]) {
+            [self.delegate pullToRefreshView:self didLayoutCustomView:customView withState:self.state];
+        }
     }
     else {
         switch (self.state) {
             case SVPullToRefreshStateAll:
             case SVPullToRefreshStateStopped:
-                self.arrowView.alpha = 1;
+                self.arrow.alpha = 1;
                 [self.activityIndicatorView stopAnimating];
                 switch (self.position) {
                     case SVPullToRefreshPositionTop:
@@ -405,6 +407,24 @@ static char UIScrollViewPullToRefreshView;
                 break;
         }
         
+        if ([self.delegate respondsToSelector:@selector(pullToRefreshView:didDragWithProgress:)]) {
+            if (self.position == SVPullToRefreshPositionTop) {
+                CGFloat baseOffset = -self.originalTopInset;
+                if (contentOffset.y < baseOffset) {
+                    CGFloat progress = contentOffset.y < scrollOffsetThreshold ? 1.0f : fabsf((contentOffset.y - baseOffset)) / self.frame.size.height;
+                    [self.delegate pullToRefreshView:self didDragWithProgress:progress];
+                }
+            }
+            
+            if (self.position == SVPullToRefreshPositionBottom) {
+                CGFloat baseOffset = MAX(self.scrollView.contentSize.height - self.scrollView.bounds.size.height, 0.0f) + self.originalBottomInset;
+                if (contentOffset.y > baseOffset) {
+                    CGFloat progress = contentOffset.y > scrollOffsetThreshold ? 1.0f : (contentOffset.y - baseOffset) / self.frame.size.height;
+                    [self.delegate pullToRefreshView:self didDragWithProgress:progress];
+                }
+            }
+        }
+        
         if(!self.scrollView.isDragging && self.state == SVPullToRefreshStateTriggered)
             self.state = SVPullToRefreshStateLoading;
         else if(contentOffset.y < scrollOffsetThreshold && self.scrollView.isDragging && self.state == SVPullToRefreshStateStopped && self.position == SVPullToRefreshPositionTop)
@@ -442,14 +462,6 @@ static char UIScrollViewPullToRefreshView;
 }
 
 #pragma mark - Getters
-
-- (UIView *)arrowView
-{
-    if (!_arrowView) {
-        _arrowView = self.arrow; // There's no need to `addSubview`.
-    }
-    return _arrowView;
-}
 
 - (SVPullToRefreshArrow *)arrow {
     if(!_arrow) {
@@ -524,17 +536,6 @@ static char UIScrollViewPullToRefreshView;
 
 #pragma mark - Setters
 
-- (void)setArrowView:(UIView *)arrowView
-{
-    [_arrowView removeFromSuperview];
-    _arrowView = arrowView;
-    if (_arrowView != nil) {
-        [self addSubview:_arrowView];
-    }
-    
-    [self setNeedsLayout];
-}
-
 - (void)setArrowColor:(UIColor *)newArrowColor {
 	self.arrow.arrowColor = newArrowColor; // pass through
 	[self.arrow setNeedsDisplay];
@@ -576,6 +577,10 @@ static char UIScrollViewPullToRefreshView;
         [self.viewForState replaceObjectAtIndex:state withObject:viewPlaceholder];
     
     [self setNeedsLayout];
+}
+
+- (UIView *)customViewForState:(SVPullToRefreshState)state {
+    return [self.viewForState objectAtIndex:state];
 }
 
 - (void)setTextColor:(UIColor *)newTextColor {
@@ -679,13 +684,16 @@ static char UIScrollViewPullToRefreshView;
             
             break;
     }
+    
+    if ([self.delegate respondsToSelector:@selector(pullToRefreshView:didChangeStateFrom:to:)]) {
+        [self.delegate pullToRefreshView:self didChangeStateFrom:previousState to:newState];
+    }
 }
 
 - (void)rotateArrow:(float)degrees hide:(BOOL)hide {
-    
     [UIView animateWithDuration:0.2 delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
-        self.arrowView.layer.transform = CATransform3DMakeRotation(degrees, 0, 0, 1);
-        self.arrowView.layer.opacity = !hide;
+        self.arrow.layer.transform = CATransform3DMakeRotation(degrees, 0, 0, 1);
+        self.arrow.layer.opacity = !hide;
         //[self.arrow setNeedsDisplay];//ios 4
     } completion:NULL];
 }
