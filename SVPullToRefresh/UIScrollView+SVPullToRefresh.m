@@ -115,6 +115,9 @@ static char UIScrollViewPullToRefreshView;
 }
 
 - (void)setShowsPullToRefresh:(BOOL)showsPullToRefresh {
+    if (!self.pullToRefreshView) {
+        return;
+    }
     self.pullToRefreshView.hidden = !showsPullToRefresh;
     
     if(!showsPullToRefresh) {
@@ -210,7 +213,6 @@ static char UIScrollViewPullToRefreshView;
 }
 
 - (void)layoutSubviews {
-    
     for(id otherView in self.viewForState) {
         if([otherView isKindOfClass:[UIView class]])
             [otherView removeFromSuperview];
@@ -228,6 +230,9 @@ static char UIScrollViewPullToRefreshView;
         CGRect viewBounds = [customView bounds];
         CGPoint origin = CGPointMake(roundf((self.bounds.size.width-viewBounds.size.width)/2), roundf((self.bounds.size.height-viewBounds.size.height)/2));
         [customView setFrame:CGRectMake(origin.x, origin.y, viewBounds.size.width, viewBounds.size.height)];
+        if ([self.delegate respondsToSelector:@selector(pullToRefreshView:didLayoutCustomView:withState:)]) {
+            [self.delegate pullToRefreshView:self didLayoutCustomView:customView withState:self.state];
+        }
     }
     else {
         switch (self.state) {
@@ -402,6 +407,24 @@ static char UIScrollViewPullToRefreshView;
                 break;
         }
         
+        if ([self.delegate respondsToSelector:@selector(pullToRefreshView:didDragWithProgress:)]) {
+            if (self.position == SVPullToRefreshPositionTop) {
+                CGFloat baseOffset = -self.originalTopInset;
+                if (contentOffset.y < baseOffset) {
+                    CGFloat progress = contentOffset.y < scrollOffsetThreshold ? 1.0f : fabsf((contentOffset.y - baseOffset)) / self.frame.size.height;
+                    [self.delegate pullToRefreshView:self didDragWithProgress:progress];
+                }
+            }
+            
+            if (self.position == SVPullToRefreshPositionBottom) {
+                CGFloat baseOffset = MAX(self.scrollView.contentSize.height - self.scrollView.bounds.size.height, 0.0f) + self.originalBottomInset;
+                if (contentOffset.y > baseOffset) {
+                    CGFloat progress = contentOffset.y > scrollOffsetThreshold ? 1.0f : (contentOffset.y - baseOffset) / self.frame.size.height;
+                    [self.delegate pullToRefreshView:self didDragWithProgress:progress];
+                }
+            }
+        }
+        
         if(!self.scrollView.isDragging && self.state == SVPullToRefreshStateTriggered)
             self.state = SVPullToRefreshStateLoading;
         else if(contentOffset.y < scrollOffsetThreshold && self.scrollView.isDragging && self.state == SVPullToRefreshStateStopped && self.position == SVPullToRefreshPositionTop)
@@ -556,6 +579,10 @@ static char UIScrollViewPullToRefreshView;
     [self setNeedsLayout];
 }
 
+- (UIView *)customViewForState:(SVPullToRefreshState)state {
+    return [self.viewForState objectAtIndex:state];
+}
+
 - (void)setTextColor:(UIColor *)newTextColor {
     textColor = newTextColor;
     self.titleLabel.textColor = newTextColor;
@@ -656,6 +683,10 @@ static char UIScrollViewPullToRefreshView;
                 pullToRefreshActionHandler();
             
             break;
+    }
+    
+    if ([self.delegate respondsToSelector:@selector(pullToRefreshView:didChangeStateFrom:to:)]) {
+        [self.delegate pullToRefreshView:self didChangeStateFrom:previousState to:newState];
     }
 }
 

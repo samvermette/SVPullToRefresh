@@ -37,6 +37,8 @@ typedef NS_ENUM(NSUInteger, SVPullToRefreshState) {
     SVPullToRefreshStateAll = 10
 };
 
+@protocol SVPullToRefreshViewDelegate;
+
 @interface SVPullToRefreshView : UIView
 
 @property (nonatomic, strong) UIColor *arrowColor;
@@ -45,6 +47,7 @@ typedef NS_ENUM(NSUInteger, SVPullToRefreshState) {
 @property (nonatomic, strong, readonly) UILabel *subtitleLabel;
 @property (nonatomic, strong, readwrite) UIColor *activityIndicatorViewColor NS_AVAILABLE_IOS(5_0);
 @property (nonatomic, readwrite) UIActivityIndicatorViewStyle activityIndicatorViewStyle;
+@property (nonatomic, weak) id<SVPullToRefreshViewDelegate> delegate;
 
 @property (nonatomic, readonly) SVPullToRefreshState state;
 @property (nonatomic, readonly) SVPullToRefreshPosition position;
@@ -52,6 +55,7 @@ typedef NS_ENUM(NSUInteger, SVPullToRefreshState) {
 - (void)setTitle:(NSString *)title forState:(SVPullToRefreshState)state;
 - (void)setSubtitle:(NSString *)subtitle forState:(SVPullToRefreshState)state;
 - (void)setCustomView:(UIView *)view forState:(SVPullToRefreshState)state;
+- (UIView *)customViewForState:(SVPullToRefreshState)state;
 
 - (void)startAnimating;
 - (void)stopAnimating;
@@ -63,5 +67,15 @@ typedef NS_ENUM(NSUInteger, SVPullToRefreshState) {
 
 // deprecated; use [self.scrollView triggerPullToRefresh] instead
 - (void)triggerRefresh DEPRECATED_ATTRIBUTE;
+
+@end
+
+
+@protocol SVPullToRefreshViewDelegate <NSObject>
+@optional
+
+- (void)pullToRefreshView:(SVPullToRefreshView *)view didChangeStateFrom:(SVPullToRefreshState)state to:(SVPullToRefreshState)state;
+- (void)pullToRefreshView:(SVPullToRefreshView *)view didLayoutCustomView:(UIView *)customView withState:(SVPullToRefreshState)state;
+- (void)pullToRefreshView:(SVPullToRefreshView *)view didDragWithProgress:(CGFloat)progress;
 
 @end
