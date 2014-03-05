@@ -69,12 +69,14 @@ static char UIScrollViewPullToRefreshView;
     
     if(!self.pullToRefreshView) {
         CGFloat yOrigin;
+        CGFloat originalTopInset = self.contentInset.top;
+        CGFloat originalBottomInset = self.contentInset.bottom;
         switch (position) {
             case SVPullToRefreshPositionTop:
-                yOrigin = -SVPullToRefreshViewHeight;
+                yOrigin = (SVPullToRefreshViewHeight + originalTopInset) * -1;
                 break;
             case SVPullToRefreshPositionBottom:
-                yOrigin = self.contentSize.height;
+                yOrigin = self.contentSize.height + originalBottomInset;
                 break;
             default:
                 return;
@@ -84,8 +86,8 @@ static char UIScrollViewPullToRefreshView;
         view.scrollView = self;
         [self addSubview:view];
         
-        view.originalTopInset = self.contentInset.top;
-        view.originalBottomInset = self.contentInset.bottom;
+        view.originalTopInset = originalTopInset;
+        view.originalBottomInset = originalBottomInset;
         view.position = position;
         self.pullToRefreshView = view;
         self.showsPullToRefresh = YES;
@@ -377,10 +379,10 @@ static char UIScrollViewPullToRefreshView;
         CGFloat yOrigin;
         switch (self.position) {
             case SVPullToRefreshPositionTop:
-                yOrigin = -SVPullToRefreshViewHeight;
+                yOrigin = (SVPullToRefreshViewHeight + self.originalTopInset) * -1;
                 break;
             case SVPullToRefreshPositionBottom:
-                yOrigin = MAX(self.scrollView.contentSize.height, self.scrollView.bounds.size.height);
+                yOrigin = MAX(self.scrollView.contentSize.height + self.originalBottomInset, self.scrollView.bounds.size.height);
                 break;
         }
         self.frame = CGRectMake(0, yOrigin, self.bounds.size.width, SVPullToRefreshViewHeight);
