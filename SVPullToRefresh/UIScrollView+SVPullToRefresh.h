@@ -40,6 +40,7 @@ typedef NS_ENUM(NSUInteger, SVPullToRefreshState) {
 @interface SVPullToRefreshView : UIView
 
 @property (nonatomic, strong) UIColor *arrowColor;
+@property (nonatomic, strong) UIView *arrowView;
 @property (nonatomic, strong) UIColor *textColor;
 @property (nonatomic, strong, readonly) UILabel *titleLabel;
 @property (nonatomic, strong, readonly) UILabel *subtitleLabel;

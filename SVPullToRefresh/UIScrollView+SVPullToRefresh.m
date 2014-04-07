@@ -168,6 +168,7 @@ static char UIScrollViewPullToRefreshView;
 
 @synthesize titleLabel = _titleLabel;
 @synthesize dateLabel = _dateLabel;
+@synthesize arrowView = _arrowView;
 
 
 - (id)initWithFrame:(CGRect)frame {
@@ -518,6 +519,13 @@ static char UIScrollViewPullToRefreshView;
 	[self.arrow setNeedsDisplay];
 }
 
+- (void)setArrowView:(UIView *)arrowView
+{
+    _arrowView = arrowView;
+    self.arrow.frame = CGRectMake(self.arrow.frame.origin.x, self.arrow.frame.origin.y, arrowView.frame.size.width, arrowView.frame.size.height);
+    [self.arrow addSubview:_arrowView];
+}
+
 - (void)setTitle:(NSString *)title forState:(SVPullToRefreshState)state {
     if(!title)
         title = @"";
@@ -681,6 +689,10 @@ static char UIScrollViewPullToRefreshView;
 }
 
 - (void)drawRect:(CGRect)rect {
+    if (self.subviews.count) {
+        return;
+    }
+    
 	CGContextRef c = UIGraphicsGetCurrentContext();
 	
 	// the rects above the arrow
