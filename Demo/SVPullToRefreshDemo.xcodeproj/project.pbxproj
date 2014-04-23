@@ -21,6 +21,7 @@
 		22E0D94B1545F63300BB6BB5 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 22E0D94A1545F63300BB6BB5 /* README.md */; };
 		22FDEC971639082E00DB53A8 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 22FDEC961639082E00DB53A8 /* Default-568h@2x.png */; };
 		22FDEC9D16390CC800DB53A8 /* UIScrollView+SVInfiniteScrolling.m in Sources */ = {isa = PBXBuildFile; fileRef = 2288146016047C06005C6461 /* UIScrollView+SVInfiniteScrolling.m */; };
+		E0CC069D190801C700905FFD /* SVDemoPullToRefresh.m in Sources */ = {isa = PBXBuildFile; fileRef = E0CC069C190801C700905FFD /* SVDemoPullToRefresh.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -46,6 +47,8 @@
 		22E0D9401545EE9000BB6BB5 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		22E0D94A1545F63300BB6BB5 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		22FDEC961639082E00DB53A8 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "../Default-568h@2x.png"; sourceTree = "<group>"; };
+		E0CC069B190801C700905FFD /* SVDemoPullToRefresh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVDemoPullToRefresh.h; sourceTree = "<group>"; };
+		E0CC069C190801C700905FFD /* SVDemoPullToRefresh.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVDemoPullToRefresh.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -102,6 +105,8 @@
 				22E0D92A1545EE5B00BB6BB5 /* SVViewController.h */,
 				22E0D92B1545EE5B00BB6BB5 /* SVViewController.m */,
 				22E0D92D1545EE5B00BB6BB5 /* SVViewController.xib */,
+				E0CC069B190801C700905FFD /* SVDemoPullToRefresh.h */,
+				E0CC069C190801C700905FFD /* SVDemoPullToRefresh.m */,
 				22E0D91F1545EE5B00BB6BB5 /* Supporting Files */,
 			);
 			name = Demo;
@@ -201,6 +206,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				22E0D9251545EE5B00BB6BB5 /* main.m in Sources */,
+				E0CC069D190801C700905FFD /* SVDemoPullToRefresh.m in Sources */,
 				22E0D9291545EE5B00BB6BB5 /* SVAppDelegate.m in Sources */,
 				22E0D92C1545EE5B00BB6BB5 /* SVViewController.m in Sources */,
 				22E0D93D1545EE7600BB6BB5 /* UIScrollView+SVPullToRefresh.m in Sources */,
