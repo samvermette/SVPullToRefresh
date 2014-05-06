@@ -610,8 +610,6 @@ static char UIScrollViewPullToRefreshView;
             
             break;
     }
-    
-    self.state = SVPullToRefreshStateLoading;
 }
 
 - (void)stopAnimating {
