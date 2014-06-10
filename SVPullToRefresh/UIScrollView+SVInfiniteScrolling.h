@@ -13,7 +13,13 @@
 
 @interface UIScrollView (SVInfiniteScrolling)
 
+typedef NS_ENUM(NSUInteger, SVInfiniteScrollingPosition) {
+    SVInfiniteScrollingPositionTop = 0,
+    SVInfiniteScrollingPositionBottom,
+};
+
 - (void)addInfiniteScrollingWithActionHandler:(void (^)(void))actionHandler;
+- (void)addInfiniteScrollinhWithActionHandler:(void (^)(void))actionHandler position:(SVInfiniteScrollingPosition)position;
 - (void)triggerInfiniteScrolling;
 
 @property (nonatomic, strong, readonly) SVInfiniteScrollingView *infiniteScrollingView;
