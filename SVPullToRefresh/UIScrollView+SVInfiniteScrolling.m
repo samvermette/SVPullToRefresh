@@ -54,7 +54,7 @@ UIEdgeInsets scrollViewOriginalContentInsets;
 - (void)addInfiniteScrollingWithActionHandler:(void (^)(void))actionHandler {
     
     if(!self.infiniteScrollingView) {
-        SVInfiniteScrollingView *view = [[SVInfiniteScrollingView alloc] initWithFrame:CGRectMake(0, self.contentSize.height, self.bounds.size.width, SVInfiniteScrollingViewHeight)];
+        SVInfiniteScrollingView *view = [[SVInfiniteScrollingView alloc] initWithFrame:CGRectMake(0, MAX(self.contentSize.height, self.bounds.size.height), self.bounds.size.width, SVInfiniteScrollingViewHeight)];
         view.infiniteScrollingHandler = actionHandler;
         view.scrollView = self;
         [self addSubview:view];
@@ -187,13 +187,13 @@ UIEdgeInsets scrollViewOriginalContentInsets;
         [self scrollViewDidScroll:[[change valueForKey:NSKeyValueChangeNewKey] CGPointValue]];
     else if([keyPath isEqualToString:@"contentSize"]) {
         [self layoutSubviews];
-        self.frame = CGRectMake(0, self.scrollView.contentSize.height, self.bounds.size.width, SVInfiniteScrollingViewHeight);
+        self.frame = CGRectMake(0, MAX(self.scrollView.contentSize.height, self.scrollView.bounds.size.height), self.bounds.size.width, SVInfiniteScrollingViewHeight);
     }
 }
 
 - (void)scrollViewDidScroll:(CGPoint)contentOffset {
     if(self.state != SVInfiniteScrollingStateLoading && self.enabled) {
-        CGFloat scrollViewContentHeight = self.scrollView.contentSize.height;
+        CGFloat scrollViewContentHeight = MAX(self.scrollView.contentSize.height, self.scrollView.bounds.size.height);
         CGFloat scrollOffsetThreshold = scrollViewContentHeight-self.scrollView.bounds.size.height;
         
         if(!self.scrollView.isDragging && self.state == SVInfiniteScrollingStateTriggered)

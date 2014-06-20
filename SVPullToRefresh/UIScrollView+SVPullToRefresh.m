@@ -98,6 +98,9 @@ static char UIScrollViewPullToRefreshView;
 }
 
 - (void)triggerPullToRefresh {
+    [self setShowsPullToRefresh:NO];
+    self.contentOffset = CGPointMake(0, 0);
+    [self setShowsPullToRefresh:YES];
     self.pullToRefreshView.state = SVPullToRefreshStateTriggered;
     [self.pullToRefreshView startAnimating];
 }
