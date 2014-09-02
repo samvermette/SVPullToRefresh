@@ -188,6 +188,8 @@ static char UIScrollViewPullToRefreshView;
         self.subtitles = [NSMutableArray arrayWithObjects:@"", @"", @"", @"", nil];
         self.viewForState = [NSMutableArray arrayWithObjects:@"", @"", @"", @"", nil];
         self.wasTriggeredByUser = YES;
+        
+        self.needHoldScreenForLoading = YES;//默认hold住
     }
     
     return self;
@@ -417,10 +419,12 @@ static char UIScrollViewPullToRefreshView;
         UIEdgeInsets contentInset;
         switch (self.position) {
             case SVPullToRefreshPositionTop:
-                offset = MAX(self.scrollView.contentOffset.y * -1, 0.0f);
-                offset = MIN(offset, self.originalTopInset + self.bounds.size.height);
-                contentInset = self.scrollView.contentInset;
-                self.scrollView.contentInset = UIEdgeInsetsMake(offset, contentInset.left, contentInset.bottom, contentInset.right);
+                if (self.needHoldScreenForLoading) {
+                    offset = MAX(self.scrollView.contentOffset.y * -1, 0.0f);
+                    offset = MIN(offset, self.originalTopInset + self.bounds.size.height);
+                    contentInset = self.scrollView.contentInset;
+                    self.scrollView.contentInset = UIEdgeInsetsMake(offset, contentInset.left, contentInset.bottom, contentInset.right);
+                }
                 break;
             case SVPullToRefreshPositionBottom:
                 if (self.scrollView.contentSize.height >= self.scrollView.bounds.size.height) {
@@ -650,7 +654,10 @@ static char UIScrollViewPullToRefreshView;
             break;
             
         case SVPullToRefreshStateLoading:
-            [self setScrollViewContentInsetForLoading];
+            if (self.needHoldScreenForLoading)
+            {
+                [self setScrollViewContentInsetForLoading];
+            }
             
             if(previousState == SVPullToRefreshStateTriggered && pullToRefreshActionHandler)
                 pullToRefreshActionHandler();
