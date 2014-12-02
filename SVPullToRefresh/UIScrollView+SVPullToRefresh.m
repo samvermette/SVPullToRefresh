@@ -14,7 +14,7 @@
 #define fequal(a,b) (fabs((a) - (b)) < FLT_EPSILON)
 #define fequalzero(a) (fabs(a) < FLT_EPSILON)
 
-static CGFloat const SVPullToRefreshViewHeight = 60;
+static CGFloat const SVPullToRefreshViewHeight = 90;
 
 @interface SVPullToRefreshArrow : UIView
 
@@ -119,6 +119,7 @@ static char UIScrollViewPullToRefreshView;
     
     if(!showsPullToRefresh) {
         if (self.pullToRefreshView.isObserving) {
+            [self removeObserver:self.pullToRefreshView forKeyPath:@"contentInset"];
             [self removeObserver:self.pullToRefreshView forKeyPath:@"contentOffset"];
             [self removeObserver:self.pullToRefreshView forKeyPath:@"contentSize"];
             [self removeObserver:self.pullToRefreshView forKeyPath:@"frame"];
@@ -128,6 +129,7 @@ static char UIScrollViewPullToRefreshView;
     }
     else {
         if (!self.pullToRefreshView.isObserving) {
+            [self addObserver:self.pullToRefreshView forKeyPath:@"contentInset" options:NSKeyValueObservingOptionNew context:nil];
             [self addObserver:self.pullToRefreshView forKeyPath:@"contentOffset" options:NSKeyValueObservingOptionNew context:nil];
             [self addObserver:self.pullToRefreshView forKeyPath:@"contentSize" options:NSKeyValueObservingOptionNew context:nil];
             [self addObserver:self.pullToRefreshView forKeyPath:@"frame" options:NSKeyValueObservingOptionNew context:nil];
@@ -385,8 +387,15 @@ static char UIScrollViewPullToRefreshView;
         }
         self.frame = CGRectMake(0, yOrigin, self.bounds.size.width, SVPullToRefreshViewHeight);
     }
-    else if([keyPath isEqualToString:@"frame"])
+    else if([keyPath isEqualToString:@"frame"]) {
         [self layoutSubviews];
+    }
+    else if ([keyPath isEqualToString:@"contentInset"]) {
+        if (self.state != SVPullToRefreshStateLoading) {
+            self.originalTopInset = self.scrollView.contentInset.top;
+            self.originalBottomInset = self.scrollView.contentInset.bottom;
+        }
+    }
 
 }
 
