@@ -43,7 +43,7 @@
 
 - (void)setupDataSource {
     self.dataSource = [NSMutableArray array];
-    for(int i=0; i<15; i++)
+    for(int i=0; i<3; i++)
         [self.dataSource addObject:[NSDate dateWithTimeIntervalSinceNow:-(i*90)]];
 }
 
