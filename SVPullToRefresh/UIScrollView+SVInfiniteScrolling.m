@@ -33,8 +33,6 @@ static CGFloat const SVInfiniteScrollingViewHeight = 60;
 @property (nonatomic, assign) BOOL wasTriggeredByUser;
 @property (nonatomic, assign) BOOL isObserving;
 
-- (void)resetScrollViewContentInset;
-- (void)setScrollViewContentInsetForInfiniteScrolling;
 - (void)setScrollViewContentInset:(UIEdgeInsets)insets;
 
 @end

@@ -42,4 +42,9 @@ typedef NSUInteger SVInfiniteScrollingState;
 - (void)startAnimating;
 - (void)stopAnimating;
 
+// i need them outside to correctly calculate rows visibility in tableview when using scrollToRowAtIndexPath
+- (void)resetScrollViewContentInset;
+- (void)setScrollViewContentInsetForInfiniteScrolling;
+
+
 @end
