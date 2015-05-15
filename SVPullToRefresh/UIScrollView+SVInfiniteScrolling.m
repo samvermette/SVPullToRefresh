@@ -196,6 +196,12 @@ UIEdgeInsets scrollViewOriginalContentInsets;
         CGFloat scrollViewContentHeight = self.scrollView.contentSize.height;
         CGFloat scrollOffsetThreshold = scrollViewContentHeight-self.scrollView.bounds.size.height;
         
+        // fix the bug
+        // when height of the content is less than height of the bounds, pull to refresh will trigger infinite scroll
+        if (scrollOffsetThreshold < 0) {
+            scrollOffsetThreshold = SVInfiniteScrollingViewHeight;
+        }
+        
         if(!self.scrollView.isDragging && self.state == SVInfiniteScrollingStateTriggered)
             self.state = SVInfiniteScrollingStateLoading;
         else if(contentOffset.y > scrollOffsetThreshold && self.state == SVInfiniteScrollingStateStopped && self.scrollView.isDragging)
