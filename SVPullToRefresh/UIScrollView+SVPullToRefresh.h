@@ -29,12 +29,11 @@ typedef NS_ENUM(NSUInteger, SVPullToRefreshPosition) {
 
 @end
 
-
-typedef NS_ENUM(NSUInteger, SVPullToRefreshState) {
+typedef NS_OPTIONS(NSUInteger, SVPullToRefreshState) {
     SVPullToRefreshStateStopped = 0,
-    SVPullToRefreshStateTriggered,
-    SVPullToRefreshStateLoading,
-    SVPullToRefreshStateAll = 10
+    SVPullToRefreshStateTriggered = 1 << 0,
+    SVPullToRefreshStateLoading = 1 << 1,
+    SVPullToRefreshStateAll = 1 << 2
 };
 
 @interface SVPullToRefreshView : UIView
