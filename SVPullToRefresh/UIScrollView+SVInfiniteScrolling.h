@@ -21,15 +21,12 @@
 
 @end
 
-
-enum {
-	SVInfiniteScrollingStateStopped = 0,
-    SVInfiniteScrollingStateTriggered,
-    SVInfiniteScrollingStateLoading,
-    SVInfiniteScrollingStateAll = 10
+typedef NS_OPTIONS(NSUInteger, SVInfiniteScrollingState) {
+    SVInfiniteScrollingStateStopped = 0,
+    SVInfiniteScrollingStateTriggered = 1 << 0,
+    SVInfiniteScrollingStateLoading = 1 << 1,
+    SVInfiniteScrollingStateAll = 1 << 2
 };
-
-typedef NSUInteger SVInfiniteScrollingState;
 
 @interface SVInfiniteScrollingView : UIView
 
