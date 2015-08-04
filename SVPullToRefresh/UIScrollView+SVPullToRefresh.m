@@ -295,7 +295,7 @@ static char UIScrollViewPullToRefreshView;
         
         //[self updateForPercentage:MIN(1.0f, MAX(0.0f, contentOffset.y / scrollOffsetThreshold))];
         // We don't max or min the offset
-        [self updateForPercentage:contentOffset.y / scrollOffsetThreshold];
+        [self updateForPercentage:(contentOffset.y + self.originalTopInset) / (scrollOffsetThreshold + self.originalTopInset)];
         
         if(!self.scrollView.isDragging && self.state == SVPullToRefreshStateTriggered)
             self.state = SVPullToRefreshStateLoading;
