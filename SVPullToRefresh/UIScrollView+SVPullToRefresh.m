@@ -369,8 +369,13 @@ static char UIScrollViewPullToRefreshView;
 #pragma mark - Observing
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if([keyPath isEqualToString:@"contentOffset"])
-        [self scrollViewDidScroll:[[change valueForKey:NSKeyValueChangeNewKey] CGPointValue]];
+    if([keyPath isEqualToString:@"contentOffset"]) {
+        CGPoint newPoint = [[change valueForKey:NSKeyValueChangeNewKey] CGPointValue];
+        //only excute when pull down
+        if (newPoint.y <= 0) {
+            [self scrollViewDidScroll:newPoint];
+        }
+    }
     else if([keyPath isEqualToString:@"contentSize"]) {
         [self layoutSubviews];
         
