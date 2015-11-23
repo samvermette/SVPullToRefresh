@@ -49,6 +49,8 @@ typedef NS_ENUM(NSUInteger, SVPullToRefreshState) {
 @property (nonatomic, readonly) SVPullToRefreshState state;
 @property (nonatomic, readonly) SVPullToRefreshPosition position;
 
+@property CGFloat pullThresholdFactor;
+
 - (void)setTitle:(NSString *)title forState:(SVPullToRefreshState)state;
 - (void)setSubtitle:(NSString *)subtitle forState:(SVPullToRefreshState)state;
 - (void)setCustomView:(UIView *)view forState:(SVPullToRefreshState)state;

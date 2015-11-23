@@ -158,7 +158,7 @@ static char UIScrollViewPullToRefreshView;
 @implementation SVPullToRefreshView
 
 // public properties
-@synthesize pullToRefreshActionHandler, arrowColor, textColor, activityIndicatorViewColor, activityIndicatorViewStyle, lastUpdatedDate, dateFormatter;
+@synthesize pullToRefreshActionHandler, arrowColor, textColor, activityIndicatorViewColor, activityIndicatorViewStyle, lastUpdatedDate, dateFormatter, pullThresholdFactor;
 
 @synthesize state = _state;
 @synthesize scrollView = _scrollView;
@@ -188,6 +188,8 @@ static char UIScrollViewPullToRefreshView;
         self.subtitles = [NSMutableArray arrayWithObjects:@"", @"", @"", @"", nil];
         self.viewForState = [NSMutableArray arrayWithObjects:@"", @"", @"", @"", nil];
         self.wasTriggeredByUser = YES;
+        
+        self.pullThresholdFactor = 1.0f;
     }
     
     return self;
@@ -401,6 +403,8 @@ static char UIScrollViewPullToRefreshView;
                 scrollOffsetThreshold = MAX(self.scrollView.contentSize.height - self.scrollView.bounds.size.height, 0.0f) + self.bounds.size.height + self.originalBottomInset;
                 break;
         }
+        
+        scrollOffsetThreshold*=pullThresholdFactor;
         
         if(!self.scrollView.isDragging && self.state == SVPullToRefreshStateTriggered)
             self.state = SVPullToRefreshStateLoading;
