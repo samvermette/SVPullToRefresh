@@ -94,6 +94,11 @@ static char UIScrollViewPullToRefreshView;
 }
 
 - (void)setShowsPullToRefresh:(BOOL)showsPullToRefresh {
+	// avoid starting to observe when not even having a pullToRefreshView, as this would result in a crash when the tableView deallocates later
+	if (self.pullToRefreshView == nil) {
+		return;
+	}
+	
     self.pullToRefreshView.hidden = !showsPullToRefresh;
     
     if(!showsPullToRefresh) {
