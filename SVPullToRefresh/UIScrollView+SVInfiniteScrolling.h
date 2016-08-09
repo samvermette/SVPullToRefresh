@@ -16,8 +16,10 @@
 - (void)addInfiniteScrollingWithActionHandler:(void (^)(void))actionHandler;
 - (void)triggerInfiniteScrolling;
 
+- (void)setShowsInfiniteScrolling:(BOOL)showsInfiniteScrolling animated:(BOOL)animated;
+
 @property (nonatomic, strong, readonly) SVInfiniteScrollingView *infiniteScrollingView;
-@property (nonatomic, assign) BOOL showsInfiniteScrolling;
+@property (nonatomic, assign) BOOL showsInfiniteScrolling; // animated
 
 @end
 
@@ -38,6 +40,7 @@ typedef NSUInteger SVInfiniteScrollingState;
 @property (nonatomic, readwrite) BOOL enabled;
 
 - (void)setCustomView:(UIView *)view forState:(SVInfiniteScrollingState)state;
+- (void)updateOriginalContentInset:(UIEdgeInsets)newOriginalContentInset animated:(BOOL)animated;
 
 - (void)startAnimating;
 - (void)stopAnimating;

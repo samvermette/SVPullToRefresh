@@ -115,6 +115,11 @@ static char UIScrollViewPullToRefreshView;
 }
 
 - (void)setShowsPullToRefresh:(BOOL)showsPullToRefresh {
+	// avoid starting to observe when not even having a pullToRefreshView, as this would result in a crash when the tableView deallocates later
+	if (self.pullToRefreshView == nil) {
+		return;
+	}
+	
     self.pullToRefreshView.hidden = !showsPullToRefresh;
     
     if(!showsPullToRefresh) {
@@ -555,6 +560,14 @@ static char UIScrollViewPullToRefreshView;
     
     [self setNeedsLayout];
 }
+
+- (void)updateOriginalContentInset:(UIEdgeInsets)newOriginalContentInset {
+	if (self.originalTopInset == newOriginalContentInset.top) return;
+
+	self.originalTopInset = newOriginalContentInset.top;
+	// doing nothing else for now
+}
+
 
 - (void)setTextColor:(UIColor *)newTextColor {
     textColor = newTextColor;
