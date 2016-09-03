@@ -18,3 +18,5 @@ build/
 
 # Backup files
 *~.nib
+
+DerivedData
