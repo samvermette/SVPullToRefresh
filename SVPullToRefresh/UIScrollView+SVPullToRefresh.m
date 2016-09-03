@@ -279,18 +279,25 @@ static char UIScrollViewPullToRefreshView;
         
         NSString *subtitle = [self.subtitles objectAtIndex:self.state];
         self.subtitleLabel.text = subtitle.length > 0 ? subtitle : nil;
+
+
+        NSMutableParagraphStyle *titleParagraphStyle = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
+        titleParagraphStyle.lineBreakMode = self.titleLabel.lineBreakMode;
+        CGSize titleSize = [self.titleLabel.text boundingRectWithSize:CGSizeMake(labelMaxWidth,self.titleLabel.font.lineHeight)
+                                                              options:NSStringDrawingUsesLineFragmentOrigin
+                                                           attributes:@{ NSFontAttributeName : self.titleLabel.font,
+                                                                         NSParagraphStyleAttributeName : titleParagraphStyle }
+                                                              context:nil].size;
         
+        NSMutableParagraphStyle *subtitleParagraphStyle = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
+        subtitleParagraphStyle.lineBreakMode = self.subtitleLabel.lineBreakMode;
+        CGSize subtitleSize = [self.subtitleLabel.text boundingRectWithSize:CGSizeMake(labelMaxWidth,self.subtitleLabel.font.lineHeight)
+                                                                    options:NSStringDrawingUsesLineFragmentOrigin
+                                                                 attributes:@{ NSFontAttributeName : self.subtitleLabel.font,
+                                                                               NSParagraphStyleAttributeName : subtitleParagraphStyle }
+                                                                    context:nil].size;
         
-        CGSize titleSize = [self.titleLabel.text sizeWithFont:self.titleLabel.font
-                                            constrainedToSize:CGSizeMake(labelMaxWidth,self.titleLabel.font.lineHeight)
-                                                lineBreakMode:self.titleLabel.lineBreakMode];
-        
-        
-        CGSize subtitleSize = [self.subtitleLabel.text sizeWithFont:self.subtitleLabel.font
-                                                  constrainedToSize:CGSizeMake(labelMaxWidth,self.subtitleLabel.font.lineHeight)
-                                                      lineBreakMode:self.subtitleLabel.lineBreakMode];
-        
-        CGFloat maxLabelWidth = MAX(titleSize.width,subtitleSize.width);
+        CGFloat maxLabelWidth = MAX(titleSize.width, subtitleSize.width);
         
         CGFloat totalMaxWidth;
         if (maxLabelWidth) {
