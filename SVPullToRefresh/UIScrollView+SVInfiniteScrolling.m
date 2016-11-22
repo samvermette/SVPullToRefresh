@@ -169,6 +169,19 @@ UIEdgeInsets scrollViewOriginalContentInsets;
     [self setScrollViewContentInset:currentInsets];
 }
 
+- (void)setOriginalBottomInset:(CGFloat)originalBottomInset {
+    if (_originalBottomInset != originalBottomInset) {
+        _originalBottomInset = originalBottomInset;
+        
+        if (self.isObserving) {
+            [self setScrollViewContentInsetForInfiniteScrolling];
+        }
+        else {
+            [self resetScrollViewContentInset];
+        }
+    }
+}
+
 - (void)setScrollViewContentInset:(UIEdgeInsets)contentInset {
     [UIView animateWithDuration:0.3
                           delay:0
