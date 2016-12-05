@@ -205,7 +205,8 @@ static char UIScrollViewPullToRefreshView;
                 [scrollView removeObserver:self forKeyPath:@"frame"];
                 self.isObserving = NO;
             }
-        }
+        } else
+            [scrollView removeObserver:self forKeyPath:@"contentSize"];
     }
 }
 
