@@ -276,6 +276,10 @@ UIEdgeInsets scrollViewOriginalContentInsets;
         CGRect viewBounds = [customView bounds];
         CGPoint origin = CGPointMake(roundf((self.bounds.size.width-viewBounds.size.width)/2), roundf((self.bounds.size.height-viewBounds.size.height)/2));
         [customView setFrame:CGRectMake(origin.x, origin.y, viewBounds.size.width, viewBounds.size.height)];
+
+        if (newState == SVInfiniteScrollingStateStopped) {
+            [self.activityIndicatorView stopAnimating];
+        }
     }
     else {
         CGRect viewBounds = [self.activityIndicatorView bounds];
